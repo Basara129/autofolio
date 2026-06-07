@@ -1,17 +1,12 @@
 import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import { createClient } from "@supabase/supabase-js";
-// SOLUSI MASALAH 1: Import Buffer secara eksplisit untuk menjamin kompabilitas di serverless Vercel
 import { Buffer } from "node:buffer";
 
 export const maxDuration = 60;
 export const dynamic = "force-dynamic";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-);
-
+// Konfigurasi Cloudinary tetap di luar tidak apa-apa karena tidak melempar error wajib saat inisialisasi
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -19,19 +14,32 @@ cloudinary.config({
   secure: true,
 });
 
-// Fungsi pembantu untuk validasi JSON aman agar tidak crash di tengah jalan
 const tryParseJSON = (str) => {
   if (!str) return null;
   try {
     return JSON.parse(str);
   } catch (e) {
-    // Jika gagal di-parse (berarti teks biasa), kembalikan teks tersebut dalam struktur array/objek agar Supabase tidak menolak jsonb
     return [str];
   }
 };
 
 export async function POST(request) {
   try {
+    // SOLUSI UTAMA: Inisialisasi Supabase di dalam sini agar tidak dievaluasi saat 'npm run build'
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseKey) {
+      throw new Error(
+        "Kunci Supabase tidak terbaca di Environment Variables Vercel!",
+      );
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    // ========================================================
+    // ALUR PROSES DATA FORM & CLOUDINARY
+    // ========================================================
     const formData = await request.formData();
 
     const nama_lengkap = formData.get("nama_lengkap");
@@ -55,28 +63,27 @@ export async function POST(request) {
       );
     }
 
-    // ALUR A: Mengubah file gambar ke Base64 menggunakan Buffer yang aman
+    // Alur A: Konversi ke Base64
     const arrayBuffer = await fileFoto.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
     const imageBase64 = `data:${fileFoto.type || "image/png"};base64,${buffer.toString("base64")}`;
 
-    // ALUR B: Upload ke Cloudinary
+    // Alur B: Upload ke Cloudinary
     const cloudinaryResponse = await cloudinary.uploader.upload(imageBase64, {
       folder: "user_portfolios",
     });
 
     if (!cloudinaryResponse || !cloudinaryResponse.secure_url) {
-      throw new Error("Gagal mendapatkan URL aman dari Cloudinary");
+      throw new Error("Gagal mendapatkan URL dari Cloudinary");
     }
 
     const linkFotoCloudinary = cloudinaryResponse.secure_url;
 
-    // SOLUSI MASALAH 3: Gunakan fungsi pembantu tryParseJSON agar terhindar dari crash syntax JSON
     const parsedPendidikan = tryParseJSON(riwayat_pendidikan);
     const parsedPengalaman = tryParseJSON(pengalaman);
     const parsedKeahlian = tryParseJSON(keahlian);
 
-    // ALUR C: Simpan ke Supabase
+    // Alur C: Simpan ke Supabase menggunakan instance lokal
     const { data, error: supabaseError } = await supabase
       .from("portfolios")
       .insert([
@@ -105,9 +112,7 @@ export async function POST(request) {
       message: "Portfolio berhasil disimpan!",
     });
   } catch (error) {
-    // Ini akan tercatat di dashboard Vercel secara gamblang
     console.error("Server Error on Vercel Context:", error.message);
-
     return NextResponse.json(
       { success: false, error: error.message || "Internal Server Error" },
       { status: 500 },
