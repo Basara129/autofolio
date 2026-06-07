@@ -42,6 +42,7 @@ export async function POST(request) {
     // ========================================================
     const formData = await request.formData();
 
+    const username = formData.get("username");
     const nama_lengkap = formData.get("nama_lengkap");
     const profesi = formData.get("profesi");
     const moto = formData.get("moto");
@@ -88,6 +89,7 @@ export async function POST(request) {
       .from("portfolios")
       .insert([
         {
+          username,
           nama_lengkap,
           profesi,
           moto,
