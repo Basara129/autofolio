@@ -81,29 +81,25 @@ export default function ProfilForm() {
     dataToSend.append('keahlian', JSON.stringify(arrayKeahlian));
 
     try {
-      const response = await fetch('/api/portfolio', {
-        method: 'POST',
-        body: dataToSend,
-      });
+  const response = await fetch('/api/portfolio', {
+    method: 'POST',
+    body: dataToSend,
+  });
 
-      const hasil = await response.json();
+  const hasil = await response.json();
 
-      if (hasil.success) {
-        alert('Profil Anda berhasil disimpan ke Cloudinary & Supabase!');
-        // Reset Form
-        setFormData({
-          nama_lengkap: '', profesi: '', moto: '', foto: null, biografi: '',
-          pendidikan: '', keahlian: '', instagram: '', tiktok: '', X: '', linkedin: ''
-        });
-        setPengalaman(['']);
-        e.target.reset();
-      } else {
-        alert('Gagal menyimpan: ' + hasil.error);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Terjadi kesalahan koneksi.');
-    }
+  if (hasil.success) {
+    alert('Profil Anda berhasil disimpan!');
+    form.reset();
+  } else {
+    // INI PENTING: Menampilkan error spesifik yang dikirim oleh server backend
+    alert('Gagal dari Server: ' + hasil.error); 
+  }
+} catch (error) {
+  console.error('Error:', error);
+  // Ini hanya muncul jika Vercel benar-benar mati/RTO
+  alert('Koneksi internet putus atau server Vercel tidak merespon.'); 
+}
   };
 
   return (
