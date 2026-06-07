@@ -2,17 +2,19 @@ import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import { createClient } from "@supabase/supabase-js";
 
-// Setup koneksi langsung Supabase
+export const maxDuration = 60; // Maksimalkan durasi serverless function Vercel
+export const dynamic = "force-dynamic";
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
 );
 
-// Setup konfigurasi Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
 });
 
 export async function POST(request) {
@@ -28,48 +30,40 @@ export async function POST(request) {
     const X = formData.get("X");
     const linkedin = formData.get("linkedin");
 
-    // Mengambil data JSONB string dari frontend
     const riwayat_pendidikan = formData.get("riwayat_pendidikan");
     const pengalaman = formData.get("pengalaman");
     const keahlian = formData.get("keahlian");
 
-    // Mengambil file gambar
     const fileFoto = formData.get("foto_file");
-    if (!fileFoto) {
+    if (!fileFoto || typeof fileFoto === "string") {
       return NextResponse.json(
-        { success: false, error: "File foto wajib diunggah!" },
+        { success: false, error: "File foto tidak valid!" },
         { status: 400 },
       );
     }
 
-    // ALUR A: Mengubah stream gambar menjadi buffer untuk Cloudinary
+    // ALUR A: Mengubah file gambar ke Base64 (Metode ini JAUH lebih stabil di Vercel daripada upload_stream buffer)
     const arrayBuffer = await fileFoto.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
+    const imageBase64 = `data:${fileFoto.type};base64,${buffer.toString("base64")}`;
 
-    // Proses pengiriman fisik ke Cloudinary menggunakan upload_stream
-    const cloudinaryResponse = await new Promise((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream({ folder: "user_portfolios" }, (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        })
-        .end(buffer);
+    // ALUR B: Upload ke Cloudinary menggunakan standar upload biasa yang didukung penuh oleh Serverless Vercel
+    const cloudinaryResponse = await cloudinary.uploader.upload(imageBase64, {
+      folder: "user_portfolios",
     });
 
-    // ALUR B: Ambil URL hasil generate Cloudinary
     const linkFotoCloudinary = cloudinaryResponse.secure_url;
 
-    // ALUR C: Simpan semua data otomatis ke dalam tabel portfolios Supabase
-    const { data, error } = await supabase
-      .from("portfolios") // Sesuai nama tabel di database Anda
+    // ALUR C: Simpan ke Supabase
+    const { data, error: supabaseError } = await supabase
+      .from("portfolios")
       .insert([
         {
           nama_lengkap,
           profesi,
           moto,
-          foto_url: linkFotoCloudinary, // Menyimpan teks URL link Cloudinary
+          foto_url: linkFotoCloudinary,
           biografi,
-          // Mengembalikan bentuk string menjadi object array agar diterima kolom jsonb Supabase
           riwayat_pendidikan: riwayat_pendidikan
             ? JSON.parse(riwayat_pendidikan)
             : null,
@@ -82,14 +76,15 @@ export async function POST(request) {
         },
       ]);
 
-    if (error) throw error;
+    if (supabaseError)
+      throw new Error(`Supabase Database: ${supabaseError.message}`);
 
     return NextResponse.json({
       success: true,
       message: "Portfolio berhasil disimpan!",
     });
   } catch (error) {
-    console.error("Server Error:", error);
+    console.error("Server Error on Vercel:", error);
     return NextResponse.json(
       { success: false, error: error.message },
       { status: 500 },
