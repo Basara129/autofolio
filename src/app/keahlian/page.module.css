@@ -1,0 +1,130 @@
+.featuresSection {
+  min-height: 100vh; 
+  padding: 80px 40px; 
+  background: linear-gradient(135deg, rgb(12, 38, 35) 100%, rgb(0, 120, 110) 0%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  overflow: hidden; 
+}
+
+.featuresGrid {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 30px;
+  
+  overflow-x: auto; /* Tetap izinkan geser di HP */
+  scroll-snap-type: x mandatory; 
+  scroll-behavior: smooth;
+  padding: 20px 10px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+
+.featuresGrid::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+.featureCard {
+  flex: 0 0 280px !important;
+  scroll-snap-align: center;
+  text-align: center;
+  padding: 40px 25px;
+  border-radius: 20px;
+  background: rgb(10, 28, 26) !important;
+  border: 1.5px solid rgb(0, 240, 215) !important;
+  
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    inset 0 0 15px rgba(0, 240, 215, 0.1) !important;
+  
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.featureCard:hover {
+  transform: translateY(-8px);
+  background: rgb(12, 38, 35) !important;
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.5),
+    0 0 25px rgba(0, 240, 215, 0.5),
+    inset 0 0 20px rgba(0, 240, 215, 0.2) !important;
+}
+
+.featureIcon {
+  font-size: 42px;
+  margin-bottom: 15px;
+  display: inline-block;
+  filter: drop-shadow(0 4px 8px rgba(12, 38, 35, 0.3));
+}
+
+.featureCard .featureTitle {
+  font-size: 19px;
+  font-weight: bold;
+  color: #ffffff !important;
+  margin-top: 0;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.featureCard .featureTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.featureCard:hover .featureTitle::after {
+  width: 70px;
+  background-color: #ffffff;
+}
+
+.featureCard .featureDescription {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9) !important; 
+  line-height: 1.6;
+  text-align: center;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .featuresSection {
+    padding: 60px 0px; 
+  }
+
+  .featuresGrid {
+    padding-left: 30px; 
+    padding-right: 30px; 
+    gap: 20px; 
+  }
+
+  .featureCard {
+    flex: 0 0 260px !important; 
+    padding: 35px 20px;
+  }
+
+
+  .navbar { padding: 15px 20px; }
+  .heroContainer { flex-direction: column; text-align: center; height: auto; }
+  .brandsGridPlaceholder { flex-wrap: wrap; }
+}
