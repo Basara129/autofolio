@@ -1,266 +1,210 @@
-'use client';
-
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './page.module.css';
 
-export default function ProfilForm() {
-  // 1. State Utama Form
-  const [formData, setFormData] = useState({
-    username: '', // Perbaikan bug: string kosong, bukan variabel lepas
-    nama_lengkap: '', 
-    profesi: '',      
-    moto: '',         
-    foto: null,
-    biografi: '',
-    instagram: '',
-    tiktok: '',
-    X: '',
-    linkedin: ''
-  });
-
-  // 2. State Khusus List Dinamis (Array)
-  const [pendidikan, setPendidikan] = useState(['']);
-  const [pengalaman, setPengalaman] = useState(['']);
-  const [keahlian, setKeahlian] = useState(['']);
-
-  // 3. State Tambahan untuk Pesan Peringatan Username
-  const [usernameError, setUsernameError] = useState('');
-
-  // Handler Perubahan Input Teks Utama
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    // Logika Peringatan Username (Hanya boleh huruf, angka, dan underscore)
-    if (name === 'username') {
-      const regexAlfanumerik = /^[a-zA-Z0-9_]*$/;
-      
-      if (!regexAlfanumerik.test(value)) {
-        setUsernameError('Username tidak boleh menggunakan spasi atau simbol!');
-      } else {
-        setUsernameError('');
-      }
-    }
-
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  // Handler Upload Foto
-  const handleFotoChange = (e) => {
-    setFormData((prev) => ({ ...prev, foto: e.target.files[0] }));
-  };
-
-  // =========================================================
-  // LOGIKA MANIPULASI INPUT DINAMIS
-  // =========================================================
-  const handleDinamisChange = (index, value, state, setState) => {
-    const newArr = [...state];
-    newArr[index] = value;
-    setState(newArr);
-  };
-
-  const tambahInput = (state, setState, max = 10) => {
-    if (state.length < max) {
-      setState([...state, '']);
-    }
-  };
-
-  const hapusInput = (index, state, setState) => {
-    const newArr = state.filter((_, i) => i !== index);
-    setState(newArr.length === 0 ? [''] : newArr);
-  };
-
-  // =========================================================
-  // FUNGSI SUBMIT INTEGRASI CLOUDINARY & SUPABASE
-  // =========================================================
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Validasi Cegah Submit jika Username Masih Mengandung Spasi/Simbol
-    if (usernameError || !formData.username.trim()) {
-      alert('Silakan perbaiki username Anda terlebih dahulu sesuai ketentuan!');
-      return;
-    }
-
-    if (!formData.foto) {
-      alert('Silakan upload foto diri Anda terlebih dahulu!');
-      return;
-    }
-
-    const dataToSend = new FormData();
-
-    // 1. Memasukkan data teks biasa
-    dataToSend.append('username', formData.username);
-    dataToSend.append('nama_lengkap', formData.nama_lengkap);
-    dataToSend.append('profesi', formData.profesi);
-    dataToSend.append('moto', formData.moto);
-    dataToSend.append('biografi', formData.biografi);
-    dataToSend.append('instagram', formData.instagram);
-    dataToSend.append('tiktok', formData.tiktok);
-    dataToSend.append('X', formData.X);
-    dataToSend.append('linkedin', formData.linkedin);
-
-    // 2. Memasukkan file gambar untuk Cloudinary
-    dataToSend.append('foto_file', formData.foto);
-
-    // 3. Memformat Array bersih ke format JSON String untuk kolom JSONB Supabase
-    const pendidikanFilter = pendidikan.filter(item => item.trim() !== '');
-    const pengalamanFilter = pengalaman.filter(item => item.trim() !== '');
-    const keahlianFilter = keahlian.filter(item => item.trim() !== '');
-
-    dataToSend.append('riwayat_pendidikan', JSON.stringify(pendidikanFilter));
-    dataToSend.append('pengalaman', JSON.stringify(pengalamanFilter));
-    dataToSend.append('keahlian', JSON.stringify(keahlianFilter));
-
-    try {
-      const response = await fetch('/api/portfolio', {
-        method: 'POST',
-        body: dataToSend,
-      });
-
-      const hasil = await response.json();
-
-      if (hasil.success) {
-        alert('Profil Anda berhasil disimpan!');
-        
-        // Reset Form Setelah Berhasil
-        setFormData({
-          username: '',
-          nama_lengkap: '',
-          profesi: '',
-          moto: '',
-          foto: null,
-          biografi: '',
-          instagram: '',
-          tiktok: '',
-          X: '',
-          linkedin: ''
-        });
-        setPendidikan(['']);
-        setPengalaman(['']);
-        setKeahlian(['']);
-        setUsernameError('');
-        e.target.reset(); // Mereset UI input file secara fisik
-      } else {
-        alert('Gagal dari Server: ' + hasil.error); 
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Koneksi internet putus atau server tidak merespon.'); 
-    }
-  };
-
+export default function Home() {
   return (
-    <div className={styles.container}>
-      <main className={styles.mainContent}>
-        <h1 className={styles.title}>
-          Isi <span className={styles.purpleText}>Profil Diri</span>
-        </h1>
+    <div className={styles.pageWrapper}>
+      
+      {/* 1. TOP BANNER PROMO */}
+      <div className={styles.promoBanner}>
+        <p>
+          <strong>PROMO PEMBUKAAN SAMPAI TANGGAL 32 JUNI 2026</strong>
+        </p>
+      </div>
 
-        <form onSubmit={handleSubmit} className={styles.formContainer}>
+      {/* 2. NAVIGATION BAR */}
+      <header className={styles.navbar}>
+        <div className={styles.logo}>
+          <span className={styles.logoIcon}>AUTOFOLIO</span> 
+        </div>
+      </header>
+
+      {/* 3. HERO SECTION */}
+      <section className={styles.heroSection}>
+        <div className={styles.heroContainer}>
+          <div className={styles.heroContent}>
+            <h1 className={styles.heroTitle}>Website Potofolio Profesional</h1>
+            <p className={styles.heroSubtitle}>
+              Hanya Di Sini Kamu Bisa Membuat Portofolio <strong>Keren</strong> Dengan Harga Murah
+            </p>
+            <button className={styles.heroCtaButton}>Pesan Sekarang</button>
+          </div>
           
-          {/* Kolom Username + Validasi Peringatan */}
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Username (tanpa spasi & simbol)</label>
-            <input 
-              type="text" 
-              name="username" 
-              value={formData.username} 
-              onChange={handleChange} 
-              className={`${styles.input} ${usernameError ? styles.inputError : ''}`} 
-              placeholder="Contoh: budisetya_99"
-              required 
-            />
-            {usernameError && (
-              <span style={{ color: '#ff4d4d', fontSize: '13px', marginTop: '6px', display: 'block' }}>
-                ⚠️ {usernameError}
-              </span>
-            )}
-          </div>
-
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Nama Lengkap (Primary Key)</label>
-            <input type="text" name="nama_lengkap" value={formData.nama_lengkap} onChange={handleChange} className={styles.input} required />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Profesi</label>
-            <input type="text" name="profesi" value={formData.profesi} onChange={handleChange} placeholder="Contoh: Frontend Developer" className={styles.input} required />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Moto</label>
-            <input type="text" name="moto" value={formData.moto} onChange={handleChange} placeholder="Slogan hidup Anda..." className={styles.input} />
-          </div>
-
-          {/* 1. Upload Foto Diri */}
-          <div className={styles.formGroup}>
-            <label className={styles.label}>1. Upload Foto Diri</label>
-            <input type="file" accept="image/*" onChange={handleFotoChange} className={styles.fileInput} />
-          </div>
-
-          {/* 2. Biografi */}
-          <div className={styles.formGroup}>
-            <label className={styles.label}>2. Biografi</label>
-            <textarea name="biografi" value={formData.biografi} onChange={handleChange} placeholder="Ceritakan singkat tentang diri Anda..." className={styles.textarea} rows="4" required />
-          </div>
-
-          {/* 3. Riwayat Pendidikan (Dinamis) */}
-          <div className={styles.formGroup}>
-            <div className={styles.flexHeader}>
-              <label className={styles.label}>3. Riwayat Pendidikan</label>
-              <button type="button" onClick={() => tambahInput(pendidikan, setPendidikan)} className={styles.addButton}>+ Tambah</button>
+          {/* Sisi Kanan: Ilustrasi/Gambar Produk */}
+          <div className={styles.heroImageContainer}>
+            {/* Menggunakan placeholder visual untuk elemen di gambar */}
+            <div className={styles.weddingMockup}>
+              <div className={styles.mockCake}>🎂</div>
+              <div className={styles.mockMixer}>🥣</div>
             </div>
-            {pendidikan.map((item, index) => (
-              <div key={`pendidikan-${index}`} className={styles.dynamicInputGroup}>
-                <input type="text" value={item} onChange={(e) => handleDinamisChange(index, e.target.value, pendidikan, setPendidikan)} placeholder={`Contoh: S1 Teknik Informatika - Universitas XYZ`} className={styles.input} required />
-                <button type="button" onClick={() => hapusInput(index, pendidikan, setPendidikan)} className={styles.deleteButton}>Hapus</button>
-              </div>
-            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 4. FEATURES SECTION (4 Kolom) */}
+      <section className={styles.featuresSection}>
+        <div className={styles.featuresGrid}>
+          
+        <div className={styles.featureCard}>
+            <div className={styles.featureIcon}>⚡</div>
+            <h3 className={styles.featureTitle}>Proses Instan, 1 - 3 Hari Jadi</h3>
+            <p className={styles.featureDescription}>
+              Tidak perlu menunggu berminggu-minggu. Portofolio otomatis Anda kami kerjakan dengan cepat, rapi, dan langsung live dalam hitungan hari.
+            </p>
           </div>
 
-          {/* 4. Pengalaman Kerja atau Organisasi (Dinamis, Maks. 3) */}
-          <div className={styles.formGroup}>
-            <div className={styles.flexHeader}>
-              <label className={styles.label}>4. Pengalaman Kerja / Organisasi (Maks. 3)</label>
-              {pengalaman.length < 3 && (
-                <button type="button" onClick={() => tambahInput(pengalaman, setPengalaman, 3)} className={styles.addButton}>+ Tambah</button>
-              )}
+          {/* Fitur 2 */}
+          <div className={styles.featureCard}>
+            <div className={styles.featureIcon}>🚀</div>
+            <h3 className={styles.featureTitle}>Siap Pakai, Tanpa Ribet Coding</h3>
+            <p className={styles.featureDescription}>
+              Tinggal pakai! Terima beres tanpa perlu paham hal teknis yang rumit. Solusi praktis untuk langsung mendatangkan pembeli.
+            </p>
+          </div>
+
+          {/* Fitur 3 */}
+          <div className={styles.featureCard}>
+            <div className={styles.featureIcon}>🔥</div>
+            <h3 className={styles.featureTitle}>Promo Grand Opening: Diskon 80%</h3>
+            <p className={styles.featureDescription}>
+              Hanya Rp20.000 saja! Amankan harga termurah ini sekarang untuk memiliki website animasi premium sebelum harga naik normal.
+            </p>
+          </div>
+
+          <div className={styles.featureCard}>
+            <div className={styles.featureIcon}>🔄</div>
+            <h3 className={styles.featureTitle}>Update Otomatis, Anti Repot</h3>
+            <p className={styles.featureDescription}>
+              Portofolio Anda akan memperbarui dirinya sendiri setiap kali ada proyek baru. Hemat waktu, biarkan website yang bekerja untuk Anda.
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+      {/* 5. BRANDS SECTION */}
+      <section className={styles.brandsSection}>
+        <div className={styles.brandsContainer}>
+          <h2 className={styles.brandsTitle}>Kami Menyediakan Paket Dengan Harga Istimewa</h2>
+          <p className={styles.brandsSubtitle}>
+            Dapat Membantu Kamu Dalam Melamar Pekerjaan Dan Jadi Lebih Keren           
+          </p>
+          
+          {/* Tempat Grid Brand (Bisa diisi gambar/item nantinya) */}
+          {/* Tempat Grid Brand / Paket Harga */}
+          <div className={styles.brandsGridPlaceholder}>
+  
+  {/* Kartu Pertama: Tanpa Animasi */}
+          <div className={styles.brandCardBlank}>
+            <h4 className={styles.packageTitle}><strong>COOMING SOON</strong></h4>
+            <div className={styles.priceContainer}>
+              <span className={styles.currentPrice}></span>
             </div>
-            {pengalaman.map((item, index) => (
-              <div key={`pengalaman-${index}`} className={styles.dynamicInputGroup}>
-                <input type="text" value={item} onChange={(e) => handleDinamisChange(index, e.target.value, pengalaman, setPengalaman)} placeholder={`Pengalaman ${index + 1}`} className={styles.input} required />
-                <button type="button" onClick={() => hapusInput(index, pengalaman, setPengalaman)} className={styles.deleteButton}>Hapus</button>
-              </div>
-            ))}
           </div>
 
-          {/* 5. Keahlian (Dinamis) */}
-          <div className={styles.formGroup}>
-            <div className={styles.flexHeader}>
-              <label className={styles.label}>5. Keahlian</label>
-              <button type="button" onClick={() => tambahInput(keahlian, setKeahlian)} className={styles.addButton}>+ Tambah</button>
+          <div className={styles.brandCardBlank}>
+            <h4 className={styles.packageTitle}><strong>COOMING SOON</strong></h4>
+            <div className={styles.priceContainer}>
+              <span className={styles.currentPrice}></span>
             </div>
-            {keahlian.map((item, index) => (
-              <div key={`keahlian-${index}`} className={styles.dynamicInputGroup}>
-                <input type="text" value={item} onChange={(e) => handleDinamisChange(index, e.target.value, keahlian, setKeahlian)} placeholder={`Contoh: React / Node.js / Figma`} className={styles.input} required />
-                <button type="button" onClick={() => hapusInput(index, keahlian, setKeahlian)} className={styles.deleteButton}>Hapus</button>
+          </div>
+
+          {/* Kartu Kedua: Dengan Animasi + Coretan Harga */}
+          <div className={styles.brandCardBlank}>
+            <h4 className={styles.packageTitle}>Website Animasi</h4>
+            <div className={styles.priceContainer}>
+              <span className={styles.originalPrice}>Rp. 50.000</span>
+              <span className={styles.currentPrice}>Rp. 20.000</span>
+            </div>
+          </div>
+
+          <div className={styles.brandCardBlank}>
+            <h4 className={styles.packageTitle}><strong>COOMING SOON</strong></h4>
+            <div className={styles.priceContainer}>
+              <span className={styles.currentPrice}></span>
+            </div>
+          </div>
+
+          <div className={styles.brandCardBlank}>
+            <h4 className={styles.packageTitle}><strong>COOMING SOON</strong></h4>
+            <div className={styles.priceContainer}>
+              <span className={styles.currentPrice}></span>
+            </div>
+          </div>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.featuresSection}>
+<div className={styles.container}>
+        <div className={styles.header}>
+          <h2>Hubungi Kami</h2>
+          <p>Punya pertanyaan atau ingin bekerja sama? Tim kami siap membantu Anda.</p>
+        </div>
+
+        <div className={styles.grid}>
+          {/* Kartu Informasi Kontak */}
+          <div className={styles.infoCard}>
+            <div className={styles.infoItem}>
+              <span className={styles.icon}>📍</span>
+              <div>
+                <h3>Alamat Kantor</h3>
+                <p>Jl. Jend. Sudirman No. 123, Lantai 5, Jakarta Selatan, 12190</p>
               </div>
-            ))}
+            </div>
+
+            <div className={styles.infoItem}>
+              <span className={styles.icon}>✉️</span>
+              <div>
+                <h3>Email Resmi</h3>
+                <a href="mailto:contact@namaperusahaan.com" className={styles.link}>
+                  contact@namaperusahaan.com
+                </a>
+              </div>
+            </div>
+
+            <div className={styles.infoItem}>
+              <span className={styles.icon}>📞</span>
+              <div>
+                <h3>Telepon & WhatsApp</h3>
+                <p>(021) 555-0199</p>
+                <a 
+                  href="https://wa.me/6281234567890" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className={styles.link}
+                >
+                  +62 812-3456-7890 (WhatsApp)
+                </a>
+              </div>
+            </div>
+
+            <div className={styles.infoItem}>
+              <span className={styles.icon}>⏰</span>
+              <div>
+                <h3>Jam Operasional</h3>
+                <p>Senin - Jumat: 09.00 - 17.00 WIB</p>
+              </div>
+            </div>
           </div>
 
-          {/* 6. Kontak Media Sosial */}
-          <div className={styles.formGroup}>
-            <label className={styles.label}>6. Kontak Media Sosial</label>
-            <input type="text" name="instagram" value={formData.instagram} onChange={handleChange} placeholder="Username Instagram (cth: @budi)" className={styles.input} />
-            <input type="text" name="tiktok" value={formData.tiktok} onChange={handleChange} placeholder="Username TikTok" className={styles.input} style={{marginTop: '8px'}} />
-            <input type="text" name="X" value={formData.X} onChange={handleChange} placeholder="Username X (Twitter)" className={styles.input} style={{marginTop: '8px'}} />
-            <input type="text" name="linkedin" value={formData.linkedin} onChange={handleChange} placeholder="Link LinkedIn" className={styles.input} style={{marginTop: '8px'}} />
+          {/* Kolom Google Maps (Ganti URL src dengan embed map perusahaan Anda) */}
+          <div className={styles.mapContainer}>
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.2544774393855!2d106.8166667!3d-6.2293056!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTMnNDUuNSJTIDEwNiw0OScwMC4wIkU!5e0!3m2!1sid!2sid!4v1625000000000!5m2!1sid!2sid"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Lokasi Perusahaan"
+            ></iframe>
           </div>
+        </div>
+      </div>
+      </section>
 
-          {/* Tombol Submit */}
-          <button type="submit" className={styles.submitButton}>Simpan Profil</button>
-        </form>
-      </main>
     </div>
   );
 }

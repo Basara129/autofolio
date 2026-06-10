@@ -1,170 +1,354 @@
-/* Base Container */
-.container {
-  min-height: 100vh;
-  background-color: #0b0813; /* Deep dark background */
+/* --- RESET & GLOBAL-LIKE WRAPPER --- */
+.pageWrapper {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  color: #333333;
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;
+}
+
+/* --- 1. TOP BANNER PROMO --- */
+.promoBanner {
+  background-color: #bd1637; /* Warna merah gelap sesuai gambar */
   color: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  padding: 3rem 1.5rem;
+  text-align: center;
+  padding: 10px 20px;
+  font-size: 13px;
+  letter-spacing: 0.5px;
 }
 
-.mainContent {
-  max-width: 700px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.promoBanner p {
+  margin: 0;
 }
 
-.title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 3rem;
-  letter-spacing: -0.5px;
-}
-
-.purpleText {
-  color: #a855f7; /* Vibrant purple */
-}
-
-/* Form Layout */
-.formContainer {
-  width: 100%;
-  background: linear-gradient(135deg, rgba(31, 23, 54, 0.4) 0%, rgba(15, 11, 28, 0.7) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 24px;
-  padding: 2.5rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-.formGroup {
-  margin-bottom: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.flexHeader {
+/* --- 2. NAVIGATION BAR --- */
+.navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 15px 40px;
+  border-bottom: 1px solid #eaeaea;
 }
 
-.label {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #cbd5e1;
-}
-
-/* Inputs & Textarea */
-.input, .textarea, .fileInput {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 0.8rem 1.2rem;
-  color: #ffffff;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.input:focus, .textarea:focus {
-  outline: none;
-  border-color: #a855f7;
-  box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
-}
-
-.textarea {
-  resize: vertical;
-}
-
-.fileInput::file-selector-button {
-  background: #a855f7;
-  color: white;
-  border: none;
-  padding: 0.4rem 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-right: 1rem;
-  transition: background 0.2s;
-}
-
-.fileInput::file-selector-button:hover {
-  background: #9333ea;
-}
-
-/* Dynamic Input (Pengalaman) */
-.dynamicInputGroup {
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: #222222;
   display: flex;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
+  align-items: center;
+  gap: 5px;
 }
 
-.addButton {
-  background: rgba(168, 85, 247, 0.2);
-  border: 1px solid #a855f7;
-  color: #a855f7;
-  padding: 0.3rem 0.8rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  font-weight: 600;
-  transition: all 0.2s;
+/* --- 3. HERO SECTION --- */
+.heroSection {
+  background-color: #deeef2; /* Warna background biru pastel pucat */
+  padding: 60px 40px;
 }
 
-.addButton:hover {
-  background: #a855f7;
-  color: white;
+.heroContainer {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
 }
 
-.deleteButton {
-  background: rgba(239, 68, 68, 0.2);
-  border: 1px solid #ef4444;
-  color: #ef4444;
-  padding: 0.5rem 1rem;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
+.heroContent {
+  flex: 1;
+  max-width: 500px;
 }
 
-.deleteButton:hover {
-  background: #ef4444;
-  color: white;
+.heroTitle {
+  font-size: 42px;
+  color: #222222;
+  margin-bottom: 15px;
+  line-height: 1.2;
 }
 
-/* Submit Button */
-.submitButton {
-  width: 100%;
-  background: #a855f7;
+.heroSubtitle {
+  font-size: 16px;
+  color: #555555;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.heroCtaButton {
+  background-color: #00b2b2;
   color: #ffffff;
   border: none;
-  border-radius: 12px;
-  padding: 1rem;
-  font-size: 1.1rem;
-  font-weight: 700;
+  padding: 15px 35px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 178, 178, 0.2);
 }
 
-.submitButton:hover {
-  background: #9333ea;
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
-  transform: translateY(-2px);
+.heroCtaButton:hover {
+  background-color: #009999;
 }
 
-/* Responsive considerations */
-@media (max-width: 600px) {
-  .formContainer {
-    padding: 1.5rem;
+/* Ilustrasi Samping Hero */
+.heroImageContainer {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.weddingMockup {
+  display: flex;
+  gap: 20px;
+  font-size: 80px; /* Demo mockup menggunakan emoji besar */
+}
+
+/* --- 4. FEATURES SECTION --- */
+.featuresSection {
+  padding: 60px 40px;
+  background-color: #ffffff;
+}
+
+.featuresGrid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+}
+
+.featureCard {
+  text-align: center;
+  padding: 10px;
+}
+
+.featureIcon {
+  font-size: 32px;
+  margin-bottom: 15px;
+}
+
+.featureTitle {
+  font-size: 16px;
+  font-weight: bold;
+  color: #222222;
+  margin-bottom: 12px;
+}
+
+.featureDescription {
+  font-size: 13px;
+  color: #666666;
+  line-height: 1.5;
+}
+
+/* --- 5. BRANDS SECTION --- */
+.brandsSection {
+  background-color: #2b547e; /* Warna biru gelap bagian bawah */
+  color: #ffffff;
+  padding: 60px 40px;
+  text-align: center;
+}
+
+.brandsContainer {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.brandsTitle {
+  font-size: 32px;
+  margin-bottom: 15px;
+  font-weight: normal;
+}
+
+.brandsSubtitle {
+  font-size: 15px;
+  color: #d1e0ec;
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
+/* Placeholder untuk konten tambahan di bawah text brand */
+.brandsGridPlaceholder {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+
+/* --- UPDATE & TAMBAHAN UNTUK KARTU HARGA --- */
+
+.brandCardBlank {
+  width: 220px; /* Diperlebar sedikit agar teks muat dengan rapi */
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.1); /* Putih transparan */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(5px); /* Efek kaca modern */
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.brandCardBlank:hover {
+  transform: translateY(-5px);
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.packageTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 10px 0;
+  letter-spacing: 0.5px;
+}
+
+.priceContainer {
+  display: flex;
+  flex-direction: column; /* Harga coret berada di atas harga asli */
+  align-items: center;
+  gap: 2px;
+}
+
+/* Style untuk Rp. 50.000 yang dicoret */
+.originalPrice {
+  font-size: 12px;
+  color: #ff9e9e; /* Warna merah muda agar terlihat jelas sebagai diskon */
+  text-decoration: line-through;
+  font-weight: normal;
+}
+
+/* Style untuk harga aktif (Rp. 10.000 & Rp. 20.000) */
+.currentPrice {
+  font-size: 18px;
+  font-weight: bold;
+  color: #00e6e6; /* Warna toska cerah agar mencolok */
+}
+
+.contactSection {
+  padding: 60px 20px;
+  background-color: #f9fafb;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 45px;
+}
+
+.header h2 {
+  font-size: 2rem;
+  color: #111827;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.header p {
+  color: #4b5563;
+  font-size: 1.1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+}
+
+/* Responsive Grid untuk Tablet & Desktop */
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
   }
-  .title {
-    font-size: 2rem;
+}
+
+.infoCard {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.infoItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.icon {
+  font-size: 1.5rem;
+  background-color: #f3f4f6;
+  padding: 10px;
+  border-radius: 8px;
+  line-height: 1;
+}
+
+.infoItem h3 {
+  font-size: 1.1rem;
+  color: #111827;
+  margin: 0 0 4px 0;
+  font-weight: 600;
+}
+
+.infoItem p {
+  color: #4b5563;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.link {
+  color: #2563eb;
+  text-decoration: none;
+  font-size: 0.95rem;
+  display: inline-block;
+  margin-top: 2px;
+  transition: color 0.2s ease;
+}
+
+.link:hover {
+  text-decoration: underline;
+  color: #1d4ed8;
+}
+
+.mapContainer {
+  width: 100%;
+  min-height: 300px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+/* --- RESPONSIVE LAYOUT (MOBILE FRIENDLY) --- */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 15px 20px;
   }
-  .dynamicInputGroup {
+  
+  .heroContainer {
     flex-direction: column;
+    text-align: center;
   }
-  .deleteButton {
-    width: 100%;
+  
+  .featuresGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .brandsGridPlaceholder {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .featuresGrid {
+    grid-template-columns: 1fr;
   }
 }
