@@ -1,0 +1,925 @@
+/* ==========================================================================
+   1. GLOBAL STYLES & CONTAINER
+   ========================================================================== */
+.container {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
+  /* Kombinasi Hijau Gelap ke Toska untuk latar belakang utama */
+  background: linear-gradient(135deg, rgb(12, 38, 35) 0%, rgb(0, 120, 110) 100%);
+  min-height: 100vh;
+}
+
+/* ==========================================================================
+   2. NAVIGATION BAR
+   ========================================================================== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 40px;
+  border-bottom: 1px solid rgba(0, 180, 160, 0.2);
+  background: linear-gradient(45deg, rgba(0, 180, 160, 0.8));
+  backdrop-filter: blur(10px); 
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #0c2623; 
+  background: none;
+}
+
+/* ==========================================================================
+   3. NAMA / HERO SECTION
+   ========================================================================== */
+.namaSection {
+  padding: 60px 40px;
+  position: relative;
+}
+
+/* Efek radial glow lembut di belakang konten nama menggunakan warna Cyan */
+.namaSection::before {
+  content: '';
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(0, 180, 160, 0.15) 0%, rgba(0,0,0,0) 70%);
+  pointer-events: none;
+}
+
+.namaContainer {
+  max-width: 1100px;
+  height: 500px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.namaContent {
+  flex: 1;
+  max-width: 500px;
+}
+
+.namaTitle {
+  font-size: 42px;
+  color: #ffffff;
+  margin-bottom: 15px;
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.namaSubtitle {
+  font-size: 16px;
+  color: #cbd5e1;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.namaCtaButton {
+  /* Gradasi tombol yang sangat kontras: Hijau Cyan ke Toska */
+  background: linear-gradient(135deg, rgb(0, 180, 160) 0%, rgb(0, 120, 110) 100%);
+  color: #ffffff;
+  border: none;
+  padding: 15px 35px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 180, 160, 0.4);
+  transition: all 0.3s ease;
+}
+
+.namaCtaButton:hover {
+  /* Efek balik arah gradasi saat di-hover agar tombol terlihat interaktif */
+  background: linear-gradient(135deg, rgb(0, 120, 110) 0%, rgb(0, 180, 160) 100%);
+  box-shadow: 0 6px 25px rgba(0, 180, 160, 0.6);
+  transform: translateY(-2px);
+}
+
+/* Ilustrasi Samping nama */
+.namaImageContainer {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.weddingMockup {
+  display: flex;
+  gap: 20px;
+  font-size: 80px;
+}
+
+/* ==========================================================================
+   4. BIOGRAFI SECTION
+   ========================================================================== */
+.biografSection {
+  min-height: 100vh; 
+  padding: 100px 40px; 
+  background: radial-gradient(135deg, rgb(16, 48, 44) 0%, rgb(0, 180, 160) 100%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  overflow: hidden;
+}
+
+/* Efek lingkaran dekoratif besar di latar belakang */
+.biografSection::before {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  top: -10%;
+  right: -10%;
+  pointer-events: none;
+}
+
+.biografGrid {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+}
+
+.biografiCard {
+  position: relative;
+  padding: 50px 40px;
+  background: linear-gradient(335deg, rgb(12, 38, 35) 0%, rgb(0, 120, 110) 170%);
+  border-radius: 30px;
+  box-shadow: 
+    0 10px 30px rgba(12, 38, 35, 0.05),
+    0 40px 80px rgba(12, 38, 35, 0.08);
+  border: 1px solid rgba(0, 180, 160, 0.15);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+/* Efek bayangan kertas bertumpuk di belakang kartu */
+.biografiCard::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(335deg, rgb(12, 38, 35) 0%, rgb(0, 120, 110) 180%);
+  border-radius: 30px;
+  z-index: -1;
+  transform: rotate(-2deg) scale(0.98); 
+  box-shadow: 0 10px 30px rgba(12, 38, 35, 0.03);
+  transition: transform 0.4s ease;
+}
+
+/* Efek Hover untuk Kartu Biografi */
+.biografiCard:hover {
+  transform: translateY(-10px);
+  border-color: rgb(0, 120, 110);
+  box-shadow: 
+    0 20px 40px rgba(12, 38, 35, 0.12),
+    0 60px 100px rgba(12, 38, 35, 0.15);
+}
+
+.biografiCard:hover::after {
+  transform: rotate(0deg) scale(1.02);
+  background: linear-gradient(335deg, rgb(12, 38, 35) 0%, rgb(0, 120, 110) 180%);
+}
+
+.biografiTitle {
+  font-size: 22px;
+  font-weight: 800;
+  color: white;
+  margin-top: 0;
+  margin-bottom: 20px;
+  letter-spacing: -0.5px;
+  line-height: 1.3;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+/* Garis aksen bawah judul biografi */
+.biografiTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 4px;
+  background: rgb(0, 180, 160);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.biografiCard:hover .biografiTitle::after {
+  width: 400px;
+}
+
+.biografiDescription {
+  font-size: 15px;
+  color: white;
+  line-height: 1.8; 
+  text-align: justify;
+  margin: 0;
+}
+
+/* Gaya penyorot teks (Highlight) di dalam deskripsi */
+.biografiDescription mark, 
+.biografiDescription [class*="highlight"] {
+  background: rgba(0, 180, 160, 0.1);
+  color: rgb(0, 120, 110);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   5. AHLI / KEAHLIAN SECTION (HORIZONTAL SCROLL)
+   ========================================================================== */
+.ahliSection {
+  min-height: 100vh; 
+  padding: 80px 40px; 
+  background: linear-gradient(135deg, rgb(12, 38, 35) 100%, rgb(0, 120, 110) 0%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  overflow: hidden; 
+}
+
+.ahliGrid {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 30px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory; 
+  scroll-behavior: smooth;
+  padding: 20px 10px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.ahliGrid::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+.keahlianCard {
+  flex: 0 0 280px !important;
+  scroll-snap-align: center;
+  text-align: center;
+  padding: 40px 25px;
+  border-radius: 20px;
+  background: rgb(10, 28, 26) !important;
+  border: 1.5px solid rgb(0, 240, 215) !important;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    inset 0 0 15px rgba(0, 240, 215, 0.1) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.keahlianCard:hover {
+  transform: translateY(-8px);
+  background: rgb(12, 38, 35) !important;
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.5),
+    0 0 25px rgba(0, 240, 215, 0.5),
+    inset 0 0 20px rgba(0, 240, 215, 0.2) !important;
+}
+
+.keahlianIcon {
+  font-size: 42px;
+  margin-bottom: 15px;
+  display: inline-block;
+  filter: drop-shadow(0 4px 8px rgba(12, 38, 35, 0.3));
+}
+
+.keahlianCard .keahlianTitle {
+  font-size: 19px;
+  font-weight: bold;
+  color: #ffffff !important;
+  margin-top: 0;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.keahlianCard .keahlianTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.keahlianCard:hover .keahlianTitle::after {
+  width: 70px;
+  background-color: #ffffff;
+}
+
+.keahlianCard .keahlianDescription {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9) !important; 
+  line-height: 1.6;
+  text-align: center;
+  margin: 0;
+}
+
+/* ==========================================================================
+   6. KONTAK SECTION (BENTO GRID STYLING)
+   ========================================================================== */
+.kontakSection {
+  min-height: 100vh; 
+  padding: 100px 40px; 
+  background: radial-gradient(135deg, rgb(16, 48, 44) 0%, rgb(0, 180, 160) 100%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  overflow: hidden;
+}
+
+.kontakGrid {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1.2fr;
+  gap: 25px;
+}
+
+.kontak1Card {
+  position: relative;
+  padding: 40px;
+  border-radius: 32px;
+  background: rgb(10, 28, 26) !important;
+  border: 1.5px solid rgb(0, 240, 215) !important;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    inset 0 0 15px rgba(0, 240, 215, 0.1) !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.kontak1Card:hover {
+  transform: translateY(-8px);
+  background: rgb(12, 38, 35) !important;
+  border-color: rgb(0, 240, 215);
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.5),
+    0 0 25px rgba(0, 240, 215, 0.5),
+    inset 0 0 20px rgba(0, 240, 215, 0.2) !important;
+}
+
+.kontak1Card:nth-child(1) {
+  grid-column: span 2;
+  background: linear-gradient(135deg, rgb(15, 53, 49) 0%, rgb(12, 38, 35) 100%);
+}
+
+.kontak1Card:nth-child(2) {
+  grid-row: span 2;
+  border-color: rgba(0, 180, 160, 0.4);
+}
+
+.kontak1Card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(0, 180, 160, 0.05) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.kontak1Card:hover::before {
+  opacity: 1;
+}
+
+.kontak1Title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-top: 0;
+  margin-bottom: 20px;
+  letter-spacing: 0.5px;
+  position: relative;
+  display: inline-block;
+}
+
+.kontak1Title::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: rgb(0, 180, 160);
+  border-radius: 50%;
+  margin-right: 12px;
+  vertical-align: middle;
+  box-shadow: 0 0 10px rgb(0, 180, 160);
+  transition: background-color 0.3s ease;
+}
+
+.kontak1Card:hover .kontak1Title::before {
+  background-color: rgb(0, 240, 215);
+  box-shadow: 0 0 15px rgb(0, 240, 215);
+}
+
+.kontak1Description {
+  font-size: 14.5px;
+  color: #94a3b8;
+  line-height: 1.7;
+  margin: 0;
+  text-align: justify;
+}
+
+/* ==========================================================================
+   7. PENGALAMAN / ORGANISASI SECTION (FUTURISTIC SLANTED CARDS)
+   ========================================================================== */
+.pengalamanSection {
+  min-height: 100vh; 
+  padding: 100px 40px; 
+  background: radial-gradient(135deg, rgb(16, 48, 44) 0%, rgb(0, 180, 160) 100%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  overflow: hidden;
+}
+
+.pengalamanGrid {
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  counter-reset: section-counter;
+}
+
+.organisasiCard {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 40px 50px;
+  background: rgb(10, 28, 26) !important;
+  border: 1.5px solid rgb(0, 240, 215) !important;
+  border-left: 5px solid rgb(0, 180, 160) !important;
+  clip-path: polygon(3% 0%, 100% 0%, 97% 100%, 0% 100%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.organisasiCard:hover {
+  transform: scale(1.02) translateX(10px) translateY(-4px);
+  background: rgb(12, 38, 35) !important;
+  border-left-color: rgb(0, 255, 220) !important;
+  box-shadow: 
+    -10px 15px 40px rgba(0, 180, 160, 0.25),
+    0 0 25px rgba(0, 240, 215, 0.4),
+    inset 0 0 20px rgba(0, 240, 215, 0.2) !important;
+}
+
+.organisasiCard::after {
+  counter-increment: section-counter;
+  content: "0" counter(section-counter);
+  position: absolute;
+  right: 40px;
+  bottom: -10px;
+  font-size: 90px;
+  font-weight: 900;
+  color: rgba(0, 180, 160, 0.06);
+  font-family: 'Arial Black', sans-serif;
+  pointer-events: none;
+  transition: all 0.4s ease;
+}
+
+.organisasiCard:hover::after {
+  color: rgba(0, 255, 220, 0.12);
+  transform: translateY(-10px) scale(1.1);
+}
+
+.organisasiTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  min-width: 250px; 
+  max-width: 250px;
+  line-height: 1.4;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.organisasiCard:hover .organisasiTitle {
+  color: rgb(0, 255, 220);
+  text-shadow: 0 0 10px rgba(0, 255, 220, 0.3);
+}
+
+.organisasiDescription {
+  font-size: 15px;
+  color: #cbd5e1;
+  line-height: 1.7;
+  margin: 0;
+  text-align: justify;
+  z-index: 1;
+  flex: 1;
+}
+
+/* ==========================================================================
+   8. RIWAYAT / PENDIDIKAN SECTION (LASER TIMELINE FLOW)
+   ========================================================================== */
+.riwayatSection {
+  min-height: 100vh; 
+  padding: 80px 40px; 
+  background: linear-gradient(135deg, rgb(12, 38, 35) 100%, rgb(0, 120, 110) 0%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+.riwayatGrid {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 50px; 
+  position: relative;
+}
+
+/* Garis dasar timeline */
+.riwayatGrid::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 30px;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.08); 
+}
+
+/* Efek laser bergerak mengalir pada timeline */
+.riwayatGrid::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 30px;
+  width: 2px;
+  background: linear-gradient(
+    to top,
+    transparent 0%,
+    transparent 30%,
+    rgb(0, 255, 220) 50%,
+    transparent 70%,
+    transparent 100%
+  );
+  background-size: 100% 200%;
+  animation: flowLaser 3s linear infinite;
+  box-shadow: 0 0 8px rgba(0, 255, 220, 0.4);
+}
+
+@keyframes flowLaser {
+  0% { background-position: 0% 200%; }
+  100% { background-position: 0% -200%; }
+}
+
+.pendidikanCard {
+  display: grid !important; 
+  grid-template-columns: 40px 300px 1fr !important; 
+  align-items: center; 
+  gap: 20px;
+  padding: 15px 20px;
+  background: transparent !important; 
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.pendidikanCard:hover {
+  transform: translateX(10px);
+}
+
+/* Titik node indikator timeline */
+.pendidikanCard::before {
+  content: '' !important;
+  grid-column: 1;
+  justify-self: center;
+  width: 20px;
+  height: 20px;
+  background: rgb(12, 38, 35);
+  border: 3px solid rgb(0, 180, 160);
+  border-radius: 50%;
+  z-index: 2;
+  box-shadow: 0 0 12px rgba(0, 180, 160, 0.6);
+  transition: all 0.3s ease;
+}
+
+.pendidikanCard:hover::before {
+  background: rgb(0, 180, 160);
+  box-shadow: 0 0 20px rgb(0, 240, 215);
+  transform: scale(1.2);
+}
+
+.pendidikanCard > div {
+  display: grid !important;
+  grid-column: 2 / span 2; 
+  grid-template-columns: 300px 1fr !important;
+  align-items: center !important;
+  gap: 40px !important;
+  width: 100%;
+  border-left: 3px solid rgba(0, 180, 160, 0.2);
+  padding-left: 25px;
+  transition: border-color 0.3s ease;
+}
+
+.pendidikanCard:hover > div {
+  border-color: rgb(0, 180, 160);
+}
+
+.pendidikanCard .pendidikanTitle {
+  font-size: 22px;
+  font-weight: bold;
+  color: #ffffff !important; 
+  margin: 0 !important;
+  letter-spacing: 0.5px;
+  line-height: 1.3;
+  position: relative;
+  padding-bottom: 8px;
+  display: inline-block;
+}
+
+.pendidikanCard .pendidikanTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 35px;
+  height: 3px;
+  background-color: rgb(0, 180, 160);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.pendidikanCard:hover .pendidikanTitle::after {
+  width: 100px;
+}
+
+.pendidikanCard .pendidikanDescription {
+  font-size: 14.5px;
+  color: rgba(255, 255, 255, 0.9) !important; 
+  line-height: 1.7;
+  text-align: left !important;
+  margin: 0 !important;
+}
+
+/* ==========================================================================
+   9. RESPONSIVE LAYOUT (MEDIA QUERIES INTEGRATED)
+   ========================================================================== */
+
+/* Laptop / Desktop Kecil (Max 1024px) */
+@media (max-width: 1024px) {
+  .kontakGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .kontak1Card:nth-child(1) {
+    grid-column: span 2; 
+  }
+  .kontak1Card:nth-child(2) {
+    grid-row: span 1;
+  }
+}
+
+/* Tablet Lebar / Layout Custom Pengalaman & Riwayat (Max 900px) */
+@media (max-width: 900px) {
+  .organisasiCard {
+    clip-path: none;
+    border-radius: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 35px 40px;
+  }
+  
+  .organisasiTitle {
+    max-width: 100%;
+    min-width: auto;
+  }
+  
+  .organisasiCard::after {
+    font-size: 70px;
+    right: 20px;
+    bottom: 5px;
+  }
+
+  .pendidikanCard {
+    grid-template-columns: 40px 220px 1fr !important;
+  }
+
+  .pendidikanCard > div {
+    grid-template-columns: 220px 1fr !important;
+    gap: 20px !important;
+  }
+}
+
+/* Tablet Menengah (Max 992px) */
+@media (max-width: 992px) {
+  .biografGrid {
+    grid-template-columns: 1fr;
+    gap: 50px;
+  }
+}
+
+/* Tablet / Mobile Landscape (Max 768px) */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 15px 20px;
+  }
+  
+  .namaContainer, .heroContainer {
+    flex-direction: column;
+    text-align: center;
+    height: auto;
+  }
+  
+  .biografSection {
+    padding: 60px 20px;
+  }
+  
+  .biografiCard {
+    padding: 40px 30px;
+  }
+
+  .ahliSection {
+    padding: 60px 0px; 
+  }
+
+  .ahliGrid {
+    padding-left: 30px; 
+    padding-right: 30px; 
+    gap: 20px; 
+  }
+
+  .keahlianCard {
+    flex: 0 0 260px !important; 
+    padding: 35px 20px;
+  }
+  
+  .kontakSection {
+    padding: 60px 20px;
+  }
+  
+  .kontakGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .kontak1Card {
+    padding: 30px;
+  }
+
+  .kontak1Card:nth-child(1) {
+    grid-column: span 1; 
+  }
+
+  .pengalamanSection {
+    padding: 60px 20px;
+  }
+
+  .riwayatSection {
+    padding: 60px 20px;
+  }
+  
+  .riwayatGrid::before, 
+  .riwayatGrid::after {
+    left: 15px; /* Menyesuaikan posisi garis timeline di HP agar tidak terlalu tengah */
+  }
+
+  .pendidikanCard {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 15px;
+    padding: 5px 10px;
+    align-items: flex-start !important;
+  }
+
+  .pendidikanCard::before {
+    min-width: 14px;
+    height: 14px;
+    margin-top: 6px;
+  }
+
+  .pendidikanCard > div {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    padding-left: 15px;
+  }
+
+  .pendidikanCard .pendidikanTitle {
+    font-size: 19px;
+  }
+
+  .pendidikanCard .pendidikanDescription {
+    font-size: 14px;
+  }
+  
+  .featuresGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .brandsGridPlaceholder {
+    flex-wrap: wrap;
+  }
+}
+
+/* Mobile Portrait / HP Kecil (Max 480px) */
+@media (max-width: 480px) {
+  .featuresGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .biografiCard {
+    padding: 35px 20px;
+    border-radius: 20px;
+  }
+
+  .biografiCard::after {
+    border-radius: 20px;
+  }
+
+  .biografiTitle {
+    font-size: 19px;
+  }
+
+  .biografiDescription {
+    font-size: 14px;
+  }
+
+  .organisasiCard {
+    padding: 30px 25px;
+  }
+  
+  .organisasiTitle {
+    font-size: 18px;
+  }
+  
+  .organisasiDescription {
+    font-size: 14px;
+  }
+  
+  .organisasiCard::after {
+    display: none;
+  }
+
+  .riwayatGrid {
+    gap: 35px;
+  }
+}
