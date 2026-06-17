@@ -1,0 +1,327 @@
+
+.pageWrapper {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #cbd5e1; /* Slate 300: Teks terang untuk background gelap */
+  margin: 0;
+  padding: 0;
+  background-color: #0f172a; /* Slate 900: Background dasar gelap total */
+}
+
+/* --- 1. TOP BANNER PROMO --- */
+.promoBanner {
+  background: linear-gradient(90deg, #1e293b, #0f172a); 
+  color: #10b981; /* Aksen hijau sukses */
+  text-align: center;
+  padding: 10px 20px;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.promoBanner p {
+  margin: 0;
+}
+
+/* --- 2. NAVIGATION BAR --- */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 40px;
+  background-color: #0f172a;
+  border-bottom: 1px solid #1e293b; 
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #ffffff; 
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.centerContainer {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%); 
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.dashboardWrapper {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+  background-color: #0f172a; /* Diubah ke Slate Gelap Total */
+  color: #cbd5e1; /* Teks Utama Terang */
+  padding: 2rem;
+  box-sizing: border-box;
+  animation: fadeInPage 0.5s ease-out;
+}
+
+/* ==========================================================================
+   2. HEADER DASHBOARD
+   ========================================================================== */
+.dashboardHeader {
+  max-width: 1200px;
+  margin: 0 auto 2rem auto;
+  text-align: left;
+}
+
+.mainTitle {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #ffffff; /* Judul Putih Bersih */
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.025em;
+}
+
+.subTitle {
+  font-size: 0.95rem;
+  color: #94a3b8; /* Sub-judul Slate Muted */
+  margin: 0;
+}
+
+.subTitle strong {
+  color: #10b981; /* Sorotan Teks dialihkan ke Hijau Sukses */
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   3. TATA LETAK GRID (RESPONSIF)
+   ========================================================================== */
+.dashboardGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (min-width: 1024px) {
+  .dashboardGrid {
+    grid-template-columns: 4.5fr 7.5fr;
+  }
+}
+
+/* ==========================================================================
+   4. PANEL KARTU (CARD PANEL)
+   ========================================================================== */
+.cardPanel {
+  background-color: #1e293b; /* Diubah dari putih ke Navy Slate Card */
+  padding: 1.75rem;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-sizing: border-box;
+}
+
+.panelTitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 1.5rem 0;
+  border-bottom: 2px solid #0f172a; /* Pembatas gelap */
+  padding-bottom: 0.75rem;
+  text-align: left;
+}
+
+/* ==========================================================================
+   5. TOMBOL PEMILIHAN TEMA (THEME SWITCHER)
+   ========================================================================== */
+.btnGroupTema {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.btnTema {
+  padding: 0.75rem 1rem;
+  background-color: #0f172a; /* Tombol default dalam kondisi gelap */
+  color: #94a3b8;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btnTema:hover {
+  background-color: #243146;
+  color: #ffffff;
+  border-color: #475569;
+}
+
+/* Logika State Aktif Masing-Masing Warna */
+.btnTemaAktif {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  color: white !important;
+}
+
+/* Penyesuaian skema warna aktif agar tetap terbaca kontras di dashboard gelap */
+.btnTemaAktif:nth-child(1) { background-color:rgb(0, 170, 150); border-color:rgb(0, 170, 150); } 
+.btnTemaAktif:nth-child(2) { background-color: rgb(255, 180, 0); border-color:rgb(255, 180, 0); } 
+.btnTemaAktif:nth-child(3) { background-color: rgb(0, 210, 255); border-color: rgb(0, 210, 255); } 
+.btnTemaAktif:nth-child(4) { background-color: rgb(115, 85, 155); border-color:rgb(115, 85, 155); } 
+.btnTemaAktif:nth-child(5) { background-color: rgb(166, 16, 16); border-color: rgb(166, 16, 16); } 
+.btnTemaAktif:nth-child(6) { background-color: rgb(14, 165, 233); border-color: rgb(14, 165, 233); } 
+
+/* ==========================================================================
+   6. STRUKTUR FORMULIR INPUT
+   ========================================================================== */
+.formGroupStack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.inputWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: left;
+}
+
+.inputLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.05em;
+}
+
+.textInput {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  font-size: 0.95rem;
+  color: #ffffff;
+  background-color: #0f172a; /* Latar input dalam pekat */
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.textInput:focus {
+  border-color: #10b981; /* Fokus beralih ke warna aksen Hijau Sukses */
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+  background-color: #0f172a;
+}
+
+/* ==========================================================================
+   7. TOMBOL SIMPAN UTAMA
+   ========================================================================== */
+.btnSimpan {
+  width: 100%;
+  padding: 0.875rem;
+  background: linear-gradient(90deg, #10b981, #059669); /* Gradasi hijau premium */
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.btnSimpan:hover:not(:disabled) {
+  filter: brightness(1.1);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.btnSimpan:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btnSimpan:disabled {
+  background: #334155;
+  color: #64748b;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ==========================================================================
+   8. CONTAINER LIVE PREVIEW (MOCKUP MONITOR)
+   ========================================================================== */
+.previewPanel {
+  display: flex;
+  flex-direction: column;
+}
+
+.previewScreen {
+  flex: 1;
+  min-height: 500px;
+  max-height: 700px;
+  border-radius: 12px;
+  border: 1px solid #334155;
+  background-color: #0f172a; /* Preview default dimulai dengan warna dasar gelap */
+  overflow-y: auto;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Penyesuaian tema mockup pratinjau interior (Gelap adaptif) */
+.previewScreen.model_1 { background-color:rgb(0, 170, 150); border-color:rgb(0, 170, 150);  }
+.previewScreen.model_2 { background-color: rgb(255, 180, 0); border-color:rgb(255, 180, 0) }
+.previewScreen.model_3 { background-color: rgb(0, 210, 255); border-color: rgb(0, 210, 255); }
+.previewScreen.model_4 { background-color: rgb(115, 85, 155); border-color:rgb(115, 85, 155); }
+.previewScreen.model_5 { background-color: rgb(166, 16, 16); border-color: rgb(166, 16, 16);}
+.previewScreen.model_6 { background-color: rgb(14, 165, 233); border-color: rgb(14, 165, 233); }
+
+
+/* Kustomisasi scrollbar internal jendela pratinjau */
+.previewScreen::-webkit-scrollbar {
+  width: 6px;
+}
+.previewScreen::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+.previewScreen::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 3px;
+}
+.previewScreen::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* ==========================================================================
+   9. BOX ERROR / ERROR HANDLING
+   ========================================================================== */
+.errorBox {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  text-align: center;
+}
+
+.errorTitle {
+  color: #fca5a5;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================================================
+   10. KEYFRAME ANIMASI INTERAKTIF
+   ========================================================================== */
+@keyframes fadeInPage {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,116 @@
+/* ==========================================================================
+   ─── LAYOUT UTAMA & CONTAINER (DEEP SLATE NAVY) ───
+   ========================================================================== */
+.container {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%); /* Menggunakan radial gradient agar konsisten */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 20px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #1e293b; /* Tetap menggunakan Navy Slate Box */
+  padding: 40px 32px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05); /* Border tipis premium */
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+/* ─── SPINNER INTERAKTIF & ICON ─── */
+.iconWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+/* Lingkaran Spinner Luar */
+.spinner {
+  width: 72px;
+  height: 72px;
+  border: 4px solid #0f172a; /* Menggunakan warna dasar navbar agar lebih kontras */
+  border-top: 4px solid #10b981; /* Diubah ke Hijau Sukses Premium */
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
+}
+
+/* Icon Panah di Tengah */
+.syncIcon {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  color: #10b981; /* Diubah ke Hijau Sukses Premium */
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ─── TYPOGRAPHY ─── */
+.title {
+  color: #f8fafc;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  color: #94a3b8;
+  font-size: 0.925rem;
+  line-height: 1.5;
+  margin: 0 0 32px 0;
+}
+
+/* ─── PROGRESS BAR (THEME ALIGNED) ─── */
+/* Progress Bar Track */
+.progressContainer {
+  width: 100%;
+  height: 8px;
+  background-color: #0f172a; /* Menggunakan track yang lebih gelap agar fill hijau menyala */
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+/* Progress Bar Fill */
+.progressBar {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #34d399); /* Gradasi Emerald ke Mint Green */
+  border-radius: 9999px;
+  transition: width 0.1s ease-out;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5); /* Efek glow lembut pada isi progress */
+}
+
+.percentage {
+  color: #10b981; /* Indikator persen diubah ke Hijau Sukses */
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   ─── ANIMATIONS ───
+   ========================================================================== */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}

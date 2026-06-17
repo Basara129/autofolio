@@ -1,0 +1,316 @@
+/* ==========================================================================
+   0. KEYFRAMES ANIMATION (Efek Pilar Cahaya & Energi Magis)
+   ========================================================================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes growWidth {
+  from { width: 0%; }
+}
+
+/* UBAH: Pendaran energi pilar cahaya hangat di sekitar batuan */
+@keyframes oceanAbyssGlow {
+  0%, 100% { 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); 
+    border-color: rgba(255, 110, 20, 0.15);
+  }
+  50% { 
+    box-shadow: 0 10px 35px rgba(255, 160, 0, 0.25); 
+    border-color: rgba(255, 210, 50, 0.4); /* Pendaran kuning pusat cahaya */
+  }
+}
+
+/* Animasi mengapung tenang seperti batuan melayang di udara */
+@keyframes underwaterFloat {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+/* UBAH: Denyut pancaran energi vertikal untuk text heading */
+@keyframes oceanPulse {
+  0%, 100% { filter: drop-shadow(0 0 2px rgba(255, 110, 20, 0.6)); }
+  50% { filter: drop-shadow(0 0 8px rgba(255, 180, 0, 1)); }
+}
+
+
+/* ==========================================================================
+   1. GLOBAL & BODY WRAPPER
+   ========================================================================== */
+.body {
+  margin: 0;
+  padding: 0;
+  /* UBAH: Latar belakang abu-abu batuan sangat gelap dengan pancaran jingga dari tengah atas */
+  background-color: #140f12; /* Rock Silhouette Black */
+  background-image: radial-gradient(circle at 50% 0%, #3a1c0d 0%, #140f12 100%); 
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+  color: #f8fafc; 
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   2. CONTAINERS & LAYOUT GRID
+   ========================================================================== */
+.pageContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+}
+
+/* Responsive Grid Desktop (min-width: 768px) */
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+/* Arus masuk kolom bertahap */
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+  opacity: 0; 
+  animation-fill-mode: forwards;
+}
+
+/* ==========================================================================
+   3. CARD COMPONENT (Floating Magma Pod Style)
+   ========================================================================== */
+.card {
+  /* UBAH: Latar kartu dari cokelat/abu batuan siluet gelap berkabut */
+  background: linear-gradient(145deg, #1f1410 0%, #120a08 100%);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 110, 20, 0.15); /* Border Jingga Transparan */
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.5s ease;
+  animation: oceanAbyssGlow 6s ease-in-out infinite;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  /* UBAH: Kuning menyala terang saat di-hover */
+  border-color: rgba(255, 210, 50, 0.6); 
+  box-shadow: 0 20px 40px rgba(255, 110, 20, 0.15);
+}
+
+.container {
+  padding: 20px;
+}
+
+/* ==========================================================================
+   4. DISPLAY CONTAINER (Pusat Pancaran Pilar)
+   ========================================================================== */
+.displayContainer {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  /* UBAH: Efek pijaran pilar energi magis dari pusat */
+  background: radial-gradient(circle at center, #59250b 0%, #120a08 100%);
+  overflow: hidden;
+}
+
+.avatarWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  filter: saturate(90%) brightness(95%) contrast(105%);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Efek terangkat perlahan saat di-hover */
+.card:hover .avatarWrapper {
+  transform: scale(1.05) translateY(2px);
+}
+
+.nameTag {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  background: linear-gradient(to top, #140f12 100%, transparent 0%);
+  z-index: 2;
+}
+
+.nameTag h2 {
+  margin: 0;
+  color: #ffffff; 
+  font-size: 28px;
+  font-weight: 700;
+  /* UBAH: Efek bayangan teks kuning hangat berkilau */
+  text-shadow: 0 2px 12px rgba(255, 210, 50, 0.6);
+}
+
+/* ==========================================================================
+   5. ROW INFO & UTILITIES
+   ========================================================================== */
+.infoRow {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 16px;
+  font-size: 15px;
+}
+
+/* Ikon mengapung lembut saat baris di-hover */
+.infoRow:hover .emojiIcon {
+  animation: underwaterFloat 1.6s ease-in-out infinite;
+}
+
+.emojiIcon {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+  display: inline-block;
+}
+
+.textGrey {
+  color: #94a3b8; /* Kelabu batuan */
+}
+
+.textTeal {
+  /* UBAH: Warna teks aksen utama menggunakan Kuning Neon Terang */
+  color: #ffd232 !important; 
+}
+
+.sectionHeading {
+  color: #ffffff;
+  font-size: 26px;
+  animation: oceanPulse 4s ease-in-out infinite;
+}
+
+.opacity {
+  opacity: 0.85;
+  color: #ffffff;
+}
+
+.padding16 {
+  padding: 16px 0;
+  margin: 0;
+}
+
+/* UBAH: Badge Aktif dengan gradasi Kuning Matahari ke Jingga Pekat */
+.tag {
+  background: linear-gradient(135deg, #ffc800 0%, #ff5500 100%);
+  color: #140f12;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(255, 110, 20, 0.4);
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.tag:hover {
+  transform: scale(1.05) translateY(-1px);
+}
+
+
+/* ==========================================================================
+   6. PROGRESS BARS (Pilar Cahaya & Gradasi Magma)
+   ========================================================================== */
+.progressBg {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 110, 20, 0.1);
+  border-radius: 20px;
+  height: 16px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+/* UBAH: Bar skill diubah menjadi representasi pilar cahaya (Merah Magma -> Jingga -> Kuning Pusat) */
+.progressBar {
+  background: linear-gradient(90deg, #b83206 0%, #ff6a00 50%, #ffd232 100%);
+  height: 100%;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #140f12;
+  font-size: 10px;
+  font-weight: bold;
+  animation: growWidth 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: left;
+}
+
+/* UBAH: Bar kedua menggunakan warna gradasi jingga tembaga hangat */
+.langBar {
+  background: linear-gradient(90deg, #ca742c 0%, #61371a 100%);
+  height: 100%;
+  border-radius: 20px;
+  box-shadow: 0 0 8px rgba(255, 110, 20, 0.3);
+  animation: growWidth 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: left;
+}
+
+/* ==========================================================================
+   7. FOOTER & SOCIALS (Magical Fantasy Ruins)
+   ========================================================================== */
+.footer {
+  background-color: #0b080a;
+  padding: 40px 20px;
+  text-align: center;
+  margin-top: 50px;
+  border-top: 1px solid rgba(255, 110, 20, 0.15);
+  font-size: 14px;
+  color: #475569;
+}
+
+.footer a {
+  /* UBAH: Menggunakan warna jingga menyala */
+  color: #ff6a00;
+  text-decoration: none;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.footer a:hover {
+  color: #ffffff;
+  text-shadow: 0 0 10px #ffaa00;
+}
+
+.socialIcons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.socialIcons a {
+  font-size: 24px;
+  text-decoration: none;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
+  display: inline-block;
+}
+
+/* Efek mengapung membal ke atas saat ikon disorot */
+.socialIcons a:hover {
+  transform: scale(1.25) translateY(-6px);
+  /* UBAH: Efek bayangan luar berwarna pendaran kuning neon */
+  filter: drop-shadow(0 4px 12px rgba(255, 210, 50, 0.6));
+}

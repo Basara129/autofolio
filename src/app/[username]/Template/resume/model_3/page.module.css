@@ -1,0 +1,308 @@
+/* ==========================================================================
+   0. KEYFRAMES ANIMATION (Efek Kedalaman Laut)
+   ========================================================================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes growWidth {
+  from { width: 0%; }
+}
+
+/* Animasi arus laut / pendaran biota laut yang tenang */
+@keyframes oceanAbyssGlow {
+  0%, 100% { 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); 
+    border-color: rgba(0, 242, 254, 0.15);
+  }
+  50% { 
+    box-shadow: 0 10px 35px rgba(0, 242, 254, 0.25); 
+    border-color: rgba(0, 242, 254, 0.4); /* Pendaran cyan fofor */
+  }
+}
+
+/* Animasi mengapung tenang seperti di bawah air */
+@keyframes underwaterFloat {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Animasi ombak/arus pelan untuk text heading */
+@keyframes oceanPulse {
+  0%, 100% { filter: drop-shadow(0 0 2px rgba(0, 242, 254, 0.6)); }
+  50% { filter: drop-shadow(0 0 8px rgba(79, 172, 254, 1)); }
+}
+
+
+/* ==========================================================================
+   1. GLOBAL & BODY WRAPPER
+   ========================================================================== */
+.body {
+  margin: 0;
+  padding: 0;
+  background-color: #030712; /* Deep Trench Black */
+  background-image: radial-gradient(circle at 50% 0%, #0c1e36 0%, #030712 100%); /* Efek cahaya matahari dari permukaan */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+  color: #f1f5f9; /* Seafoam/Bone White */
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   2. CONTAINERS & LAYOUT GRID
+   ========================================================================== */
+.pageContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+}
+
+/* Responsive Grid Desktop (min-width: 768px) */
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+/* Arus masuk kolom bertahap */
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+  opacity: 0; 
+  animation-fill-mode: forwards;
+}
+
+/* ==========================================================================
+   3. CARD COMPONENT (Submarine / Trench Pod Style)
+   ========================================================================== */
+.card {
+  background: linear-gradient(145deg, #07111e 0%, #030914 100%);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 242, 254, 0.15); /* Border Cyan Transparan */
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.5s ease;
+  animation: oceanAbyssGlow 6s ease-in-out infinite;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(0, 242, 254, 0.6); /* Cyan lebih menyala saat di-hover */
+  box-shadow: 0 20px 40px rgba(0, 242, 254, 0.15);
+}
+
+.container {
+  padding: 20px;
+}
+
+/* ==========================================================================
+   4. DISPLAY CONTAINER (Kedalaman Abyss)
+   ========================================================================== */
+.displayContainer {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  background: radial-gradient(circle at center, #0a2540 0%, #030914 100%);
+  overflow: hidden;
+}
+
+.avatarWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  filter: saturate(85%) brightness(90%) contrast(105%);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Efek tenggelam perlahan saat di-hover */
+.card:hover .avatarWrapper {
+  transform: scale(1.05) translateY(2px);
+}
+
+.nameTag {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  background: linear-gradient(to top, #030712 100%, transparent 0%);
+  z-index: 2;
+}
+
+.nameTag h2 {
+  margin: 0;
+  color: #ffffff; 
+  font-size: 28px;
+  font-weight: 700;
+  text-shadow: 0 2px 12px rgba(0, 242, 254, 0.6);
+}
+
+/* ==========================================================================
+   5. ROW INFO & UTILITIES
+   ========================================================================== */
+.infoRow {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 16px;
+  font-size: 15px;
+}
+
+/* Ikon mengapung lembut di air saat baris di-hover */
+.infoRow:hover .emojiIcon {
+  animation: underwaterFloat 1.6s ease-in-out infinite;
+}
+
+.emojiIcon {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+  display: inline-block;
+}
+
+.textGrey {
+  color: #94a3b8; /* Kelabu samudera */
+}
+
+.textTeal {
+  color: #00f2fe !important; /* Neon Bioluminescent Cyan */
+}
+
+.sectionHeading {
+  color: #ffffff;
+  font-size: 26px;
+  animation: oceanPulse 4s ease-in-out infinite;
+}
+
+.opacity {
+  opacity: 0.85;
+  color: #ffffff;
+}
+
+.padding16 {
+  padding: 16px 0;
+  margin: 0;
+}
+
+/* Badge Arus Aktif */
+.tag {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: #030712;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.tag:hover {
+  transform: scale(1.05) translateY(-1px);
+}
+
+
+/* ==========================================================================
+   6. PROGRESS BARS (Arus Air & Terumbu Karang)
+   ========================================================================== */
+.progressBg {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 242, 254, 0.1);
+  border-radius: 20px;
+  height: 16px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+/* Bar skill diubah menjadi arus air neon bercahaya */
+.progressBar {
+  background: linear-gradient(90deg, #0052d4 0%, #4facfe 50%, #00f2fe 100%);
+  height: 100%;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #030712;
+  font-size: 10px;
+  font-weight: bold;
+  animation: growWidth 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: left;
+}
+
+/* Bar bahasa menggunakan warna putih mutiara bawah laut */
+.langBar {
+  background: linear-gradient(90deg, #3a7bd5 0%, #3a6073 100%);
+  height: 100%;
+  border-radius: 20px;
+  box-shadow: 0 0 8px rgba(79, 172, 254, 0.3);
+  animation: growWidth 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: left;
+}
+
+/* ==========================================================================
+   7. FOOTER & SOCIALS (Atlantis Ruins)
+   ========================================================================== */
+.footer {
+  background-color: #02040a;
+  padding: 40px 20px;
+  text-align: center;
+  margin-top: 50px;
+  border-top: 1px solid rgba(0, 242, 254, 0.15);
+  font-size: 14px;
+  color: #475569;
+}
+
+.footer a {
+  color: #00f2fe;
+  text-decoration: none;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.footer a:hover {
+  color: #ffffff;
+  text-shadow: 0 0 10px #00f2fe;
+}
+
+.socialIcons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.socialIcons a {
+  font-size: 24px;
+  text-decoration: none;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
+  display: inline-block;
+}
+
+/* Efek mengapung membal ke atas saat ikon disorot */
+.socialIcons a:hover {
+  transform: scale(1.25) translateY(-6px);
+  filter: drop-shadow(0 4px 12px rgba(0, 242, 254, 0.6));
+}

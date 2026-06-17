@@ -4,13 +4,14 @@ import React, { useState, Suspense } from 'react';
 import styles from './page.module.css';
 import { useSearchParams } from 'next/navigation';
 
-// 1. BUAT KOMPONEN KONTEN FORM UTAMA
 function ProfilFormContent() {
   const searchParams = useSearchParams();
-  const orderId = searchParams.get('order_id'); // Menangkap ID pesanan dari Midtrans
+  const orderId = searchParams.get('order_id');
 
-  // State Alur Alur Formulir (false = tampilkan form, true = tampilkan halaman sukses website)
+  // State Alur Utama Form
+  const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
+  const [kodeUnik, setKodeUnik] = useState('');
 
   // State Utama Form
   const [formData, setFormData] = useState({
@@ -27,15 +28,13 @@ function ProfilFormContent() {
     linkedin: ''
   });
 
-  // State Khusus List Dinamis (Array)
-  const [pendidikan, setPendidikan] = useState(['']);
-  const [pengalaman, setPengalaman] = useState(['']);
-  const [keahlian, setKeahlian] = useState(['']);
-
-  // State Tambahan untuk Pesan Peringatan Username
+  // State List Dinamis
+  const [pendidikan, setPendidikan] = useState([{ nama_institusi: '', gelar: '', tahun_masuk: '', tahun_lulus: '' }]);
+  const [pengalaman, setPengalaman] = useState([{ perusahaan: '', posisi: '', deskripsi_pekerjaan: '', tanggal_mulai: '', tanggal_selesai: '' }]);
+  const [keahlian, setKeahlian] = useState([{ nama_keahlian: '', tingkat_kemahiran: 'Intermediate' }]);
   const [usernameError, setUsernameError] = useState('');
 
-  // Handler Perubahan Input Teks Utama
+  // Handler Perubahan Input Utama
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -51,46 +50,53 @@ function ProfilFormContent() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handler Upload Foto
   const handleFotoChange = (e) => {
     setFormData((prev) => ({ ...prev, foto: e.target.files[0] }));
   };
 
-  // LOGIKA MANIPULASI INPUT DINAMIS
-  const handleDinamisChange = (index, value, state, setState) => {
+  const handleDinamisChange = (index, field, value, state, setState) => {
     const newArr = [...state];
-    newArr[index] = value;
+    newArr[index] = { ...newArr[index], [field]: value };
     setState(newArr);
   };
 
-  const tambahInput = (state, setState, max = 10) => {
+  const tambahInput = (state, setState, templateObj, max = 10) => {
     if (state.length < max) {
-      setState([...state, '']);
+      setState([...state, { ...templateObj }]);
     }
   };
 
-  const hapusInput = (index, state, setState) => {
+  const hapusInput = (index, state, setState, templateObj) => {
     const newArr = state.filter((_, i) => i !== index);
-    setState(newArr.length === 0 ? [''] : newArr);
+    setState(newArr.length === 0 ? [{ ...templateObj }] : newArr);
   };
 
-  // FUNGSI SUBMIT INTEGRASI CLOUDINARY & SUPABASE
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleNextStep = () => {
     if (usernameError || !formData.username.trim()) {
       alert('Silakan perbaiki username Anda terlebih dahulu sesuai ketentuan!');
       return;
     }
-
+    if (!formData.nama_lengkap.trim() || !formData.profesi.trim() || !formData.biografi.trim()) {
+      alert('Silakan isi semua bidang yang wajib (tanda bintang/required) di halaman ini!');
+      return;
+    }
     if (!formData.foto) {
       alert('Silakan upload foto diri Anda terlebih dahulu!');
       return;
     }
+    setStep(2);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePrevStep = () => {
+    setStep(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
     const dataToSend = new FormData();
-
-    // Memasukkan data teks biasa & Order ID pelacak dari Midtrans
     dataToSend.append('order_id', orderId || ''); 
     dataToSend.append('username', formData.username);
     dataToSend.append('nama_lengkap', formData.nama_lengkap);
@@ -102,14 +108,11 @@ function ProfilFormContent() {
     dataToSend.append('tiktok', formData.tiktok);
     dataToSend.append('X', formData.X);
     dataToSend.append('linkedin', formData.linkedin);
-
-    // Memasukkan file gambar untuk Cloudinary
     dataToSend.append('foto_file', formData.foto);
 
-    // Memformat Array bersih ke format JSON String
-    const pendidikanFilter = pendidikan.filter(item => item.trim() !== '');
-    const pengalamanFilter = pengalaman.filter(item => item.trim() !== '');
-    const keahlianFilter = keahlian.filter(item => item.trim() !== '');
+    const pendidikanFilter = pendidikan.filter(item => item.nama_institusi.trim() !== '');
+    const pengalamanFilter = pengalaman.filter(item => item.perusahaan.trim() !== '');
+    const keahlianFilter = keahlian.filter(item => item.nama_keahlian.trim() !== '');
 
     dataToSend.append('riwayat_pendidikan', JSON.stringify(pendidikanFilter));
     dataToSend.append('pengalaman', JSON.stringify(pengalamanFilter));
@@ -125,6 +128,11 @@ function ProfilFormContent() {
 
       if (hasil.success) {
         alert('Profil Anda berhasil disimpan!');
+        if (hasil.kode_unik) {
+          setKodeUnik(hasil.kode_unik);
+        } else if (hasil.data && hasil.data.kode_unik) {
+          setKodeUnik(hasil.data.kode_unik);
+        }
         setSubmitted(true);
       } else {
         alert('Gagal dari Server: ' + hasil.error); 
@@ -137,168 +145,217 @@ function ProfilFormContent() {
 
   return (
     <>
-      {/* JIKA FORMULIR BELUM DIKIRIM (TAMPILKAN FORMULIR SEPERTI BIASA) */}
       {!submitted ? (
         <>
           <h1 className={styles.title}>
-            Isi <span className={styles.purpleText}>Profil Diri</span>
+            Isi <span className={styles.blueText}>Profil Diri</span>
           </h1>
           
           {orderId && (
-            <p style={{ textAlign: 'center', fontSize: '14px', color: '#666', marginTop: '-10px', marginBottom: '20px' }}>
+            <p className={styles.orderBadge}>
               Pembayaran Terkonfirmasi (ID: {orderId})
             </p>
           )}
 
+          {/* Progress Indicator */}
+          <div className={styles.stepIndicator}>
+            <span className={`${styles.stepBadge} ${step === 1 ? styles.stepActive : ''}`}>1. Informasi Dasar</span>
+            <div className={styles.stepLine}></div>
+            <span className={`${styles.stepBadge} ${step === 2 ? styles.stepActive : ''}`}>2. Riwayat & Sosial</span>
+          </div>
+
           <form onSubmit={handleSubmit} className={styles.formContainer}>
-            {/* Kolom Username */}
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Username (tanpa spasi & simbol)</label>
-              <input 
-                type="text" 
-                name="username" 
-                value={formData.username} 
-                onChange={handleChange} 
-                className={`${styles.input} ${usernameError ? styles.inputError : ''}`} 
-                placeholder="Contoh: budisetya_99"
-                required 
-              />
-              {usernameError && (
-                <span style={{ color: '#ff4d4d', fontSize: '13px', marginTop: '6px', display: 'block' }}>
-                  ⚠️ {usernameError}
-                </span>
-              )}
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Nama Lengkap</label>
-              <input type="text" name="nama_lengkap" value={formData.nama_lengkap} onChange={handleChange} className={styles.input} required />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Profesi</label>
-              <input type="text" name="profesi" value={formData.profesi} onChange={handleChange} placeholder="Contoh: Frontend Developer" className={styles.input} required />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Moto</label>
-              <input type="text" name="moto" value={formData.moto} onChange={handleChange} placeholder="Slogan hidup Anda..." className={styles.input} />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Pilih Model Desain Website</label>
-              <select 
-                name="design" 
-                value={formData.design} 
-                onChange={handleChange} 
-                className={styles.input}
-                required
-              >
-                <option value="model_1">Template 1: Minimalis Modern (Light Mode)</option>
-                <option value="model_2">Template 2: Kreatif Profesional (Dark Mode)</option>
-                <option value="model_3">Template 3: Eksekutif Elegan (Premium)</option>
-              </select>
-            </div>
-
-            {/* 1. Upload Foto Diri */}
-            <div className={styles.formGroup}>
-              <label className={styles.label}>1. Upload Foto Diri</label>
-              <input type="file" accept="image/*" onChange={handleFotoChange} className={styles.fileInput} />
-            </div>
-
-            {/* 2. Biografi */}
-            <div className={styles.formGroup}>
-              <label className={styles.label}>2. Biografi</label>
-              <textarea name="biografi" value={formData.biografi} onChange={handleChange} placeholder="Ceritakan singkat tentang diri Anda..." className={styles.textarea} rows="4" required />
-            </div>
-
-            {/* 3. Riwayat Pendidikan */}
-            <div className={styles.formGroup}>
-              <div className={styles.flexHeader}>
-                <label className={styles.label}>3. Riwayat Pendidikan</label>
-                <button type="button" onClick={() => tambahInput(pendidikan, setPendidikan)} className={styles.addButton}>+ Tambah</button>
-              </div>
-              {pendidikan.map((item, index) => (
-                <div key={`pendidikan-${index}`} className={styles.dynamicInputGroup}>
-                  <input type="text" value={item} onChange={(e) => handleDinamisChange(index, e.target.value, pendidikan, setPendidikan)} placeholder={`Contoh: S1 Teknik Informatika - Universitas XYZ`} className={styles.input} required />
-                  <button type="button" onClick={() => hapusInput(index, pendidikan, setPendidikan)} className={styles.deleteButton}>Hapus</button>
+            
+            {/* ─── HALAMAN 1: INFORMASI DASAR ─── */}
+            {step === 1 && (
+              <div className={styles.stepFadeAnimation}>
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>Username (tanpa spasi & simbol) *</label>
+                  <input 
+                    type="text" 
+                    name="username" 
+                    value={formData.username} 
+                    onChange={handleChange} 
+                    className={`${styles.input} ${usernameError ? styles.inputError : ''}`} 
+                    placeholder="Contoh: budisetya_99"
+                    required 
+                  />
+                  {usernameError && (
+                    <span className={styles.errorText}>
+                      ⚠️ {usernameError}
+                    </span>
+                  )}
                 </div>
-              ))}
-            </div>
 
-            {/* 4. Pengalaman Kerja atau Organisasi */}
-            <div className={styles.formGroup}>
-              <div className={styles.flexHeader}>
-                <label className={styles.label}>4. Pengalaman Kerja / Organisasi (Maks. 3)</label>
-                {pengalaman.length < 3 && (
-                  <button type="button" onClick={() => tambahInput(pengalaman, setPengalaman, 3)} className={styles.addButton}>+ Tambah</button>
-                )}
-              </div>
-              {pengalaman.map((item, index) => (
-                <div key={`pengalaman-${index}`} className={styles.dynamicInputGroup}>
-                  <input type="text" value={item} onChange={(e) => handleDinamisChange(index, e.target.value, pengalaman, setPengalaman)} placeholder={`Pengalaman ${index + 1}`} className={styles.input} required />
-                  <button type="button" onClick={() => hapusInput(index, pengalaman, setPengalaman)} className={styles.deleteButton}>Hapus</button>
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>Nama Lengkap *</label>
+                  <input type="text" name="nama_lengkap" value={formData.nama_lengkap} onChange={handleChange} className={styles.input} required />
                 </div>
-              ))}
-            </div>
 
-            {/* 5. Keahlian */}
-            <div className={styles.formGroup}>
-              <div className={styles.flexHeader}>
-                <label className={styles.label}>5. Keahlian</label>
-                <button type="button" onClick={() => tambahInput(keahlian, setKeahlian)} className={styles.addButton}>+ Tambah</button>
-              </div>
-              {keahlian.map((item, index) => (
-                <div key={`keahlian-${index}`} className={styles.dynamicInputGroup}>
-                  <input type="text" value={item} onChange={(e) => handleDinamisChange(index, e.target.value, keahlian, setKeahlian)} placeholder={`Contoh: React / Node.js / Figma`} className={styles.input} required />
-                  <button type="button" onClick={() => hapusInput(index, keahlian, setKeahlian)} className={styles.deleteButton}>Hapus</button>
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>Profesi *</label>
+                  <input type="text" name="profesi" value={formData.profesi} onChange={handleChange} placeholder="Contoh: Frontend Developer" className={styles.input} required />
                 </div>
-              ))}
-            </div>
 
-            {/* 6. Kontak Media Sosial */}
-            <div className={styles.formGroup}>
-              <label className={styles.label}>6. Kontak Media Sosial</label>
-              <input type="text" name="instagram" value={formData.instagram} onChange={handleChange} placeholder="Username Instagram (cth: @budi)" className={styles.input} />
-              <input type="text" name="tiktok" value={formData.tiktok} onChange={handleChange} placeholder="Username TikTok" className={styles.input} style={{marginTop: '8px'}} />
-              <input type="text" name="X" value={formData.X} onChange={handleChange} placeholder="Username X (Twitter)" className={styles.input} style={{marginTop: '8px'}} />
-              <input type="text" name="linkedin" value={formData.linkedin} onChange={handleChange} placeholder="Link LinkedIn" className={styles.input} style={{marginTop: '8px'}} />
-            </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>Moto</label>
+                  <input type="text" name="moto" value={formData.moto} onChange={handleChange} placeholder="Slogan hidup Anda..." className={styles.input} />
+                </div>
 
-            <button type="submit" className={styles.submitButton}>Simpan & Bangun Website</button>
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>Pilih Model Desain Website *</label>
+                  <select name="design" value={formData.design} onChange={handleChange} className={styles.input} required>
+                    <option value="model_1">Template 1: Minimalis Modern (Light Mode)</option>
+                    <option value="model_2">Template 2: Kreatif Profesional (Dark Mode)</option>
+                    <option value="model_3">Template 3: Eksekutif Elegan (Premium)</option>
+                  </select>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>Upload Foto Diri *</label>
+                  <input type="file" accept="image/*" onChange={handleFotoChange} className={styles.fileInput} />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>Biografi Singkat *</label>
+                  <textarea name="biografi" value={formData.biografi} onChange={handleChange} placeholder="Ceritakan singkat tentang diri Anda..." className={styles.textarea} rows="4" required />
+                </div>
+
+                <button type="button" onClick={handleNextStep} className={styles.submitButton}>
+                  Lanjut ke Halaman 2 →
+                </button>
+              </div>
+            )}
+
+            {/* ─── HALAMAN 2: RIWAYAT & SOSIAL ─── */}
+            {step === 2 && (
+              <div className={styles.stepFadeAnimation}>
+                {/* Riwayat Pendidikan */}
+                <div className={styles.formGroup}>
+                  <div className={styles.flexHeader}>
+                    <label className={styles.label}>Riwayat Pendidikan</label>
+                    <button type="button" onClick={() => tambahInput(pendidikan, setPendidikan, { nama_institusi: '', gelar: '', tahun_masuk: '', tahun_lulus: '' })} className={styles.addButton}>+ Tambah</button>
+                  </div>
+                  {pendidikan.map((item, index) => (
+                    <div key={`pendidikan-${index}`} className={styles.dynamicContainerBlock}>
+                      <input type="text" value={item.nama_institusi} onChange={(e) => handleDinamisChange(index, 'nama_institusi', e.target.value, pendidikan, setPendidikan)} placeholder="Nama Sekolah / Universitas" className={styles.input} />
+                      <div className={styles.flexRowThree}>
+                        <input type="text" value={item.gelar} onChange={(e) => handleDinamisChange(index, 'gelar', e.target.value, pendidikan, setPendidikan)} placeholder="Gelar (Contoh: S.Kom / SMA)" className={styles.input} />
+                        <input type="number" value={item.tahun_masuk} onChange={(e) => handleDinamisChange(index, 'tahun_masuk', e.target.value, pendidikan, setPendidikan)} placeholder="Tahun Masuk" className={styles.input} />
+                        <input type="number" value={item.tahun_lulus} onChange={(e) => handleDinamisChange(index, 'tahun_lulus', e.target.value, pendidikan, setPendidikan)} placeholder="Tahun Lulus" className={styles.input} />
+                      </div>
+                      <button type="button" onClick={() => hapusInput(index, pendidikan, setPendidikan, { nama_institusi: '', gelar: '', tahun_masuk: '', tahun_lulus: '' })} className={styles.deleteButtonBlock}>Hapus Sekolah</button>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Pengalaman Kerja */}
+                <div className={styles.formGroup}>
+                  <div className={styles.flexHeader}>
+                    <label className={styles.label}>Pengalaman Kerja / Organisasi (Maks. 3)</label>
+                    {pengalaman.length < 3 && (
+                      <button type="button" onClick={() => tambahInput(pengalaman, setPengalaman, { perusahaan: '', posisi: '', deskripsi_pekerjaan: '', tanggal_mulai: '', tanggal_selesai: '' }, 3)} className={styles.addButton}>+ Tambah</button>
+                    )}
+                  </div>
+                  {pengalaman.map((item, index) => (
+                    <div key={`pengalaman-${index}`} className={styles.dynamicContainerBlock}>
+                      <div className={styles.flexRowTwo}>
+                        <input type="text" value={item.perusahaan} onChange={(e) => handleDinamisChange(index, 'perusahaan', e.target.value, pengalaman, setPengalaman)} placeholder="Nama Perusahaan / Organisasi" className={styles.input} />
+                        <input type="text" value={item.posisi} onChange={(e) => handleDinamisChange(index, 'posisi', e.target.value, pengalaman, setPengalaman)} placeholder="Posisi Jabatan" className={styles.input} />
+                      </div>
+                      <div className={styles.dateGroupContainer}>
+                        <span className={styles.dateLabel}>Mulai:</span>
+                        <input type="date" value={item.tanggal_mulai} onChange={(e) => handleDinamisChange(index, 'tanggal_mulai', e.target.value, pengalaman, setPengalaman)} className={styles.input} />
+                        <span className={styles.dateLabel}>Selesai:</span>
+                        <input type="date" value={item.tanggal_selesai} onChange={(e) => handleDinamisChange(index, 'tanggal_selesai', e.target.value, pengalaman, setPengalaman)} className={styles.input} />
+                      </div>
+                      <textarea value={item.deskripsi_pekerjaan} onChange={(e) => handleDinamisChange(index, 'deskripsi_pekerjaan', e.target.value, pengalaman, setPengalaman)} placeholder="Deskripsi singkat mengenai pencapaian atau tugas Anda di sini..." className={styles.textarea} rows="2" />
+                      <button type="button" onClick={() => hapusInput(index, pengalaman, setPengalaman, { perusahaan: '', posisi: '', deskripsi_pekerjaan: '', tanggal_mulai: '', tanggal_selesai: '' })} className={styles.deleteButtonBlock}>Hapus Pengalaman</button>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Keahlian */}
+                <div className={styles.formGroup}>
+                  <div className={styles.flexHeader}>
+                    <label className={styles.label}>Keahlian</label>
+                    <button type="button" onClick={() => tambahInput(keahlian, setKeahlian, { nama_keahlian: '', tingkat_kemahiran: 'Intermediate' })} className={styles.addButton}>+ Tambah</button>
+                  </div>
+                  {keahlian.map((item, index) => (
+                    <div key={`keahlian-${index}`} className={styles.flexRowInline}>
+                      <input type="text" value={item.nama_keahlian} onChange={(e) => handleDinamisChange(index, 'nama_keahlian', e.target.value, keahlian, setKeahlian)} placeholder="Contoh: React / Figma / Copywriting" className={styles.input} />
+                      <select value={item.tingkat_kemahiran} onChange={(e) => handleDinamisChange(index, 'tingkat_kemahiran', e.target.value, keahlian, setKeahlian)} className={`${styles.input} ${styles.selectWidth}`}>
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                      </select>
+                      <button type="button" onClick={() => hapusInput(index, keahlian, setKeahlian, { nama_keahlian: '', tingkat_kemahiran: 'Intermediate' })} className={styles.deleteButtonInline}>Hapus</button>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Kontak Media Sosial */}
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>Kontak Media Sosial</label>
+                  <input type="text" name="instagram" value={formData.instagram} onChange={handleChange} placeholder="Username Instagram (cth: @budi)" className={styles.input} />
+                  <input type="text" name="tiktok" value={formData.tiktok} onChange={handleChange} placeholder="Username TikTok" className={`${styles.input} ${styles.marginTopSm}`} />
+                  <input type="text" name="X" value={formData.X} onChange={handleChange} placeholder="Username X (Twitter)" className={`${styles.input} ${styles.marginTopSm}`} />
+                  <input type="text" name="linkedin" value={formData.linkedin} onChange={handleChange} placeholder="Link LinkedIn" className={`${styles.input} ${styles.marginTopSm}`} />
+                </div>
+
+                {/* Tombol Aksi Halaman 2 */}
+                <div className={styles.buttonActionGroup}>
+                  <button type="button" onClick={handlePrevStep} className={styles.backButton}>
+                    ← Kembali
+                  </button>
+                  <button type="submit" className={styles.submitButtonFinal}>
+                    Simpan & Bangun Website 🚀
+                  </button>
+                </div>
+              </div>
+            )}
           </form>
         </>
       ) : (
-        /* HALAMAN AKHIR SUKSES */
-        <div style={{ border: '1px solid #10b981', padding: '40px 20px', borderRadius: '12px', textAlign: 'center', background: '#fff', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
-          <h2 style={{ color: '#10b981', marginBottom: '10px' }}>Website Anda Siap! 🚀</h2>
-          <p>Selamat <strong>{formData.nama_lengkap}</strong>, susunan portofolio Anda telah aktif menggunakan konfigurasi <strong>{formData.design}</strong>.</p>
-          <p style={{ fontSize: '14px', color: '#666' }}>Akses tautan personal Anda di bawah ini:</p>
+        /* HALAMAN SUKSES */
+        <div className={styles.successWrapper}>
+          <h2 className={styles.successTitle}>Website Anda Siap! 🚀</h2>
+          <p className={styles.successDescription}>
+            Selamat <strong>{formData.nama_lengkap}</strong>, susunan portofolio Anda telah aktif menggunakan konfigurasi <strong>{formData.design}</strong>.
+          </p>
           
-          <div style={{ background: '#f3f4f6', padding: '15px', borderRadius: '8px', margin: '20px 0', border: '1px inherit' }}>
+          {kodeUnik && (
+            <div className={styles.uniqueCodeBox}>
+              <p className={styles.uniqueCodeLabel}>Kode Unik Anda:</p>
+              <code className={styles.uniqueCodeDisplay}>{kodeUnik}</code>
+            </div>
+          )}
+
+          <p className={styles.accessLinkLabel}>Akses tautan personal Anda di bawah ini:</p>
+          
+          <div className={styles.linkContainerBox}>
             <a 
               href={`https://pemisahan.vercel.app/${formData.username}`} 
               target="_blank" 
               rel="noreferrer" 
-              style={{ color: '#0070f3', fontWeight: 'bold', textDecoration: 'none', wordBreak: 'break-all' }}
+              className={styles.portfolioLink}
             >
               autofolio.my.id/{formData.username}
             </a>
           </div>
-          <p style={{ fontSize: '12px', color: '#aaa' }}>Gunakan username ini untuk pengelolaan pembaruan data mendatang.</p>
+          <p className={styles.successFooterText}>Gunakan kode unik di atas untuk pengelolaan pembaruan data mendatang.</p>
         </div>
       )}
     </>
   );
 }
 
-// 2. EXPORT DEFAULT UTAMA DENGAN SUSPENSE BOUNDARY
 export default function ProfilForm() {
   return (
     <div className={styles.container}>
       <main className={styles.mainContent}>
         <Suspense fallback={
-          <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+          <div className={styles.loadingState}>
             <p>Memuat formulir...</p>
           </div>
         }>

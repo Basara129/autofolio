@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import styles from './page.module.css';
 
 export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
@@ -61,19 +62,70 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div style={{ padding: '40px', maxWidth: '500px', margin: '0 auto' }}>
-      <div style={{ border: '1px solid #ccc', padding: '20px', borderRadius: '8px' }}>
-        <h2>Halaman Pembelian</h2>
-        <p>Anda memilih paket: <strong>Website Instan Starter</strong></p>
-        <p>Total: <strong>Rp 150.000</strong></p>
-        <button 
-          onClick={handlePayment} 
-          disabled={loading}
-          style={{ padding: '10px 20px', background: '#0070f3', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
-        >
-          {loading ? 'Memproses...' : 'Bayar Sekarang'}
-        </button>
+    <>
+      {/* Container Utama (Deep Slate Navy background) */}
+      <div className={styles.container}>
+        
+        {/* Kartu Checkout Utama */}
+        <div className={styles.card}>
+          
+          {/* Header */}
+          <div className={styles.header}>
+            <h2 className={styles.title}>Halaman Pembelian</h2>
+            <p className={styles.subtitle}>
+              Selesaikan pembayaran untuk mengaktifkan website portofoliomu.
+            </p>
+          </div>
+
+          {/* Detail Item Box */}
+          <div className={styles.itemDetail}>
+            <div>
+              <p style={{ fontWeight: 600, color: '#ffffff', margin: 0 }}>
+                Website Instan Starter
+              </p>
+              
+              {/* List benefit tambahan (menggunakan styling inline bawaan Anda sebelumnya) */}
+              <ul style={{ paddingLeft: '1.2rem', margin: '0.5rem 0 0 0', fontSize: '0.815rem', color: '#94a3b8' }}>
+                <li>✨ Desain Modern & Responsive</li>
+                <li>🚀 Hosting & Domain Aktif 1 Tahun</li>
+                <li>🛠️ Integrasi Sosial Media & Kontak</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Ringkasan Biaya / Summary */}
+          <div className={styles.summary}>
+            <div className={styles.summaryRow}>
+              <span>Paket Terpilih</span>
+              <span style={{ color: '#ffffff', fontWeight: 500 }}>Starter</span>
+            </div>
+            
+            <div className={styles.totalRow}>
+              <span>Total Pembayaran</span>
+              <span className={styles.price}>Rp 150.000</span>
+            </div>
+          </div>
+
+          <p style={{ fontSize: '0.75rem', color: '#64748b', textAlign: 'center', marginTop: '1.5rem', marginBottom: '-0.5rem' }}>
+            🔒 Pembayaran diproses otomatis & aman via Midtrans.
+          </p>
+
+          {/* Tombol Bayar Dinamis (Pulse Glow & State Loading Terintegrasi) */}
+          <button 
+            onClick={handlePayment} 
+            disabled={loading}
+            className={styles.checkoutBtn}
+            style={{ 
+              border: 'none', 
+              cursor: loading ? 'not-allowed' : 'pointer',
+              opacity: loading ? 0.7 : 1 
+            }}
+          >
+            {loading ? 'Memproses...' : 'Bayar Sekarang'}
+          </button>
+
+        </div>
       </div>
-    </div>
+    </>
   );
 }

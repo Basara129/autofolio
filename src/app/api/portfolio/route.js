@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
-import { createClient } from "@supabase/supabase-js"; // 👈 Diubah agar tidak butuh file utils
+import { createClient } from "@supabase/supabase-js";
 import { Buffer } from "node:buffer";
 
 export const maxDuration = 60;
@@ -15,30 +15,27 @@ cloudinary.config({
 });
 
 const tryParseJSON = (str) => {
-  if (!str) return null;
+  if (!str) return [];
   try {
-    return JSON.parse(str);
+    const parsed = JSON.parse(str);
+    return Array.isArray(parsed) ? parsed : [parsed];
   } catch (e) {
-    return [str];
+    return [];
   }
 };
 
 export async function POST(request) {
-  // Variabel untuk menyimpan public_id Cloudinary agar bisa di-rollback jika Supabase error
   let uploadedPublicId = null;
 
   try {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY; // Atau bisa pakai NEXT_PUBLIC_SUPABASE_ANON_KEY jika tidak butuh bypass RLS
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    // Validasi memastikan env ter-load dengan benar di Vercel/Lokal
     if (!supabaseUrl || !supabaseKey) {
       throw new Error("Kunci Supabase tidak terbaca di Environment Variables!");
     }
 
-    // Inisialisasi Supabase secara langsung tanpa perantara file utils
     const supabase = createClient(supabaseUrl, supabaseKey);
-
     const formData = await request.formData();
 
     // 1. Ekstraksi Data Teks biasa
@@ -47,7 +44,7 @@ export async function POST(request) {
     const profesi = formData.get("profesi");
     const moto = formData.get("moto");
     const biografi = formData.get("biografi");
-    const design = formData.get("design") || "model_1"; // Fallback otomatis jika kosong
+    const design = formData.get("design") || "model_1";
     const instagram = formData.get("instagram");
     const tiktok = formData.get("tiktok");
     const X = formData.get("X");
@@ -67,7 +64,7 @@ export async function POST(request) {
       );
     }
 
-    // 4. Validasi Awal Duplikasi Username (.maybeSingle() aman dari crash jika data kosong)
+    // 4. Validasi Awal Duplikasi Username
     const { data: existingUser, error: checkError } = await supabase
       .from("portfolios")
       .select("username")
@@ -106,13 +103,10 @@ export async function POST(request) {
     const linkFotoCloudinary = cloudinaryResponse.secure_url;
     uploadedPublicId = cloudinaryResponse.public_id;
 
-    // Parsing data JSON setelah upload berhasil
-    const parsedPendidikan = tryParseJSON(riwayat_pendidikan);
-    const parsedPengalaman = tryParseJSON(pengalaman);
-    const parsedKeahlian = tryParseJSON(keahlian);
+    // --- PERUBAHAN LOGIKA MULAI DARI SINI ---
 
-    // 6. Simpan Seluruh Data ke Supabase
-    const { data, error: supabaseError } = await supabase
+    // 6. Langkah Awal: Simpan data UTAMA ke tabel `portfolios`
+    const { data: mainPortfolio, error: portfolioError } = await supabase
       .from("portfolios")
       .insert([
         {
@@ -122,30 +116,103 @@ export async function POST(request) {
           moto,
           foto_url: linkFotoCloudinary,
           biografi,
-          design,
-          riwayat_pendidikan: parsedPendidikan,
-          pengalaman: parsedPengalaman,
-          keahlian: parsedKeahlian,
-          instagram,
-          tiktok,
-          X,
-          linkedin,
+          // Kolom 'design' jika di database Anda dipindah ke social_medias atau tetap di portfolios, sesuaikan di sini.
+          // Berdasarkan skema SQL sebelumnya, saya asumsikan 'design' tetap berada di portfolios/dikondisikan.
         },
       ])
-      .select(); // Mengembalikan data untuk response frontend
+      .select()
+      .single();
 
-    // JALUR PENGAMAN ROLLBACK: Jika DB gagal, hapus foto di Cloudinary
-    if (supabaseError) {
-      if (uploadedPublicId) {
-        await cloudinary.uploader.destroy(uploadedPublicId);
-      }
-      throw new Error(`Supabase Database: ${supabaseError.message}`);
+    // JALUR PENGAMAN ROLLBACK: Jika simpan portfolio utama gagal
+    if (portfolioError) {
+      if (uploadedPublicId) await cloudinary.uploader.destroy(uploadedPublicId);
+      throw new Error(`Supabase Portfolios DB: ${portfolioError.message}`);
     }
 
+    // Dapatkan ID utama untuk menjadi Foreign Key
+    const portfolioId = mainPortfolio.id;
+
+    // 7. Langkah Kedua: Lakukan simpan data ke tabel turunan secara paralel
+    const parsedPendidikan = tryParseJSON(riwayat_pendidikan);
+    const parsedPengalaman = tryParseJSON(pengalaman);
+    const parsedKeahlian = tryParseJSON(keahlian);
+
+    // Siapkan semua query insert data turunan
+    const insertPromises = [];
+
+    // Insert ke social_medias
+    insertPromises.push(
+      supabase.from("social_medias").insert([
+        {
+          portfolio_id: portfolioId,
+          instagram,
+          tiktok,
+          x: X,
+          linkedin,
+          design, // dimasukkan ke social_medias sesuai skema sebelumnya jika diinginkan
+        },
+      ]),
+    );
+
+    // Insert ke educations jika ada datanya
+    if (parsedPendidikan.length > 0) {
+      const educationData = parsedPendidikan.map((edu) => ({
+        portfolio_id: portfolioId,
+        nama_institusi: edu.nama_institusi || edu.institusi || "",
+        gelar: edu.gelar || "",
+        tahun_masuk: edu.tahun_masuk ? parseInt(edu.tahun_masuk) : null,
+        tahun_lulus: edu.tahun_lulus ? parseInt(edu.tahun_lulus) : null,
+      }));
+      insertPromises.push(supabase.from("educations").insert(educationData));
+    }
+
+    // Insert ke experiences jika ada datanya
+    if (parsedPengalaman.length > 0) {
+      const experienceData = parsedPengalaman.map((exp) => ({
+        portfolio_id: portfolioId,
+        perusahaan: exp.perusahaan || "",
+        posisi: exp.posisi || "",
+        deskripsi_pekerjaan: exp.deskripsi_pekerjaan || exp.deskripsi || "",
+        tanggal_mulai: exp.tanggal_mulai || null,
+        tanggal_selesai: exp.tanggal_selesai || null,
+      }));
+      insertPromises.push(supabase.from("experiences").insert(experienceData));
+    }
+
+    // Insert ke skills jika ada datanya
+    if (parsedKeahlian.length > 0) {
+      const skillData = parsedKeahlian.map((skill) => ({
+        portfolio_id: portfolioId,
+        nama_keahlian:
+          typeof skill === "string"
+            ? skill
+            : skill.nama_keahlian || skill.nama || "",
+        tingkat_kemahiran: skill.tingkat_kemahiran || null,
+      }));
+      insertPromises.push(supabase.from("skills").insert(skillData));
+    }
+
+    // Jalankan semua query insert anak tabel sekaligus
+    const results = await Promise.all(insertPromises);
+
+    // Cek apakah ada error di salah satu pengisian tabel anak
+    for (const res of results) {
+      if (res.error) {
+        // Karena database menggunakan ON DELETE CASCADE, jika kita hapus portfolio utamanya,
+        // sisa data anak yang sempat masuk otomatis ikut terhapus bersih.
+        await supabase.from("portfolios").delete().eq("id", portfolioId);
+        if (uploadedPublicId)
+          await cloudinary.uploader.destroy(uploadedPublicId);
+        throw new Error(`Supabase Relational DB Error: ${res.error.message}`);
+      }
+    }
+
+    // Respon sukses mengembalikan kode_unik dari tabel utama
     return NextResponse.json({
       success: true,
-      message: "Portfolio berhasil disimpan!",
-      data: data,
+      message: "Portfolio berhasil disimpan dengan struktur relasional!",
+      kode_unik: mainPortfolio?.kode_unik || null,
+      data: mainPortfolio,
     });
   } catch (error) {
     console.error("Server Error:", error.message);

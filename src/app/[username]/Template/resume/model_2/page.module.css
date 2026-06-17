@@ -1,0 +1,303 @@
+/* ==========================================================================
+   0. KEYFRAMES ANIMATION (Efek Horor)
+   ========================================================================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes growWidth {
+  from { width: 0%; }
+}
+
+/* Animasi detak jantung mencekam untuk kartu yang di-hover */
+@keyframes heartBeatGlow {
+  0%, 100% { 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7); 
+    border-color: rgba(139, 0, 0, 0.2);
+  }
+  50% { 
+    box-shadow: 0 10px 35px rgba(255, 0, 0, 0.15); 
+    border-color: rgba(255, 0, 0, 0.4); /* Pendaran darah */
+  }
+}
+
+/* Animasi lampu berkedip rusak khas film horor */
+@keyframes horrorFlicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
+  }
+  20%, 24%, 55% {
+    opacity: 0.4;
+    text-shadow: none;
+  }
+}
+
+/* Animasi melayang gaib untuk ikon */
+@keyframes ghostlyFloat {
+  0% { transform: translateY(0px) scale(1); filter: drop-shadow(0 0 0px rgba(0,255,100,0)); }
+  50% { transform: translateY(-5px) scale(1.05); filter: drop-shadow(0 0 8px rgba(0,255,100,0.5)); }
+  100% { transform: translateY(0px) scale(1); filter: drop-shadow(0 0 0px rgba(0,255,100,0)); }
+}
+
+
+/* ==========================================================================
+   1. GLOBAL & BODY WRAPPER
+   ========================================================================== */
+.body {
+  margin: 0;
+  padding: 0;
+  background-color: #0a0a0c; /* Abyss Black */
+  background-image: radial-gradient(circle at 50% 30%, #1a0f0f 0%, #0a0a0c 100%); /* Kabut merah tipis */
+  font-family: 'Courier New', Courier, monospace, system-ui; /* Font agak gotik/mesin tik */
+  min-height: 100vh;
+  color: #e2e8f0; /* Bone White */
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   2. CONTAINERS & LAYOUT GRID
+   ========================================================================== */
+.pageContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+  opacity: 0; 
+  animation-fill-mode: forwards;
+}
+
+/* ==========================================================================
+   3. CARD COMPONENT (Peti Mati / Makam Style)
+   ========================================================================== */
+.card {
+  background: linear-gradient(145deg, #141416 0%, #0d0d0f 100%);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(139, 0, 0, 0.25); /* Border Merah Darah Gelap */
+  transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+  animation: heartBeatGlow 5s ease-in-out infinite;
+}
+
+.card:hover {
+  transform: translateY(-4px) scale(1.01);
+  border-color: #ff0000; /* Merah menyala */
+  box-shadow: 0 15px 35px rgba(139, 0, 0, 0.3);
+}
+
+.container {
+  padding: 20px;
+}
+
+/* ==========================================================================
+   4. DISPLAY CONTAINER (Kamar Mayat / Kabut Tua)
+   ========================================================================== */
+.displayContainer {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  background: radial-gradient(circle at center, #2a0808 0%, #0d0d0f 100%);
+  overflow: hidden;
+}
+
+.avatarWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  filter: grayscale(100%) contrast(120%) brightness(80%); /* Efek foto tua/mati */
+  transition: transform 0.6s ease, filter 0.6s ease;
+}
+
+.card:hover .avatarWrapper {
+  transform: scale(1.05);
+  filter: grayscale(50%) contrast(130%) brightness(70%); /* Sedikit memerah saat hover */
+}
+
+.nameTag {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  background: linear-gradient(to top, #0a0a0c 100%, transparent 0%);
+  z-index: 2;
+}
+
+.nameTag h2 {
+  margin: 0;
+  color: #e2e8f0; 
+  font-size: 28px;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px #000;
+  animation: horrorFlicker 6s infinite; /* Nama berkedip seram */
+}
+
+/* ==========================================================================
+   5. ROW INFO & UTILITIES
+   ========================================================================== */
+.infoRow {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 16px;
+  font-size: 15px;
+}
+
+.infoRow:hover .emojiIcon {
+  animation: ghostlyFloat 1.5s ease-in-out infinite;
+}
+
+.emojiIcon {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+  display: inline-block;
+  filter: drop-shadow(0 0 2px rgba(255,0,0,0.5));
+}
+
+.textGrey {
+  color: #94a3b8; /* Slate kelabu kutukan */
+}
+
+.textTeal {
+  color: #8b0000 !important; /* Diubah jadi Deep Blood Red */
+}
+
+.sectionHeading {
+  color: #ff3333; /* Merah Peringatan */
+  font-size: 24px;
+  border-bottom: 1px dashed rgba(255, 0, 0, 0.2);
+  padding-bottom: 10px;
+}
+
+.subHeading {
+  color: #ff6666;
+}
+
+.opacity {
+  opacity: 0.85;
+  color: #ffffff;
+}
+
+.tag {
+  background-color: #8b0000;
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  border: 1px solid #ff0000;
+  display: inline-block;
+}
+
+/* ==========================================================================
+   6. PROGRESS BARS (Lendir Monster & Jiwa Tersiksa)
+   ========================================================================== */
+.progressBg {
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(139, 0, 0, 0.3);
+  border-radius: 4px; /* Lebih kotak kaku */
+  height: 20px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+/* Bar skill diubah jadi warna hijau asam/lendir monster bergradasi merah */
+.progressBar {
+  background: linear-gradient(90deg, #4a0404 0%, #8b0000 70%, #ff3333 100%);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px #000;
+  animation: growWidth 1.5s ease-out forwards;
+  transform-origin: left;
+}
+
+/* Bar bahasa diubah jadi warna hantu berlumut */
+.langBar {
+  background: linear-gradient(90deg, #1e3a1e 0%, #2e7d32 100%);
+  height: 100%;
+  box-shadow: 0 0 10px rgba(0, 255, 100, 0.2);
+  animation: growWidth 1.5s ease-out forwards;
+  transform-origin: left;
+}
+
+/* ==========================================================================
+   7. FOOTER & SOCIALS (Underworld)
+   ========================================================================== */
+.footer {
+  background-color: #050506;
+  padding: 40px 20px;
+  text-align: center;
+  margin-top: 50px;
+  border-top: 1px solid rgba(139, 0, 0, 0.3);
+  font-size: 14px;
+  color: #64748b;
+}
+
+.footer a {
+  color: #ff3333;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer a:hover {
+  color: #ffffff;
+  text-shadow: 0 0 8px #ff0000;
+}
+
+.socialIcons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.socialIcons a {
+  font-size: 24px;
+  text-decoration: none;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  display: inline-block;
+  filter: grayscale(100%);
+}
+
+.socialIcons a:hover {
+  transform: scale(1.25) rotate(10deg); /* Efek patah patah patah */
+  filter: grayscale(0%) drop-shadow(0 0 8px #ff3333);
+}

@@ -1,0 +1,296 @@
+/* ==========================================================================
+   0. KEYFRAMES ANIMATION (Tambahkan di bagian paling atas/bawah)
+   ========================================================================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes growWidth {
+  from { width: 0%; }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); }
+  50% { box-shadow: 0 10px 35px rgba(80, 240, 255, 0.2); } /* Diubah ke bias glow Cyan */
+}
+
+
+/* ==========================================================================
+   1. GLOBAL & BODY WRAPPER
+   ========================================================================== */
+.body {
+  margin: 0;
+  padding: 0;
+  /* UBAH: Menggunakan warna dasar Deep Navy Blue yang sangat pekat agar warna terang di atasnya menonjol */
+  background-color: rgb(5, 20, 40); 
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   2. CONTAINERS & LAYOUT GRID
+   ========================================================================== */
+.pageContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+}
+
+/* Responsive Grid Desktop (min-width: 768px) */
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+/* Animasi masuk berurutan (Staggered Entrance) */
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+  /* Delay sedikit agar kolom kanan masuk setelah kolom kiri */
+  opacity: 0; 
+  animation-fill-mode: forwards;
+}
+
+/* ==========================================================================
+   3. CARD COMPONENT
+   ========================================================================== */
+.card {
+  /* UBAH: Latar belakang kartu menggunakan transisi Deep Navy ke Teal Gelap */
+  background: linear-gradient(145deg, rgb(10, 30, 55) 0%, rgb(5, 15, 30) 100%);
+  border-radius: 16px;
+  overflow: hidden;
+  /* UBAH: Border tipis menggunakan warna Teal transparan */
+  border: 1px solid rgba(0, 128, 150, 0.3); 
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.4s ease;
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+.card:hover {
+  transform: translateY(-5px); /* Sedikit lebih tinggi untuk kesan 3D yang pas */
+  /* UBAH: Border dan shadow menyala menggunakan warna Cyan Neon Terang */
+  border-color: rgba(80, 240, 255, 0.6); 
+  box-shadow: 0 20px 40px rgba(80, 240, 255, 0.2); 
+}
+
+.container {
+  padding: 20px;
+}
+
+/* ==========================================================================
+   4. DISPLAY CONTAINER (AVATAR & NAMETAG)
+   ========================================================================== */
+.displayContainer {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  /* UBAH: Gradasi memancar (radial) dari pusat cahaya Cyan Terang ke Navy Gelap */
+  background: radial-gradient(circle at center, rgb(0, 180, 180) 0%, rgb(5, 20, 40) 100%);
+  overflow: hidden;
+}
+
+/* Efek zoom out perlahan pada foto profil saat dimuat */
+.avatarWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card:hover .avatarWrapper {
+  transform: scale(1.04);
+}
+
+.nameTag {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  background: linear-gradient(to top, rgba(5, 20, 40, 0.95) 0%, rgba(5, 20, 40, 0) 100%);
+  z-index: 2;
+}
+
+.nameTag h2 {
+  margin: 0;
+  /* UBAH: Putih bersih kebiruan agar senada dengan efek halo lingkaran gambar */
+  color: rgb(240, 255, 255); 
+  font-size: 28px;
+  font-weight: 700;
+  text-shadow: 0 2px 10px rgba(5, 20, 40, 0.8);
+}
+
+/* ==========================================================================
+   5. ROW INFO & UTILITIES
+   ========================================================================== */
+.infoRow {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 16px;
+  font-size: 15px;
+}
+
+/* Animasi melayang manja pada emoji icon saat baris di-hover */
+.infoRow:hover .emojiIcon {
+  animation: float 1.2s ease-in-out infinite;
+}
+
+.emojiIcon {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+  display: inline-block;
+}
+
+.textGrey {
+  color: #cbd5e1;
+}
+
+.textTeal {
+  /* UBAH: Diubah menjadi warna Cyan Terang Menyala */
+  color: rgb(80, 240, 255) !important; 
+}
+
+.opacity {
+  opacity: 0.85;
+  color: #ffffff;
+}
+
+.padding16 {
+  padding: 16px 0;
+  margin: 0;
+}
+
+.tag {
+  /* UBAH: Badge penanda menggunakan warna Cyan stabilo terang dengan teks gelap pekat */
+  background-color: rgb(80, 240, 255);
+  color: rgb(5, 20, 40);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+/* Efek interaktif kecil pada badge 'Current' */
+.tag:hover {
+  transform: scale(1.05) rotate(-2deg);
+}
+
+
+/* ==========================================================================
+   6. PROGRESS BARS (SKILLS & LANGUAGES)
+   ========================================================================== */
+.progressBg {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  height: 20px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+/* Animasi bar mengisi dari 0% ke targetnya saat page load */
+.progressBar {
+  /* UBAH: Gradasi isi bar keahlian dari Teal Gelap -> Cyan Terang -> Putih Bersih */
+  background: linear-gradient(90deg, rgb(0, 128, 150) 0%, rgb(0, 210, 255) 50%, rgb(240, 255, 255) 100%);
+  height: 100%;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(5, 20, 40);
+  font-size: 12px;
+  font-weight: bold;
+  animation: growWidth 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: left;
+}
+
+.langBar {
+  /* UBAH: Bar bahasa disesuaikan menggunakan warna putih kebiruan bersih ber-glow */
+  background-color: rgb(240, 255, 255); 
+  height: 100%;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(80, 240, 255, 0.5);
+  animation: growWidth 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: left;
+}
+
+/* ==========================================================================
+   7. FOOTER & SOCIALS
+   ========================================================================== */
+.footer {
+  background-color: rgb(4, 15, 30);
+  padding: 40px 20px;
+  text-align: center;
+  margin-top: 50px;
+  border-top: 1px solid rgba(0, 128, 150, 0.3);
+  font-size: 14px;
+  color: #94a3b8;
+}
+
+.footer a {
+  /* UBAH: Link footer diubah ke warna Cyan Terang */
+  color: rgb(80, 240, 255);
+  text-decoration: none;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.footer a:hover {
+  color: rgb(240, 255, 255);
+  text-shadow: 0 0 8px rgba(240, 255, 255, 0.6);
+}
+
+.socialIcons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.socialIcons a {
+  font-size: 24px;
+  text-decoration: none;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
+  display: inline-block;
+}
+
+/* Efek pop-out membal (bounce) saat ikon sosial media di-hover */
+.socialIcons a:hover {
+  transform: scale(1.3) translateY(-4px);
+  /* UBAH: Shadow ikon saat hover memancarkan cahaya Cyan */
+  filter: drop-shadow(0 4px 8px rgba(80, 240, 255, 0.6));
+}

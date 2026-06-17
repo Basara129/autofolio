@@ -1,0 +1,267 @@
+/* ==========================================================================
+   1. KEYFRAMES ANIMASI (THEME ALIGNED)
+   ========================================================================== */
+
+/* Animasi Fade In Up untuk Elemen Kartu */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animasi Denyut Halus untuk Tombol Utama (Beralih ke Efek Glow Hijau Sukses) */
+@keyframes pulseGlow {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 4px 25px rgba(16, 185, 129, 0.6);
+  }
+}
+
+/* Animasi Pop-Up Lembut untuk Jendela Modal */
+@keyframes modalScaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ==========================================================================
+   2. INTERFACE UTAMA CHECKOUT (DEEP SLATE NAVY)
+   ========================================================================== */
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%); /* Radial Gradient Gelap Premium */
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #cbd5e1;
+}
+
+.card {
+  width: 100%;
+  max-width: 28rem;
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  background: linear-gradient(to right, #ffffff, #10b981); /* Teks gradasi Putih ke Hijau */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  margin-top: 0.5rem;
+}
+
+.itemDetail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.price {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #10b981; /* Angka harga disesuaikan ke Hijau Sukses */
+}
+
+.summary {
+  margin-top: 1.5rem;
+  background: rgba(15, 23, 42, 0.5); /* Interior summary box lebih pekat */
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: #94a3b8;
+  margin-bottom: 0.5rem;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+/* Button Bayar Utama dengan Gradasi Emerald Green */
+.checkoutBtn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-top: 2rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  animation: pulseGlow 3s infinite ease-in-out;
+}
+
+.checkoutBtn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.checkoutBtn:active {
+  transform: translateY(1px);
+}
+
+/* ==========================================================================
+   3. OVERLAY & MODAL DIALOG (PEMBAYARAN BERHASIL)
+   ========================================================================== */
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 1rem;
+}
+
+.modal {
+  width: 100%;
+  max-width: 24rem;
+  background: #1e293b; /* Background Modal diselaraskan ke Navy Slate Card */
+  border: 1px solid rgba(16, 185, 129, 0.2); /* Border hijau tipis premium */
+  border-radius: 1.5rem;
+  padding: 2.25rem 2rem;
+  text-align: center;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 40px rgba(16, 185, 129, 0.1);
+  animation: modalScaleUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Lingkaran Sukses Berdenyut Hijau */
+.successIcon {
+  width: 4.5rem;
+  height: 4.5rem;
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem auto;
+  font-size: 2.25rem;
+  border: 2px solid rgba(16, 185, 129, 0.25);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+}
+
+.modalTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.modalText {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+/* Struk Transaksi Mini Interior Gelap */
+.receipt {
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1.75rem;
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.receiptRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.815rem;
+  margin-bottom: 0.5rem;
+}
+
+.receiptRow:last-child {
+  margin-bottom: 0;
+}
+
+.receiptLabel {
+  color: #64748b;
+}
+
+.receiptValue {
+  color: #cbd5e1;
+  font-weight: 500;
+}
+
+/* Tombol Selesai Terintegrasi Penuh */
+.successBtn {
+  width: 100%;
+  padding: 0.875rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+  transition: all 0.2s ease;
+}
+
+.successBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+  filter: brightness(1.1);
+}
+
+.successBtn:active {
+  transform: translateY(1px);
+}

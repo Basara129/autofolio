@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import styles from './page.module.css';
 
 export default function Home() {
@@ -17,25 +18,60 @@ export default function Home() {
         <div className={styles.logo}>
           <span className={styles.logoIcon}>AUTOFOLIO</span> 
         </div>
+        <div>
+          {/* Tombol diubah agar langsung navigasi ke halaman /warna saat diklik */}
+          <Link href="/warna">
+            <button className={styles.colorSettingsBtn}>Pengaturan Warna</button>
+          </Link>
+        </div>
       </header>
 
       {/* 3. HERO SECTION */}
       <section className={styles.heroSection}>
         <div className={styles.heroContainer}>
           <div className={styles.heroContent}>
-            <h1 className={styles.heroTitle}>Website Potofolio Profesional</h1>
+            <h1 className={styles.heroTitle}>Website Portofolio Profesional</h1>
             <p className={styles.heroSubtitle}>
               Hanya Di Sini Kamu Bisa Membuat Portofolio <strong>Keren</strong> Dengan Harga Murah
             </p>
-            <button className={styles.heroCtaButton}>Pesan Sekarang</button>
+            <Link href="/checkout">
+              <button className={styles.heroCtaButton}>Pesan Sekarang</button>
+            </Link>
           </div>
           
           {/* Sisi Kanan: Ilustrasi/Gambar Produk */}
           <div className={styles.heroImageContainer}>
-            {/* Menggunakan placeholder visual untuk elemen di gambar */}
-            <div className={styles.weddingMockup}>
-              <div className={styles.mockCake}>🎂</div>
-              <div className={styles.mockMixer}>🥣</div>
+            <div className={styles.portfolioPreview}>
+              
+              {/* Kartu Utama: Preview Project Terbaik (UI/UX / Web Design) */}
+              <div className={styles.mainMockupCard}>
+                <div className={styles.browserHeader}>
+                  <span className={styles.browserDot}></span>
+                  <span className={styles.browserDot}></span>
+                  <span className={styles.browserDot}></span>
+                </div>
+                <img 
+                  src="/splash.jpg"
+                  alt="Creative Portfolio Project" 
+                  height={400}
+                  width={400}
+                  className={styles.mockupImage}
+                />
+                <div className={styles.mockupOverlay}>
+                  <span className={styles.mockupTag}>Fintech App Design</span>
+                  <h3 className={styles.mockupTitle}>Mobile Banking UI Kit</h3>
+                </div>
+              </div>
+
+              {/* Kartu Melayang 2: Badge Klien / Ketersediaan Kerja (Kanan Atas) */}
+              <div className={`${styles.floatingCard} ${styles.cardRight}`}>
+                <span className={styles.pulseDot}></span>
+                <div>
+                  <div className={styles.cardStatText}>Jadi Lebih Keren Di Media Sosial</div>
+                  <div className={styles.cardLabel}>Tersedia Untuk Semua Kalangan</div>
+                </div>
+              </div>
+              
             </div>
           </div>
         </div>
@@ -45,9 +81,9 @@ export default function Home() {
       <section className={styles.featuresSection}>
         <div className={styles.featuresGrid}>
           
-        <div className={styles.featureCard}>
+          <div className={styles.featureCard}>
             <div className={styles.featureIcon}>⚡</div>
-            <h3 className={styles.featureTitle}>Proses Instan, 1 - 3 Hari Jadi</h3>
+            <h3 className={styles.featureTitle}>Proses Instan, Cuma 1 Hari</h3>
             <p className={styles.featureDescription}>
               Tidak perlu menunggu berminggu-minggu. Portofolio otomatis Anda kami kerjakan dengan cepat, rapi, dan langsung live dalam hitungan hari.
             </p>
@@ -71,6 +107,7 @@ export default function Home() {
             </p>
           </div>
 
+          {/* Fitur 4 */}
           <div className={styles.featureCard}>
             <div className={styles.featureIcon}>🔄</div>
             <h3 className={styles.featureTitle}>Update Otomatis, Anti Repot</h3>
@@ -86,114 +123,101 @@ export default function Home() {
       <section className={styles.brandsSection}>
         <div className={styles.brandsContainer}>
           <h2 className={styles.brandsTitle}>Kami Menyediakan Paket Dengan Harga Istimewa</h2>
-          <p className={styles.brandsSubtitle}>
-            Dapat Membantu Kamu Dalam Melamar Pekerjaan Dan Jadi Lebih Keren           
-          </p>
           
-          {/* Tempat Grid Brand (Bisa diisi gambar/item nantinya) */}
-          {/* Tempat Grid Brand / Paket Harga */}
           <div className={styles.brandsGridPlaceholder}>
-  
-  {/* Kartu Pertama: Tanpa Animasi */}
-          <div className={styles.brandCardBlank}>
-            <h4 className={styles.packageTitle}><strong>COOMING SOON</strong></h4>
-            <div className={styles.priceContainer}>
-              <span className={styles.currentPrice}></span>
-            </div>
-          </div>
+            {/* Kartu Kedua: Dengan Animasi + Coretan Harga */}
+            <div className={styles.brandCard}>
+              {/* Badge Diskon Pop-up */}
+              <div className={styles.discountBadge}>Save 60%</div>
+              
+              <div className={styles.cardHeader}>
+                <h4 className={styles.packageTitle}>Website Animasi</h4>
+                <p className={styles.packageDescription}>Bikin Personal Branding Kamu Lebih Interaktif & Memukau.</p>
+              </div>
 
-          <div className={styles.brandCardBlank}>
-            <h4 className={styles.packageTitle}><strong>COOMING SOON</strong></h4>
-            <div className={styles.priceContainer}>
-              <span className={styles.currentPrice}></span>
-            </div>
-          </div>
+              <div className={styles.priceContainer}>
+                <span className={styles.originalPrice}>Rp 50.000</span>
+                <div className={styles.currentPriceWrapper}>
+                  <span className={styles.currency}>Rp</span>
+                  <span className={styles.priceNumber}>20.000</span>
+                  <span className={styles.pricePeriod}>/projek</span>
+                </div>
+              </div>
 
-          {/* Kartu Kedua: Dengan Animasi + Coretan Harga */}
-          <div className={styles.brandCardBlank}>
-            <h4 className={styles.packageTitle}>Website Animasi</h4>
-            <div className={styles.priceContainer}>
-              <span className={styles.originalPrice}>Rp. 50.000</span>
-              <span className={styles.currentPrice}>Rp. 20.000</span>
+              {/* Tambahan Fitur agar kartu tidak terlihat kosong */}
+              <ul className={styles.featureList}>
+                <li><span className={styles.checkIcon}>✓</span> Animasi Smooth (Framer Motion)</li>
+                <li><span className={styles.checkIcon}>✓</span> Responsive Design (Mobile Friendly)</li>
+                <li><span className={styles.checkIcon}>✓</span> SEO Friendly Optimization</li>
+              </ul>
+              <Link href="/checkout">
+                <button className={styles.ctaButton}>Pesan Sekarang</button>
+              </Link>
             </div>
-          </div>
-
-          <div className={styles.brandCardBlank}>
-            <h4 className={styles.packageTitle}><strong>COOMING SOON</strong></h4>
-            <div className={styles.priceContainer}>
-              <span className={styles.currentPrice}></span>
-            </div>
-          </div>
-
-          <div className={styles.brandCardBlank}>
-            <h4 className={styles.packageTitle}><strong>COOMING SOON</strong></h4>
-            <div className={styles.priceContainer}>
-              <span className={styles.currentPrice}></span>
-            </div>
-          </div>
           </div>
         </div>
       </section>
 
+      {/* 6. CONTACT SECTION */}
       <section className={styles.featuresSection}>
-<div className={styles.container}>
-        <div className={styles.header}>
-          <h2>Hubungi Kami</h2>
-          <p>Punya pertanyaan atau ingin bekerja sama? Tim kami siap membantu Anda.</p>
-        </div>
-
-        <div className={styles.grid}>
-          {/* Kartu Informasi Kontak */}
-          <div className={styles.infoCard}>
-            <div className={styles.infoItem}>
-              <span className={styles.icon}>📍</span>
-              <div>
-                <h3>Alamat Kantor</h3>
-                <p>Jl. Jend. Sudirman No. 123, Lantai 5, Jakarta Selatan, 12190</p>
-              </div>
-            </div>
-
-            <div className={styles.infoItem}>
-              <span className={styles.icon}>✉️</span>
-              <div>
-                <h3>Email Resmi</h3>
-                <a href="mailto:contact@namaperusahaan.com" className={styles.link}>
-                  contact@namaperusahaan.com
-                </a>
-              </div>
-            </div>
-
-            <div className={styles.infoItem}>
-              <span className={styles.icon}>📞</span>
-              <div>
-                <h3>Telepon & WhatsApp</h3>
-                <p>(021) 555-0199</p>
-                <a 
-                  href="https://wa.me/6281234567890" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className={styles.link}
-                >
-                  +62 812-3456-7890 (WhatsApp)
-                </a>
-              </div>
-            </div>
-
-            <div className={styles.infoItem}>
-              <span className={styles.icon}>⏰</span>
-              <div>
-                <h3>Jam Operasional</h3>
-                <p>Senin - Jumat: 09.00 - 17.00 WIB</p>
-              </div>
-            </div>
+        <div className={styles.container}>
+          <div className={styles.header}>
+            <h2>Hubungi Kami</h2>
+            <p>Punya pertanyaan atau ingin bekerja sama? Tim kami siap membantu Anda.</p>
           </div>
 
-          {/* Kolom Google Maps (Ganti URL src dengan embed map perusahaan Anda) */}
-          <div className={styles.mapContainer}>
-            <iframe></iframe>
+          <div className={styles.grid}>
+            {/* Kartu Informasi Kontak */}
+            <div className={styles.infoCard}>
+              <div className={styles.infoItem}>
+                <span className={styles.icon}>📍</span>
+                <div>
+                  <h3>Alamat Kantor</h3>
+                  <p>Jl. Jend. Sudirman No. 123, Lantai 5, Jakarta Selatan, 12190</p>
+                </div>
+              </div>
+
+              <div className={styles.infoItem}>
+                <span className={styles.icon}>✉️</span>
+                <div>
+                  <h3>Email Resmi</h3>
+                  <a href="mailto:contact@namaperusahaan.com" className={styles.link}>
+                    contact@namaperusahaan.com
+                  </a>
+                </div>
+              </div>
+
+              <div className={styles.infoItem}>
+                <span className={styles.icon}>📞</span>
+                <div>
+                  <h3>Telepon & WhatsApp</h3>
+                  <p>(021) 555-0199</p>
+                  <a 
+                    href="https://wa.me/6281234567890" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className={styles.link}
+                  >
+                    +62 812-3456-7890 (WhatsApp)
+                  </a>
+                </div>
+              </div>
+
+              <div className={styles.infoItem}>
+                <span className={styles.icon}>⏰</span>
+                <div>
+                  <h3>Jam Operasional</h3>
+                  <p>Senin - Jumat: 09.00 - 17.00 WIB</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Kolom Google Maps */}
+            <div className={styles.mapContainer}>
+              <iframe title="Lokasi Kantor"></iframe>
+            </div>
           </div>
         </div>
-      </div>
       </section>
 
     </div>
