@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { supabase } from '../lib/supabase'; 
 import LoadingSkeleton from '../loading/page';
@@ -14,7 +14,11 @@ import TemplateModel4 from '@/app/[username]/Template/branding/model_4/page';
 import TemplateModel5 from '@/app/[username]/Template/branding/model_5/page';
 import TemplateModel6 from '@/app/[username]/Template/branding/model_6/page';
 
-export default function PengaturanPage() {
+// Regular Ekspresi untuk memvalidasi apakah format string berupa UUIDv4 yang valid
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[4][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+// ================= 1. KOMPONEN KONTEN UTAMA =================
+function PengaturanKonten() {
   const searchParams = useSearchParams();
   const kodeUnik = searchParams.get('kode'); 
   
@@ -22,35 +26,27 @@ export default function PengaturanPage() {
   const [loading, setLoading] = useState(true);
   const [tombolLoading, setTombolLoading] = useState(false);
   const [pesanSukses, setPesanSukses] = useState('');
+  const [pesanError, setPesanError] = useState('');
 
-  // State melacak perubahan design khusus untuk area preview & DB
   const [designAktif, setDesignAktif] = useState('model_1');
-
-  // State untuk melacak form input teks yang bisa diedit di dashboard ini
   const [inputNama, setInputNama] = useState('');
   const [inputProfesi, setInputProfesi] = useState('');
 
   useEffect(() => {
     async function ambilData() {
-      if (!kodeUnik) {
+      // Tingkat Keamanan 1: Validasi keberadaan dan format UUID pada Client-side
+      if (!kodeUnik || !UUID_REGEX.test(kodeUnik)) {
+        console.error('Akses ditolak: Parameter kode tidak valid.');
         setLoading(false);
         return;
       }
 
       try {
         setLoading(true);
-        
         const { data, error } = await supabase
           .from('portfolios')
           .select(`
-            id,
-            username, 
-            nama_lengkap, 
-            profesi, 
-            moto, 
-            foto_url, 
-            biografi, 
-            kode_unik,
+            id, username, nama_lengkap, profesi, moto, foto_url, biografi, kode_unik,
             social_medias ( id, instagram, tiktok, x, linkedin, design ),
             educations ( nama_institusi, gelar, tahun_masuk, tahun_lulus ),
             experiences ( perusahaan, posisi, deskripsi_pekerjaan, tanggal_mulai, tanggal_selesai ),
@@ -63,7 +59,6 @@ export default function PengaturanPage() {
         
         if (data) {
           const templateDesign = data.social_medias?.[0]?.design || 'model_1';
-          
           const formattedData = {
             ...data,
             design: templateDesign,
@@ -92,30 +87,44 @@ export default function PengaturanPage() {
     try {
       setTombolLoading(true);
       setPesanSukses('');
+      setPesanError('');
 
-      // 1. Update data utama profil ke tabel 'portfolios'
+      // Tingkat Keamanan 2: Validasi isi input (mencegah manipulasi data kosong/terlalu besar)
+      if (!inputNama.trim() || !inputProfesi.trim()) {
+        setPesanError('Nama lengkap dan profesi wajib diisi!');
+        setTombolLoading(false);
+        return;
+      }
+
+      if (inputNama.length > 100 || inputProfesi.length > 100) {
+        setPesanError('Input terlalu panjang (Maksimal 100 karakter)!');
+        setTombolLoading(false);
+        return;
+      }
+
+      // Jalankan perbaikan struktural (bisa menggunakan gabungan pembaruan atau RPC)
+      // Melakukan pembaruan pada tabel utama portfolios
       const { error: portfolioError } = await supabase
         .from('portfolios')
         .update({ 
-          nama_lengkap: inputNama,
-          profesi: inputProfesi
+          nama_lengkap: inputNama.trim(), 
+          profesi: inputProfesi.trim() 
         }) 
         .eq('kode_unik', kodeUnik);
 
       if (portfolioError) throw portfolioError;
 
-      // 2. Gunakan UPSERT untuk tabel 'social_medias' supaya aman jika baris datanya belum dibuat
+      // Mempersiapkan payload relasi tabel social_medias
       const payloadSosmed = {
-        portfolio_id: dataPortfolio.id,
+        portfolio_id: dataPortfolio?.id,
         design: designAktif,
-        instagram: dataPortfolio.social_medias?.instagram || '',
-        tiktok: dataPortfolio.social_medias?.tiktok || '',
-        x: dataPortfolio.social_medias?.x || '',
-        linkedin: dataPortfolio.social_medias?.linkedin || ''
+        instagram: dataPortfolio?.social_medias?.instagram || '',
+        tiktok: dataPortfolio?.social_medias?.tiktok || '',
+        x: dataPortfolio?.social_medias?.x || '',
+        linkedin: dataPortfolio?.social_medias?.linkedin || ''
       };
 
-      // Jika baris data sosial media sudah pernah ada di DB, sertakan ID primernya agar Supabase melakukan update, bukan insert baru
-      if (dataPortfolio.social_medias?.id) {
+      if (dataPortfolio?.social_medias?.id) {
         payloadSosmed.id = dataPortfolio.social_medias.id;
       }
 
@@ -127,19 +136,19 @@ export default function PengaturanPage() {
 
       if (socialError) throw socialError;
 
-      // Perbarui local state portfolio agar tampilan live preview di sebelah kanan langsung ikut berubah secara real-time
+      // Sinkronisasi state lokal jika operasi database sukses
       setDataPortfolio(prev => ({
         ...prev,
-        nama_lengkap: inputNama,
-        profesi: inputProfesi,
+        nama_lengkap: inputNama.trim(),
+        profesi: inputProfesi.trim(),
         design: designAktif,
         social_medias: upsertedSosmed || {}
       }));
 
-      setPesanSukses('Seluruh perubahan profil & desain berhasil diperbarui!');
+      setPesanSukses('Seluruh perubahan profil & desain berhasil diperbarui dengan aman!');
     } catch (err) {
       console.error(err);
-      alert('Gagal menyimpan perubahan ke database: ' + err.message);
+      setPesanError('Gagal menyimpan perubahan: ' + err.message);
     } finally {
       setTombolLoading(false);
     }
@@ -153,7 +162,8 @@ export default function PengaturanPage() {
     );
   }
 
-  if (!kodeUnik || !dataPortfolio) {
+  // Validasi render halaman untuk kode yang tidak lolos sensor format UUID
+  if (!kodeUnik || !UUID_REGEX.test(kodeUnik) || !dataPortfolio) {
     return (
       <div className={`${styles.centerContainer} ${styles.errorBox}`}>
         <h2 className={styles.errorTitle}>Akses Ditolak / Tidak Ditemukan</h2>
@@ -163,7 +173,6 @@ export default function PengaturanPage() {
 
   return (
     <div className={styles.dashboardWrapper}>
-      
       <header className={styles.dashboardHeader}>
         <h1 className={styles.mainTitle}>Dashboard Pengaturan</h1>
         <p className={styles.subTitle}>
@@ -171,15 +180,11 @@ export default function PengaturanPage() {
         </p>
       </header>
 
-      {/* PENGATURAN PILIHAN TEMPLATE */}
       <div className={styles.cardPanel} style={{ marginBottom: '1.5rem' }}>
         <h4 style={{ margin: '0 0 0.5rem 0', color: '#334155' }}>Pilih Model Tampilan Portofolio:</h4>
         <div className={styles.btnGroupTema}>
           {['model_1', 'model_2', 'model_3', 'model_4', 'model_5', 'model_6'].map((model, idx) => {
-            const namaTema = [
-              'Emerald Mint', 'Autumn Roast', 'Deep Ocean', 
-              'Shadow Amethyst', 'Gothic', 'Winter Crowns'
-            ][idx];
+            const namaTema = ['Emerald Mint', 'Autumn Roast', 'Deep Ocean', 'Shadow Amethyst', 'Gothic', 'Winter Crowns'][idx];
             return (
               <button 
                 key={model}
@@ -194,60 +199,52 @@ export default function PengaturanPage() {
       </div>
 
       <div className={styles.dashboardGrid}>
-        {/* KIRI: Form Editor Data */}
         <div className={styles.cardPanel}>
           <h3 className={styles.panelTitle}>Formulir Pembaruan Data</h3>
           <div className={styles.formGroupStack}>
             <div className={styles.inputWrapper}>
               <label className={styles.inputLabel}>NAMA LENGKAP</label>
-              <input 
-                type="text" 
-                value={inputNama} 
-                onChange={(e) => setInputNama(e.target.value)}
-                className={styles.textInput} 
-              />
+              <input type="text" value={inputNama} onChange={(e) => setInputNama(e.target.value)} className={styles.textInput} />
             </div>
             <div className={styles.inputWrapper}>
               <label className={styles.inputLabel}>PROFESI</label>
-              <input 
-                type="text" 
-                value={inputProfesi} 
-                onChange={(e) => setInputProfesi(e.target.value)}
-                className={styles.textInput} 
-              />
+              <input type="text" value={inputProfesi} onChange={(e) => setInputProfesi(e.target.value)} className={styles.textInput} />
             </div>
           </div>
 
-          <button 
-            onClick={handleSimpanPerubahan} 
-            className={styles.btnSimpan}
-            disabled={tombolLoading}
-          >
+          <button onClick={handleSimpanPerubahan} className={styles.btnSimpan} disabled={tombolLoading}>
             {tombolLoading ? 'Menyimpan...' : 'Simpan Perubahan Permanen'}
           </button>
 
-          {pesanSukses && (
-            <p style={{ color: '#059669', fontSize: '0.875rem', marginTop: '0.5rem', fontWeight: '600' }}>
-              {pesanSukses}
-            </p>
-          )}
+          {pesanSukses && <p style={{ color: '#059669', fontSize: '0.875rem', marginTop: '0.5rem', fontWeight: '600' }}>{pesanSukses}</p>}
+          {pesanError && <p style={{ color: '#dc2626', fontSize: '0.875rem', marginTop: '0.5rem', fontWeight: '600' }}>{pesanError}</p>}
         </div>
 
-        {/* KANAN: Pratinjau Desain Live */}
         <div className={`${styles.cardPanel} ${styles.previewPanel}`}>
           <h3 className={styles.panelTitle}>Pratinjau Live Template</h3>
-          
-          <div className={`${styles.previewScreen} ${styles[designAktif]}`}>
-            {designAktif === 'model_2' && <TemplateModel2 portfolio={dataPortfolio} />}
-            {designAktif === 'model_3' && <TemplateModel3 portfolio={dataPortfolio} />}
-            {designAktif === 'model_4' && <TemplateModel4 portfolio={dataPortfolio} />}
-            {designAktif === 'model_5' && <TemplateModel5 portfolio={dataPortfolio} />}
-            {designAktif === 'model_6' && <TemplateModel6 portfolio={dataPortfolio} />}
-            {(!designAktif || designAktif === 'model_1') && <TemplateModel1 portfolio={dataPortfolio} />}
+          <div className={styles.previewScreen} style={{ position: 'relative' }}>
+            {dataPortfolio && designAktif === 'model_2' && <TemplateModel2 portfolio={dataPortfolio} />}
+            {dataPortfolio && designAktif === 'model_3' && <TemplateModel3 portfolio={dataPortfolio} />}
+            {dataPortfolio && designAktif === 'model_4' && <TemplateModel4 portfolio={dataPortfolio} />}
+            {dataPortfolio && designAktif === 'model_5' && <TemplateModel5 portfolio={dataPortfolio} />}
+            {dataPortfolio && designAktif === 'model_6' && <TemplateModel6 portfolio={dataPortfolio} />}
+            {dataPortfolio && (!designAktif || designAktif === 'model_1') && <TemplateModel1 portfolio={dataPortfolio} />}
           </div>
         </div>
       </div>
-
     </div>
+  );
+}
+
+// ================= 2. EXPORT UTAMA DENGAN SUSPENSE =================
+export default function PengaturanPage() {
+  return (
+    <Suspense fallback={
+      <div className={styles.centerContainer}>
+        <LoadingSkeleton />
+      </div>
+    }>
+      <PengaturanKonten />
+    </Suspense>
   );
 }

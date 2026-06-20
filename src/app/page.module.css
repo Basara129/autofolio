@@ -742,9 +742,14 @@
 /* --- RESPONSIVE LAYOUT --- */
 @media (max-width: 768px) {
   .navbar { padding: 15px 20px; }
-  .heroContainer { flex-direction: column; text-align: center; }
   .featuresGrid { grid-template-columns: repeat(2, 1fr); }
   .brandsGridPlaceholder { flex-wrap: wrap; }
+  .heroSection{
+    display: flex;
+    flex-direction: row;
+  }
+
+  .heroContainer { flex-direction: column; text-align: center; flex-direction: column-reverse;}
 }
 
 @media (max-width: 480px) {

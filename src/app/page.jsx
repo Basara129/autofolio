@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import styles from './page.module.css';
+import Image from 'next/image';
 
 export default function Home() {
   return (
@@ -50,12 +51,13 @@ export default function Home() {
                   <span className={styles.browserDot}></span>
                   <span className={styles.browserDot}></span>
                 </div>
-                <img 
+                <Image 
                   src="/splash.jpg"
                   alt="Creative Portfolio Project" 
                   height={400}
                   width={400}
                   className={styles.mockupImage}
+                  priority
                 />
                 <div className={styles.mockupOverlay}>
                   <span className={styles.mockupTag}>Fintech App Design</span>
@@ -128,7 +130,7 @@ export default function Home() {
             {/* Kartu Kedua: Dengan Animasi + Coretan Harga */}
             <div className={styles.brandCard}>
               {/* Badge Diskon Pop-up */}
-              <div className={styles.discountBadge}>Save 60%</div>
+              <div className={styles.discountBadge}>Save 67%</div>
               
               <div className={styles.cardHeader}>
                 <h4 className={styles.packageTitle}>Website Animasi</h4>
@@ -136,10 +138,10 @@ export default function Home() {
               </div>
 
               <div className={styles.priceContainer}>
-                <span className={styles.originalPrice}>Rp 50.000</span>
+                <span className={styles.originalPrice}>Rp 15.000</span>
                 <div className={styles.currentPriceWrapper}>
                   <span className={styles.currency}>Rp</span>
-                  <span className={styles.priceNumber}>20.000</span>
+                  <span className={styles.priceNumber}>5.000</span>
                   <span className={styles.pricePeriod}>/projek</span>
                 </div>
               </div>
@@ -169,20 +171,20 @@ export default function Home() {
           <div className={styles.grid}>
             {/* Kartu Informasi Kontak */}
             <div className={styles.infoCard}>
-              <div className={styles.infoItem}>
+              {/* <div className={styles.infoItem}>
                 <span className={styles.icon}>📍</span>
                 <div>
                   <h3>Alamat Kantor</h3>
                   <p>Jl. Jend. Sudirman No. 123, Lantai 5, Jakarta Selatan, 12190</p>
                 </div>
-              </div>
+              </div> */}
 
               <div className={styles.infoItem}>
                 <span className={styles.icon}>✉️</span>
                 <div>
                   <h3>Email Resmi</h3>
-                  <a href="mailto:contact@namaperusahaan.com" className={styles.link}>
-                    contact@namaperusahaan.com
+                  <a href="mailto:autofolio135@gmail.com" className={styles.link}>
+                    autofolio135@gmail.com
                   </a>
                 </div>
               </div>
@@ -193,7 +195,7 @@ export default function Home() {
                   <h3>Telepon & WhatsApp</h3>
                   <p>(021) 555-0199</p>
                   <a 
-                    href="https://wa.me/6281234567890" 
+                    href="https://wa.me/6289606325192" 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className={styles.link}
@@ -213,9 +215,9 @@ export default function Home() {
             </div>
 
             {/* Kolom Google Maps */}
-            <div className={styles.mapContainer}>
+            {/* <div className={styles.mapContainer}>
               <iframe title="Lokasi Kantor"></iframe>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>

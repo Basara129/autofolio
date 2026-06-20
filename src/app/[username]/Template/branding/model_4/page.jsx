@@ -1,8 +1,12 @@
+"use client";
+
 import React from "react";
 import styles from './page.module.css';
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import PortfolioPDF from "@/app/components/page"; // Pastikan path import komponen PDF sudah benar
+import Image from "next/image";
+
 
 // Import PDFDownloadLink secara dinamis untuk mencegah error SSR di Next.js
 const PDFDownloadLink = dynamic(
@@ -64,10 +68,11 @@ export default function TemplateModel1({ portfolio }) {
           <div className={styles.namaImageContainer}>
             <div className={styles.profile}>
               {portfolio.foto_url && (
-                <img
+                <Image
                   src={portfolio.foto_url}
                   alt={portfolio.nama_lengkap}
                   className={styles.foto}
+                  priority
                 />
               )}
             </div>

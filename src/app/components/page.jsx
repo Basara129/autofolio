@@ -170,7 +170,21 @@ const styles = StyleSheet.create({
 });
 
 export default function PortfolioPDF({ portfolio }) {
-  const { instagram, tiktok, x, linkedin } = portfolio.social_medias || {};
+  // 1. Amankan komponen jika portfolio undefined (Sangat krusial saat proses build Next.js)
+  if (!portfolio) {
+    return (
+      <Document>
+        <Page size="A4" style={styles.page}>
+          <View style={{ padding: 40 }}>
+            <Text style={styles.fallbackText}>Memuat data dokumen...</Text>
+          </View>
+        </Page>
+      </Document>
+    );
+  }
+
+  // 2. Gunakan Optional Chaining (?.) untuk ekstra keamanan
+  const { instagram, tiktok, x, linkedin } = portfolio?.social_medias || {};
 
   return (
     <Document>
@@ -181,7 +195,7 @@ export default function PortfolioPDF({ portfolio }) {
           <View style={styles.sidebar}>
             <View style={styles.profileWrapper}>
               {portfolio.foto_url && (
-                <Image src={portfolio.foto_url} style={styles.fotoProfil} />
+                <Image src={portfolio.foto_url} style={styles.fotoProfil} alt="gambar" />
               )}
             </View>
 

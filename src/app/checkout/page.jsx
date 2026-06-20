@@ -6,9 +6,17 @@ import styles from './page.module.css';
 
 export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
+  // State baru untuk melacak apakah pengguna sudah menyetujui kebijakan privasi
+  const [agreed, setAgreed] = useState(false); 
   const router = useRouter();
 
   const handlePayment = async () => {
+    // Validasi tambahan untuk memastikan pengguna sudah mencentang checkbox
+    if (!agreed) {
+      alert('Anda harus menyetujui Kebijakan Privasi terlebih dahulu.');
+      return;
+    }
+
     setLoading(true);
 
     const orderId = `ORDER-${Date.now()}`;
@@ -36,8 +44,6 @@ export default function CheckoutPage() {
         window.snap.pay(data.token, {
           onSuccess: function (result) {
             console.log('Sukses:', result);
-            // MENGARAHKAN KE HALAMAN FORMULIR (Pindah URL)
-            // Membawa order_id sebagai parameter pelacak status pembayaran
             router.push(`/formulir?order_id=${orderId}`);
           },
           onPending: function (result) {
@@ -84,7 +90,6 @@ export default function CheckoutPage() {
                 Website Instan Starter
               </p>
               
-              {/* List benefit tambahan (menggunakan styling inline bawaan Anda sebelumnya) */}
               <ul style={{ paddingLeft: '1.2rem', margin: '0.5rem 0 0 0', fontSize: '0.815rem', color: '#94a3b8' }}>
                 <li>✨ Desain Modern & Responsive</li>
                 <li>🚀 Hosting & Domain Aktif 1 Tahun</li>
@@ -106,19 +111,45 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          <p style={{ fontSize: '0.75rem', color: '#64748b', textAlign: 'center', marginTop: '1.5rem', marginBottom: '-0.5rem' }}>
+          {/* --- BAGIAN BARU: Checkbox Kebijakan Privasi --- */}
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'flex-start', 
+            gap: '0.5rem', 
+            marginTop: '1.5rem', 
+            padding: '0 0.5rem' 
+          }}>
+            <input 
+              type="checkbox" 
+              id="privacyPolicy"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              style={{ marginTop: '0.2rem', cursor: 'pointer' }}
+            />
+            <label htmlFor="privacyPolicy" style={{ fontSize: '0.8rem', color: '#94a3b8', cursor: 'pointer', lineHeight: '1.4' }}>
+              Saya setuju dengan{' '}
+              <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" style={{ color: '#38bdf8', textDecoration: 'underline' }}>
+                Kebijakan Privasi
+              </a>{' '}
+              yang berlaku.
+            </label>
+          </div>
+          {/* ---------------------------------------------- */}
+
+          <p style={{ fontSize: '0.75rem', color: '#64748b', textAlign: 'center', marginTop: '1rem', marginBottom: '-0.5rem' }}>
             🔒 Pembayaran diproses otomatis & aman via Midtrans.
           </p>
 
-          {/* Tombol Bayar Dinamis (Pulse Glow & State Loading Terintegrasi) */}
+          {/* Tombol Bayar Dinamis (Akan disabled jika loading atau belum dicentang) */}
           <button 
             onClick={handlePayment} 
-            disabled={loading}
+            disabled={loading || !agreed} // Tombol terkunci jika belum dicentang
             className={styles.checkoutBtn}
             style={{ 
               border: 'none', 
-              cursor: loading ? 'not-allowed' : 'pointer',
-              opacity: loading ? 0.7 : 1 
+              cursor: (loading || !agreed) ? 'not-allowed' : 'pointer',
+              opacity: (loading || !agreed) ? 0.5 : 1, // Memberikan efek transparan jika tidak aktif
+              transition: 'opacity 0.2s ease'
             }}
           >
             {loading ? 'Memproses...' : 'Bayar Sekarang'}
