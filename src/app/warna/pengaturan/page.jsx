@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { supabase } from '../lib/supabase'; 
-import LoadingSkeleton from '../loading/page';
+import { supabase } from '../../lib/supabase'; 
+import LoadingSkeleton from '../../loading/page';
 import styles from './page.module.css'; 
 
 // Impor komponen visual template asli untuk pratinjau

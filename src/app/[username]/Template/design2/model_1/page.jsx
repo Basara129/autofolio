@@ -4,7 +4,7 @@ import React from "react";
 import styles from './page.module.css';
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import PortfolioPDF from "@/app/components/page"; // Pastikan path import komponen PDF sudah benar
+import PortfolioPDF from "@/app/[username]/components/page"; // Pastikan path import komponen PDF sudah benar
 import Image from "next/image";
 
 // Import PDFDownloadLink secara dinamis untuk mencegah error SSR di Next.js

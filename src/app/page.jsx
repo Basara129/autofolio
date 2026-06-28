@@ -33,10 +33,10 @@ export default function Home() {
           <div className={styles.heroContent}>
             <h1 className={styles.heroTitle}>Website Portofolio Profesional</h1>
             <p className={styles.heroSubtitle}>
-              Hanya Di Sini Kamu Bisa Membuat Portofolio <strong>Keren</strong> Dengan Harga Murah
+              Hanya Di Sini Kamu Bisa Membuat Website Portofolio <strong>Keren</strong>
             </p>
             <Link href="/checkout">
-              <button className={styles.heroCtaButton}>Pesan Sekarang</button>
+              <button className={styles.heroCtaButton}><strong>BUAT DISINI</strong></button>
             </Link>
           </div>
           
@@ -85,9 +85,9 @@ export default function Home() {
           
           <div className={styles.featureCard}>
             <div className={styles.featureIcon}>⚡</div>
-            <h3 className={styles.featureTitle}>Proses Instan, Cuma 1 Hari</h3>
+            <h3 className={styles.featureTitle}>Proses Instan, Cuma 1 Menit</h3>
             <p className={styles.featureDescription}>
-              Tidak perlu menunggu berminggu-minggu. Portofolio otomatis Anda kami kerjakan dengan cepat, rapi, dan langsung live dalam hitungan hari.
+              Tidak perlu menunggu berminggu-minggu. Portofolio otomatis Anda kami kerjakan dengan cepat, rapi, dan langsung live dalam hitungan menit.
             </p>
           </div>
 
@@ -96,16 +96,16 @@ export default function Home() {
             <div className={styles.featureIcon}>🚀</div>
             <h3 className={styles.featureTitle}>Siap Pakai, Tanpa Ribet Coding</h3>
             <p className={styles.featureDescription}>
-              Tinggal pakai! Terima beres tanpa perlu paham hal teknis yang rumit. Solusi praktis untuk langsung mendatangkan pembeli.
+              Tinggal pakai! Terima beres tanpa perlu paham hal teknis yang rumit.
             </p>
           </div>
 
           {/* Fitur 3 */}
           <div className={styles.featureCard}>
             <div className={styles.featureIcon}>🔥</div>
-            <h3 className={styles.featureTitle}>Promo Grand Opening: Diskon 80%</h3>
+            <h3 className={styles.featureTitle}>Promo Grand Opening: Diskon 67%%</h3>
             <p className={styles.featureDescription}>
-              Hanya Rp20.000 saja! Amankan harga termurah ini sekarang untuk memiliki website animasi premium sebelum harga naik normal.
+              Hanya Rp5.000 saja! Amankan harga termurah ini sekarang untuk memiliki website animasi premium sebelum harga naik normal.
             </p>
           </div>
 
@@ -114,7 +114,7 @@ export default function Home() {
             <div className={styles.featureIcon}>🔄</div>
             <h3 className={styles.featureTitle}>Update Otomatis, Anti Repot</h3>
             <p className={styles.featureDescription}>
-              Portofolio Anda akan memperbarui dirinya sendiri setiap kali ada proyek baru. Hemat waktu, biarkan website yang bekerja untuk Anda.
+              Portofolio Anda akan memperbarui dirinya sendiri setiap kali ada warna baru. Hemat waktu, biarkan website yang bekerja untuk Anda.
             </p>
           </div>
 

@@ -1,5 +1,5 @@
 {
-  "name": "bisnis_portofolio_copy",
+  "name": "bisnis_portofolio",
   "version": "0.1.0",
   "type": "module",
   "private": true,
@@ -16,12 +16,14 @@
     "cloudinary": "^2.10.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "js-cookie": "^3.0.8",
     "lucide-react": "^1.18.0",
     "midtrans-client": "^1.4.3",
     "multer": "^2.1.1",
-    "next": "16.2.7",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "next": "^16.2.9",
+    "postcss": "^8.5.15",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
   },
   "devDependencies": {
     "babel-plugin-react-compiler": "1.0.0",

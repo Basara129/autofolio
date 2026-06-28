@@ -1,23 +1,82 @@
 'use client';
 
-import React, { useState } from 'react';
-import Link from 'next/link';
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link'; // PERBAIKAN: Diimpor dari 'next/link' agar tidak crash
 import { useRouter } from 'next/navigation'; 
-import { supabase } from '../lib/supabase'; // 1. Perbaikan: Import instans tunggal supabase Anda
+import { supabase } from '../lib/supabase'; 
 import styles from './page.module.css'; 
+import Cookies from 'js-cookie';
 
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const COOKIE_SECRET = "AUTOFOLIO_SUPER_SECRET_KEY_2026";
+
+function generateSignature(text) {
+  let hash = 0;
+  const combined = text + COOKIE_SECRET;
+  for (let i = 0; i < combined.length; i++) {
+    hash = (hash << 5) - hash + combined.charCodeAt(i);
+    hash |= 0;
+  }
+  return hash.toString(36);
+}
+
+// Fungsi pembantu untuk membaca status ban langsung saat inisialisasi state
+function getInitialBanStatus() {
+  if (typeof window === 'undefined') return { isLocked: false, sisaWaktu: 0, msg: '' };
+  
+  const cookieBan = Cookies.get('user_banned');
+  if (cookieBan) {
+    const sisaWaktu = Math.ceil((parseInt(cookieBan, 10) - Date.now()) / 1000);
+    if (sisaWaktu > 0) {
+      return {
+        isLocked: true,
+        sisaWaktu: sisaWaktu,
+        msg: 'Terlalu banyak melakukan percobaan! Akses diblokir selama 30 menit.'
+      };
+    } else {
+      Cookies.remove('user_banned');
+    }
+  }
+  return { isLocked: false, sisaWaktu: 0, msg: '' };
+}
 
 export default function Warna() {
   const router = useRouter(); 
   const [kodeInput, setKodeInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [statusMessage, setStatusMessage] = useState('');
+  
+  // Menggunakan fungsi pembantu agar state diinisialisasi dengan nilai yang benar sejak awal render
+  const initialBan = getInitialBanStatus();
+  const [statusMessage, setStatusMessage] = useState(initialBan.msg);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isLocked, setIsLocked] = useState(initialBan.isLocked);
+  const [countdown, setCountdown] = useState(initialBan.sisaWaktu);
+
+  // Efek 1: Hanya bertugas membersihkan cookie jika waktu ban habis di tengah jalan
+  useEffect(() => {
+    if (countdown === 0 && isLocked) {
+      setIsLocked(false);
+      setStatusMessage('');
+      Cookies.remove('user_banned');
+    }
+  }, [countdown, isLocked]);
+
+  // Efek 2: Timer hitung mundur untuk UI tombol
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(prev => prev - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
 
   const handleCekKode = async (e) => {
     e.preventDefault();
     const cleanInput = kodeInput.trim();
+
+    if (isLocked) {
+      setStatusMessage(`Terlalu banyak percobaan. Silakan tunggu ${Math.ceil(countdown / 60)} menit lagi.`);
+      return;
+    }
 
     if (!cleanInput) {
       setStatusMessage('Silakan masukkan UUID kode unik terlebih dahulu.');
@@ -31,12 +90,34 @@ export default function Warna() {
       return;
     }
 
+    const sekarang = Date.now();
+    const dataSpam = JSON.parse(localStorage.getItem('spam_check') || '[]');
+    const percobaanTerakhir = dataSpam.filter(waktu => sekarang - waktu < 30000);
+    
+    if (percobaanTerakhir.length >= 4) {
+      const durasiBanDetik = 1800; 
+      const targetWaktuBuka = bandwidth_penalty(); // Target timestamp ban masa depan
+
+      function bandwidth_penalty() {
+        return sekarang + (durasiBanDetik * 1000);
+      }
+
+      setIsLocked(true);
+      setCountdown(durasiBanDetik);
+      setStatusMessage('Terlalu banyak melakukan percobaan! Akses diblokir selama 30 menit.');
+      setIsSuccess(false);
+      
+      Cookies.set('user_banned', targetWaktuBuka.toString(), { expires: 0.0208, secure: true });
+      localStorage.setItem('spam_check', JSON.stringify([...percobaanTerakhir, sekarang]));
+      return;
+    }
+
+    localStorage.setItem('spam_check', JSON.stringify([...percobaanTerakhir, sekarang]));
+
     setLoading(true);
     setStatusMessage('');
 
     try {
-      // BERUBAH DI SINI: Cukup select 'id' dan 'kode_unik' saja untuk validasi. 
-      // Lebih hemat memori dibanding select('*') karena data tabel anak sudah tidak numpuk di sini lagi.
       const { data, error } = await supabase
         .from('portfolios')
         .select('id, kode_unik')
@@ -50,7 +131,11 @@ export default function Warna() {
         setStatusMessage('Kode cocok! Mengalihkan ke halaman pengaturan...');
         setIsSuccess(true);
         
-        // Kirim kode_unik sebagai query parameter di URL setelah jeda 1.5 detik
+        Cookies.set('akses_pengaturan', cleanInput, { expires: 0.0035, secure: true });
+        
+        const signature = generateSignature(cleanInput);
+        Cookies.set('akses_sign', signature, { expires: 0.0035, secure: true });
+        
         setTimeout(() => {
           router.push(`/pengaturan?kode=${cleanInput}`);
         }, 1500);
@@ -61,6 +146,12 @@ export default function Warna() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
   return (
@@ -90,7 +181,7 @@ export default function Warna() {
                 value={kodeInput}
                 onChange={(e) => setKodeInput(e.target.value)}
                 className={styles.uniqueCodeInput}
-                disabled={loading || isSuccess}
+                disabled={loading || isSuccess || isLocked}
               />
               
               {isSuccess ? (
@@ -100,8 +191,8 @@ export default function Warna() {
                   </button>
                 </Link>
               ) : (
-                <button type="submit" className={styles.btnCheck} disabled={loading}>
-                  {loading ? 'Memeriksa...' : 'Cocokkan Data'}
+                <button type="submit" className={styles.btnCheck} disabled={loading || isLocked}>
+                  {loading ? 'Memeriksa...' : isLocked ? `Tunggu ${formatTime(countdown)}` : 'Cocokkan Data'}
                 </button>
               )}
             </div>
@@ -119,7 +210,7 @@ export default function Warna() {
           
           <div className={styles.linkContainer}>
             <a 
-              href="https://pemisahan.vercel.app/username" 
+              href="https://autofolio.my.id/username" 
               target="_blank" 
               rel="noreferrer" 
               className={styles.personalLink}

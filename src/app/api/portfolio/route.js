@@ -41,6 +41,7 @@ export async function POST(request) {
     // 1. Ekstraksi Data Teks biasa
     const username = formData.get("username");
     const nama_lengkap = formData.get("nama_lengkap");
+    const email = formData.get("email");
     const profesi = formData.get("profesi");
     const moto = formData.get("moto");
     const biografi = formData.get("biografi");
@@ -116,6 +117,7 @@ export async function POST(request) {
           moto,
           foto_url: linkFotoCloudinary,
           biografi,
+          email,
           // Kolom 'design' jika di database Anda dipindah ke social_medias atau tetap di portfolios, sesuaikan di sini.
           // Berdasarkan skema SQL sebelumnya, saya asumsikan 'design' tetap berada di portfolios/dikondisikan.
         },

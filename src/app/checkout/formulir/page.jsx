@@ -198,6 +198,11 @@ function ProfilFormContent() {
                 </div>
 
                 <div className={styles.formGroup}>
+                  <label className={styles.label}>email *</label>
+                  <input type="text" name="email" value={formData.email} onChange={handleChange} placeholder="Contoh: budi@gmail.com" className={styles.input} required />
+                </div>
+
+                <div className={styles.formGroup}>
                   <label className={styles.label}>Moto</label>
                   <input type="text" name="moto" value={formData.moto} onChange={handleChange} placeholder="Slogan hidup Anda..." className={styles.input} />
                 </div>
@@ -335,7 +340,7 @@ function ProfilFormContent() {
           
           <div className={styles.linkContainerBox}>
             <a 
-              href={`https://pemisahan.vercel.app/${formData.username}`} 
+              href={`https://autofolio.my.id/${formData.username}`} 
               target="_blank" 
               rel="noreferrer" 
               className={styles.portfolioLink}

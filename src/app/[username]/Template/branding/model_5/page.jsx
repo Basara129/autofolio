@@ -4,18 +4,19 @@ import React from "react";
 import styles from './page.module.css';
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import PortfolioPDF from "@/app/components/page"; // Pastikan path import komponen PDF sudah benar
+import PortfolioPDF from "@/app/[username]/components/page"; // Pastikan path import komponen PDF sudah benar
 import Image from "next/image";
-
 
 // Import PDFDownloadLink secara dinamis untuk mencegah error SSR di Next.js
 const PDFDownloadLink = dynamic(
   () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
   { ssr: false }
 );
+
 export default function TemplateModel1({ portfolio }) {
   // Destrukturisasi data media sosial agar kode di bawah lebih bersih
   const { instagram, tiktok, x, linkedin } = portfolio.social_medias || {};
+  const email = portfolio.email; // <-- AMBIL DATA EMAIL DARI TABEL PORTFOLIOS
 
   return (
     <div className={styles.container}>
@@ -71,6 +72,8 @@ export default function TemplateModel1({ portfolio }) {
                 <Image
                   src={portfolio.foto_url}
                   alt={portfolio.nama_lengkap}
+                  width={300}
+                  height={300}
                   className={styles.foto}
                   priority
                 />
@@ -182,6 +185,25 @@ export default function TemplateModel1({ portfolio }) {
       <section className={styles.kontakSection}>
         <div className={styles.kontakGrid}>
           
+          {/* Email Card Baru */}
+          {email && (
+            <div className={styles.kontak1Card}>
+              <div className={styles.kontak1Content}>
+                <div className={styles.kontak1Icon}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#EA4335" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                </div>
+                <p className={styles.kontak1Description}>
+                  <Link href={`mailto:${email}`} className={styles.kontak1Title}>
+                    {email}
+                  </Link>
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* LinkedIn */}
           {linkedin && (
             <div className={styles.kontak1Card}>
@@ -258,11 +280,11 @@ export default function TemplateModel1({ portfolio }) {
             </div>
           )}
 
-          {/* Fallback jika semua sosmed kosong */}
-          {!linkedin && !instagram && !x && !tiktok && (
+          {/* Fallback jika semua sosmed DAN email kosong */}
+          {!email && !linkedin && !instagram && !x && !tiktok && (
             <div className="col-span-full py-4 text-center w-full">
               <span className="text-sm text-slate-400 italic">
-                Pengguna belum menambahkan media sosial.
+                Pengguna belum menambahkan kontak atau media sosial.
               </span>
             </div>
           )}
