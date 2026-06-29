@@ -13,11 +13,23 @@ function ProfilFormContent() {
   const [submitted, setSubmitted] = useState(false);
   const [kodeUnik, setKodeUnik] = useState('');
 
-  // State Utama Form
+  // State untuk Custom Premium Toast Notification
+  const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+
+  // Fungsi Pembantu Memicu Toast Notifikasi
+  const showNotification = (message, type = 'success') => {
+    setToast({ show: true, message, type });
+    setTimeout(() => {
+      setToast({ show: false, message: '', type: 'success' });
+    }, 4000); // Otomatis menutup setelah 4 detik
+  };
+
+  // State Utama Form (Properti email ditambahkan agar input berstatus Controlled sejak awal)
   const [formData, setFormData] = useState({
     username: '', 
     nama_lengkap: '', 
     profesi: '',      
+    email: '', // <--- FIX: Menyelesaikan masalah uncontrolled to controlled input warning
     moto: '',          
     foto: null,
     biografi: '',
@@ -73,15 +85,15 @@ function ProfilFormContent() {
 
   const handleNextStep = () => {
     if (usernameError || !formData.username.trim()) {
-      alert('Silakan perbaiki username Anda terlebih dahulu sesuai ketentuan!');
+      showNotification('Silakan perbaiki username Anda terlebih dahulu sesuai ketentuan!', 'error');
       return;
     }
-    if (!formData.nama_lengkap.trim() || !formData.profesi.trim() || !formData.biografi.trim()) {
-      alert('Silakan isi semua bidang yang wajib (tanda bintang/required) di halaman ini!');
+    if (!formData.nama_lengkap.trim() || !formData.profesi.trim() || !formData.biografi.trim() || !formData.email.trim()) {
+      showNotification('Silakan isi semua bidang yang wajib (tanda bintang/required) di halaman ini!', 'error');
       return;
     }
     if (!formData.foto) {
-      alert('Silakan upload foto diri Anda terlebih dahulu!');
+      showNotification('Silakan upload foto diri Anda terlebih dahulu!', 'error');
       return;
     }
     setStep(2);
@@ -101,6 +113,7 @@ function ProfilFormContent() {
     dataToSend.append('username', formData.username);
     dataToSend.append('nama_lengkap', formData.nama_lengkap);
     dataToSend.append('profesi', formData.profesi);
+    dataToSend.append('email', formData.email);
     dataToSend.append('moto', formData.moto);
     dataToSend.append('biografi', formData.biografi);
     dataToSend.append('design', formData.design); 
@@ -127,7 +140,7 @@ function ProfilFormContent() {
       const hasil = await response.json();
 
       if (hasil.success) {
-        alert('Profil Anda berhasil disimpan!');
+        showNotification('Profil Anda berhasil disimpan! 🌟', 'success');
         if (hasil.kode_unik) {
           setKodeUnik(hasil.kode_unik);
         } else if (hasil.data && hasil.data.kode_unik) {
@@ -135,11 +148,11 @@ function ProfilFormContent() {
         }
         setSubmitted(true);
       } else {
-        alert('Gagal dari Server: ' + hasil.error); 
+        showNotification('Gagal dari Server: ' + hasil.error, 'error'); 
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('Koneksi internet putus atau server tidak merespon.'); 
+      showNotification('Koneksi internet putus atau server tidak merespon.', 'error'); 
     }
   };
 
@@ -198,7 +211,7 @@ function ProfilFormContent() {
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>email *</label>
+                  <label className={styles.label}>Email *</label>
                   <input type="text" name="email" value={formData.email} onChange={handleChange} placeholder="Contoh: budi@gmail.com" className={styles.input} required />
                 </div>
 
@@ -243,11 +256,11 @@ function ProfilFormContent() {
                   </div>
                   {pendidikan.map((item, index) => (
                     <div key={`pendidikan-${index}`} className={styles.dynamicContainerBlock}>
-                      <input type="text" value={item.nama_institusi} onChange={(e) => handleDinamisChange(index, 'nama_institusi', e.target.value, pendidikan, setPendidikan)} placeholder="Nama Sekolah / Universitas" className={styles.input} />
+                      <input type="text" value={item.nama_institusi || ''} onChange={(e) => handleDinamisChange(index, 'nama_institusi', e.target.value, pendidikan, setPendidikan)} placeholder="Nama Sekolah / Universitas" className={styles.input} />
                       <div className={styles.flexRowThree}>
-                        <input type="text" value={item.gelar} onChange={(e) => handleDinamisChange(index, 'gelar', e.target.value, pendidikan, setPendidikan)} placeholder="Gelar (Contoh: S.Kom / SMA)" className={styles.input} />
-                        <input type="number" value={item.tahun_masuk} onChange={(e) => handleDinamisChange(index, 'tahun_masuk', e.target.value, pendidikan, setPendidikan)} placeholder="Tahun Masuk" className={styles.input} />
-                        <input type="number" value={item.tahun_lulus} onChange={(e) => handleDinamisChange(index, 'tahun_lulus', e.target.value, pendidikan, setPendidikan)} placeholder="Tahun Lulus" className={styles.input} />
+                        <input type="text" value={item.gelar || ''} onChange={(e) => handleDinamisChange(index, 'gelar', e.target.value, pendidikan, setPendidikan)} placeholder="Gelar (Contoh: S.Kom / SMA)" className={styles.input} />
+                        <input type="number" value={item.tahun_masuk || ''} onChange={(e) => handleDinamisChange(index, 'tahun_masuk', e.target.value, pendidikan, setPendidikan)} placeholder="Tahun Masuk" className={styles.input} />
+                        <input type="number" value={item.tahun_lulus || ''} onChange={(e) => handleDinamisChange(index, 'tahun_lulus', e.target.value, pendidikan, setPendidikan)} placeholder="Tahun Lulus" className={styles.input} />
                       </div>
                       <button type="button" onClick={() => hapusInput(index, pendidikan, setPendidikan, { nama_institusi: '', gelar: '', tahun_masuk: '', tahun_lulus: '' })} className={styles.deleteButtonBlock}>Hapus Sekolah</button>
                     </div>
@@ -265,16 +278,16 @@ function ProfilFormContent() {
                   {pengalaman.map((item, index) => (
                     <div key={`pengalaman-${index}`} className={styles.dynamicContainerBlock}>
                       <div className={styles.flexRowTwo}>
-                        <input type="text" value={item.perusahaan} onChange={(e) => handleDinamisChange(index, 'perusahaan', e.target.value, pengalaman, setPengalaman)} placeholder="Nama Perusahaan / Organisasi" className={styles.input} />
-                        <input type="text" value={item.posisi} onChange={(e) => handleDinamisChange(index, 'posisi', e.target.value, pengalaman, setPengalaman)} placeholder="Posisi Jabatan" className={styles.input} />
+                        <input type="text" value={item.perusahaan || ''} onChange={(e) => handleDinamisChange(index, 'perusahaan', e.target.value, pengalaman, setPengalaman)} placeholder="Nama Perusahaan / Organisasi" className={styles.input} />
+                        <input type="text" value={item.posisi || ''} onChange={(e) => handleDinamisChange(index, 'posisi', e.target.value, pengalaman, setPengalaman)} placeholder="Posisi Jabatan" className={styles.input} />
                       </div>
                       <div className={styles.dateGroupContainer}>
                         <span className={styles.dateLabel}>Mulai:</span>
-                        <input type="date" value={item.tanggal_mulai} onChange={(e) => handleDinamisChange(index, 'tanggal_mulai', e.target.value, pengalaman, setPengalaman)} className={styles.input} />
+                        <input type="date" value={item.tanggal_mulai || ''} onChange={(e) => handleDinamisChange(index, 'tanggal_mulai', e.target.value, pengalaman, setPengalaman)} className={styles.input} />
                         <span className={styles.dateLabel}>Selesai:</span>
-                        <input type="date" value={item.tanggal_selesai} onChange={(e) => handleDinamisChange(index, 'tanggal_selesai', e.target.value, pengalaman, setPengalaman)} className={styles.input} />
+                        <input type="date" value={item.tanggal_selesai || ''} onChange={(e) => handleDinamisChange(index, 'tanggal_selesai', e.target.value, pengalaman, setPengalaman)} className={styles.input} />
                       </div>
-                      <textarea value={item.deskripsi_pekerjaan} onChange={(e) => handleDinamisChange(index, 'deskripsi_pekerjaan', e.target.value, pengalaman, setPengalaman)} placeholder="Deskripsi singkat mengenai pencapaian atau tugas Anda di sini..." className={styles.textarea} rows="2" />
+                      <textarea value={item.deskripsi_pekerjaan || ''} onChange={(e) => handleDinamisChange(index, 'deskripsi_pekerjaan', e.target.value, pengalaman, setPengalaman)} placeholder="Deskripsi singkat mengenai pencapaian atau tugas Anda di sini..." className={styles.textarea} rows="2" />
                       <button type="button" onClick={() => hapusInput(index, pengalaman, setPengalaman, { perusahaan: '', posisi: '', deskripsi_pekerjaan: '', tanggal_mulai: '', tanggal_selesai: '' })} className={styles.deleteButtonBlock}>Hapus Pengalaman</button>
                     </div>
                   ))}
@@ -288,8 +301,8 @@ function ProfilFormContent() {
                   </div>
                   {keahlian.map((item, index) => (
                     <div key={`keahlian-${index}`} className={styles.flexRowInline}>
-                      <input type="text" value={item.nama_keahlian} onChange={(e) => handleDinamisChange(index, 'nama_keahlian', e.target.value, keahlian, setKeahlian)} placeholder="Contoh: React / Figma / Copywriting" className={styles.input} />
-                      <select value={item.tingkat_kemahiran} onChange={(e) => handleDinamisChange(index, 'tingkat_kemahiran', e.target.value, keahlian, setKeahlian)} className={`${styles.input} ${styles.selectWidth}`}>
+                      <input type="text" value={item.nama_keahlian || ''} onChange={(e) => handleDinamisChange(index, 'nama_keahlian', e.target.value, keahlian, setKeahlian)} placeholder="Contoh: React / Figma / Copywriting" className={styles.input} />
+                      <select value={item.tingkat_kemahiran || 'Intermediate'} onChange={(e) => handleDinamisChange(index, 'tingkat_kemahiran', e.target.value, keahlian, setKeahlian)} className={`${styles.input} ${styles.selectWidth}`}>
                         <option value="Beginner">Beginner</option>
                         <option value="Intermediate">Intermediate</option>
                         <option value="Advanced">Advanced</option>
@@ -332,7 +345,24 @@ function ProfilFormContent() {
           {kodeUnik && (
             <div className={styles.uniqueCodeBox}>
               <p className={styles.uniqueCodeLabel}>Kode Unik Anda:</p>
-              <code className={styles.uniqueCodeDisplay}>{kodeUnik}</code>
+              
+              <div className={styles.codeFlexContainer}>
+                <code className={styles.uniqueCodeDisplay}>{kodeUnik}</code>
+                <button 
+                  type="button" 
+                  className={styles.copyButton}
+                  onClick={() => {
+                    navigator.clipboard.writeText(kodeUnik);
+                    showNotification('Kode unik berhasil disalin ke clipboard! 📋', 'success');
+                  }}
+                >
+                  Salin Kode
+                </button>
+              </div>
+
+              <p className={styles.warningText}>
+                *Jangan sampai hilang! Simpan kode ini untuk memperbarui portofolio Anda di kemudian hari.
+              </p>
             </div>
           )}
 
@@ -349,6 +379,27 @@ function ProfilFormContent() {
             </a>
           </div>
           <p className={styles.successFooterText}>Gunakan kode unik di atas untuk pengelolaan pembaruan data mendatang.</p>
+        </div>
+      )}
+
+      {/* ─── CUSTOM PREMIUM TOAST NOTIFICATION DOM ─── */}
+      {toast.show && (
+        <div className={`${styles.toastContainer} ${styles[toast.type]}`}>
+          <div className={styles.toastIcon}>
+            {toast.type === 'success' && '✓'}
+            {toast.type === 'error' && '✕'}
+            {toast.type === 'info' && '🛈'}
+          </div>
+          <div className={styles.toastContent}>
+            <p className={styles.toastText}>{toast.message}</p>
+          </div>
+          <button 
+            type="button" 
+            className={styles.toastCloseBtn}
+            onClick={() => setToast({ ...toast, show: false })}
+          >
+            &times;
+          </button>
         </div>
       )}
     </>

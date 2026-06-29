@@ -10,7 +10,7 @@ export default function Home() {
       {/* 1. TOP BANNER PROMO */}
       <div className={styles.promoBanner}>
         <p>
-          <strong>PROMO PEMBUKAAN SAMPAI TANGGAL 32 JUNI 2026</strong>
+          <strong>PROMO PEMBUKAAN SAMPAI TANGGAL 30 JULI 2026</strong>
         </p>
       </div>
 
@@ -103,7 +103,7 @@ export default function Home() {
           {/* Fitur 3 */}
           <div className={styles.featureCard}>
             <div className={styles.featureIcon}>🔥</div>
-            <h3 className={styles.featureTitle}>Promo Grand Opening: Diskon 67%%</h3>
+            <h3 className={styles.featureTitle}>Promo Grand Opening: Diskon 67%</h3>
             <p className={styles.featureDescription}>
               Hanya Rp5.000 saja! Amankan harga termurah ini sekarang untuk memiliki website animasi premium sebelum harga naik normal.
             </p>
@@ -150,7 +150,7 @@ export default function Home() {
               <ul className={styles.featureList}>
                 <li><span className={styles.checkIcon}>✓</span> Animasi Smooth (Framer Motion)</li>
                 <li><span className={styles.checkIcon}>✓</span> Responsive Design (Mobile Friendly)</li>
-                <li><span className={styles.checkIcon}>✓</span> SEO Friendly Optimization</li>
+                <li><span className={styles.checkIcon}>✓</span> Berlaku Selama 3 Bulan</li>
               </ul>
               <Link href="/checkout">
                 <button className={styles.ctaButton}>Pesan Sekarang</button>

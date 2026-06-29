@@ -1,6 +1,3 @@
-/* ==========================================================================
-   ─── LAYOUT UTAMA & CONTAINER (DEEP SLATE NAVY THEME) ───
-   ========================================================================== */
 .container {
   min-height: 100vh;
   background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%);
@@ -12,7 +9,7 @@
 }
 
 .mainContent {
-  background: #1e293b; /* Diubah dari putih ke Navy Slate Box */
+  background: #1e293b;
   width: 100%;
   max-width: 680px;
   border-radius: 16px;
@@ -24,14 +21,14 @@
 /* ─── JUDUL & BADGE ─── */
 .title {
   font-size: 1.85rem;
-  color: #ffffff; /* Judul Putih Bersih */
+  color: #ffffff;
   font-weight: 700;
   text-align: center;
   margin-bottom: 0.5rem;
 }
 
 .blueText {
-  color: #10b981; /* Warna aksen biru diubah ke Hijau Sukses Premium */
+  color: #10b981;
 }
 
 .orderBadge {
@@ -47,7 +44,6 @@
   width: fit-content;
 }
 
-/* ─── PROGRESS STEP INDICATOR ─── */
 .stepIndicator {
   display: flex;
   align-items: center;
@@ -60,7 +56,7 @@
   font-size: 0.875rem;
   padding: 0.5rem 1rem;
   border-radius: 8px;
-  background-color: #0f172a; /* Warna gelap dasar navbar */
+  background-color: #0f172a;
   color: #94a3b8;
   border: 1px solid #334155;
   font-weight: 500;
@@ -97,15 +93,15 @@
 .label {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #cbd5e1; /* Slate terang */
+  color: #cbd5e1;
   margin-bottom: 0.6rem;
   transition: color 0.2s ease;
   text-align: left;
 }
 
-/* Memicu warna label berubah saat input di dalamnya sedang aktif */
+
 .formGroup:focus-within .label {
-  color: #10b981; /* Fokus teks label ke Hijau Sukses */
+  color: #10b981;
 }
 
 .input, .textarea {
@@ -115,20 +111,19 @@
   border-radius: 10px;
   font-size: 0.95rem;
   color: #ffffff;
-  background-color: #0f172a; /* Input gelap pekat */
+  background-color: #0f172a;
   outline: none;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   box-sizing: border-box;
 }
 
-/* Efek Elevasi & Glow Lembut saat Input Focus */
+
 .input:focus, .textarea:focus {
   border-color: #10b981;
   box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
   background-color: #0f172a;
 }
 
-/* Kustomisasi Khusus untuk Elemen Select/Dropdown */
 select.input {
   appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
@@ -203,7 +198,7 @@ select.input {
 }
 
 .dynamicContainerBlock {
-  background-color: #0f172a; /* Gelap menyatu */
+  background-color: #0f172a;
   border: 1px solid #334155;
   padding: 1.25rem;
   border-radius: 10px;
@@ -345,7 +340,7 @@ select.input {
 
 .submitButton {
   width: 100%;
-  background: linear-gradient(135deg, #10b981, #059669); /* Tombol Lanjut ke Hijau */
+  background: linear-gradient(135deg, #10b981, #059669);
   color: white;
   margin-top: 1.5rem;
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
@@ -416,180 +411,79 @@ select.input {
 .backButton:active {
   transform: translateX(0) scale(0.98);
 }
-
 /* ─── SUCCESS STATE SCREEN ─── */
 .successWrapper {
   text-align: center;
-  padding: 1rem 0;
+  padding: 2rem 1rem; 
+  max-width: 680px;
+  margin: 0 auto;
 }
 
 .successTitle {
-  font-size: 2rem;
-  color: #10b981;
+  font-size: clamp(1.5rem, 5vw, 2.25rem);
   margin-bottom: 1rem;
+  font-weight: 800;
 }
 
 .successDescription {
   color: #cbd5e1;
   line-height: 1.6;
   margin-bottom: 2rem;
+  font-size: clamp(0.9rem, 2.5vw, 1.05rem); 
 }
-
-/* notifikasi */
-.toastContainer {
-  position: fixed;
-  top: 24px;
-  right: 24px;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  max-width: 380px;
-  background: #1e293b; /* Tetap menggunakan Deep Slate Navy Box */
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
-  animation: toastSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Base style untuk lingkaran icon di dalam toast */
-.toastIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  font-size: 0.95rem;
-  font-weight: bold;
-}
-
-.toastContent {
-  flex: 1;
-}
-
-.toastText {
-  margin: 0;
-  color: #f8fafc; /* Text Putih Bersih */
-  font-size: 0.875rem;
-  line-height: 1.4;
-  font-weight: 500;
-}
-
-.toastCloseBtn {
-  background: transparent;
-  border: none;
-  color: #64748b;
-  font-size: 1.25rem;
-  cursor: pointer;
-  padding: 0 4px;
-  transition: color 0.2s ease;
-}
-
-.toastCloseBtn:hover {
-  color: #94a3b8;
-}
-
-/* ─── VARIATION STATUS COLORWAYS (SINKRON DENGAN TEMA) ─── */
-
-/* Tipe: Success (Menggunakan Emerald Green Anda) */
-.toastContainer.success {
-  border: 1px solid rgba(16, 185, 129, 0.3);
-}
-.toastContainer.success .toastIcon {
-  background: rgba(16, 185, 129, 0.15);
+.uniqueCodeLabel {
+  font-size: 0.9rem;
+  font-weight: 700;
   color: #10b981;
+  margin: 0 0 0.75rem 0;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
-/* Tipe: Error (Menggunakan warna Rose Red redup agar tidak merusak tema gelap) */
-.toastContainer.error {
-  border: 1px solid rgba(244, 63, 94, 0.3);
-}
-.toastContainer.error .toastIcon {
-  background: rgba(244, 63, 94, 0.15);
-  color: #f43f5e;
-}
-
-/* Tipe: Info / Warning (Menggunakan warna Amber dari Warning Text Anda) */
-.toastContainer.info {
-  border: 1px solid rgba(245, 158, 11, 0.3);
-}
-.toastContainer.info .toastIcon {
-  background: rgba(245, 158, 11, 0.15);
-  color: #f59e0b;
-}
-
-/* ─── ANIMATION KEYFRAMES ─── */
-@keyframes toastSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-
-
-
+/* ─── UNIQUE CODE BOX (RESPONSIVE VERSION) ─── */
 .uniqueCodeBox {
-  background: rgba(30, 41, 59, 0.7); /* Menyamakan dengan background .card sebelumnya */
+  background: rgba(30, 41, 59, 0.7);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(16, 185, 129, 0.2); /* Border hijau tipis premium */
+  border: 1px solid rgba(16, 185, 129, 0.2);
   border-radius: 16px; 
   padding: 1.5rem;
   margin: 2rem auto;
-  max-width: 600px; /* Memperbaiki typo 'max-w' menjadi 'max-width' */
+  max-width: 600px;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 0 20px rgba(16, 185, 129, 0.05);
   text-align: left; 
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
-/* Efek sedikit mengambang saat box disorot */
-.uniqueCodeBox:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.4), 0 0 25px rgba(16, 185, 129, 0.1);
+.uniqueCodeBox {
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 16px; 
+  padding: 1.5rem;
+  margin: 2rem auto;
+  max-width: 600px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 0 20px rgba(16, 185, 129, 0.05);
+  text-align: left; 
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
-/* Label Atas "Kode Unik Anda:" */
-.uniqueCodeLabel {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #10b981; /* Diubah menjadi Hijau Emerald */
-  margin: 0 0 0.75rem 0;
-  letter-spacing: 0.02em;
-}
-
-/* Flexbox Kontainer */
-.codeFlexContainer {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 0.85rem;
-}
-
-/* Tampilan Teks Kode Unik (Interior Box) */
 .uniqueCodeDisplay {
-  background: #0f172a; /* Menggunakan warna kontras dasar kontainer gelap */
+  background: #0f172a;
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0.85rem 1.25rem;
   border-radius: 10px;
   font-family: 'Courier New', Courier, monospace; 
-  font-size: 1.15rem;
-  color: #f8fafc; /* Warna teks putih bersih */
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  color: #f8fafc;
   font-weight: 700;
-  flex: 1; 
-  min-width: 140px;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  
+  /* Solusi Kunci Anti Bocor/Tumpuk */
+  display: block;
+  min-width: 0;            
+  white-space: normal;     
+  word-break: break-all;   
+  line-height: 1.5;        
 }
-
-/* Tombol Salin (Copy Button - Emerald Green) */
 .copyButton {
   background: #10b981; 
   color: #ffffff;
@@ -600,15 +494,16 @@ select.input {
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
 }
 
-/* Interaksi Tombol Salin */
 .copyButton:hover {
-  background: #059669; /* Hijau gelap saat disorot */
+  background: #059669;
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
 }
 
 .copyButton:active {
@@ -616,20 +511,19 @@ select.input {
   box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
 }
 
-/* Teks Peringatan Di bawah Kode (Kompatibel dengan Layar Gelap) */
 .warningText {
   font-size: 0.85rem;
-  color: #fbbf24; /* Amber terang cerah agar kontras di latar belakang gelap */
+  color: #fbbf24;
   line-height: 1.5;
   margin: 0;
 }
 
-/* Kuatkan visualisasi teks tebal di dalam warning */
 .warningText strong {
-  color: #f59e0b; /* Amber solid untuk penekanan teks kuat */
+  color: #f59e0b;
   font-weight: 700;
 }
 
+/* ─── LINK PERSONAL CONTAINER ─── */
 .accessLinkLabel {
   font-size: 0.9rem;
   color: #cbd5e1;
@@ -640,50 +534,156 @@ select.input {
   background-color: rgba(16, 185, 129, 0.08);
   border: 1px solid rgba(16, 185, 129, 0.3);
   padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .portfolioLink {
-  color: #10b981; /* Link sukses beralih ke warna hijau */
+  color: #10b981;
   font-weight: 700;
   text-decoration: none;
-  font-size: 1.1rem;
+  font-size: clamp(0.95rem, 3vw, 1.15rem);
   display: inline-block;
+  max-width: 100%;
+  word-break: break-all;
   transition: all 0.2s ease;
 }
 
 .portfolioLink:hover {
   color: #34d399;
-  transform: scale(1.02);
+  transform: scale(1.01);
 }
 
 .successFooterText {
   font-size: 0.8rem;
   color: #64748b;
+  line-height: 1.4;
 }
 
-/* ─── LOADING STATE SCREEN ─── */
-.loadingState {
+/* ─── TOAST NOTIFICATION ─── */
+.toastContainer {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding: 4rem 0;
-  color: #94a3b8;
+  gap: 12px;
+  min-width: 320px;
+  max-width: 450px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #0f172a; 
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+  animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Variasi Khusus Jika Status SUCCESS */
+.success {
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* Variasi Khusus Jika Status ERROR */
+.error {
+  border: 1px solid rgba(239, 68, 68, 0.3); 
+}
+
+/* Bagian Lingkaran Icon */
+.toastIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+/* Warna icon menyesuaikan status */
+.success .toastIcon {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.error .toastIcon {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+/* Wadah Teks Informasi */
+.toastContent {
+  flex: 1;
+}
+
+/* TULISAN ALERT KUSTOM (Sesuai request: Warna Hijau untuk Sukses) */
+.success .toastText {
+  color: #10b981 !important; 
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.error .toastText {
+  color: #f8fafc;
+  font-size: 0.95rem;
   font-weight: 500;
+  margin: 0;
+  line-height: 1.4;
 }
 
-/* ─── ANIMATIONS ─── */
-.stepFadeAnimation {
-  animation: fadeIn 0.4s ease-out;
+/* Tombol Silang (Close Button) */
+.toastCloseBtn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  transition: color 0.2s ease;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+.toastCloseBtn:hover {
+  color: #94a3b8;
 }
 
-/* ─── RESPONSIVITAS LAYAR KECIL ─── */
+/* ─── ANIMASI SLIDE IN DARI KANAN ─── */
+@keyframes toastSlideIn {
+  from {
+    transform: translateX(120%) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Untuk Layar Tablet / HP Menengah (Lebar < 640px) */
+@media (max-width: 640px) {
+  .codeFlexContainer {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  
+  .uniqueCodeDisplay {
+    text-align: center;
+    width: 100%;
+    font-size: 0.95rem;
+  }
+
+  .copyButton {
+    width: 100%;
+    padding: 0.85rem;
+  }
+}
+
+/* Untuk Layar HP Sangat Kecil (Lebar < 480px) */
 @media (max-width: 480px) {
   .flexRowTwo, .flexRowThree, .flexRowInline {
     flex-direction: column;
@@ -695,24 +695,11 @@ select.input {
   .buttonActionGroup {
     flex-direction: column-reverse;
   }
-  .codeFlexContainer {
-    flex-direction: column; /* Teks kode dan tombol bertumpuk vertikal di HP */
-    align-items: stroke;
-  }
-  
-  .uniqueCodeDisplay {
-    text-align: center;
-  }
-
-  .copyButton {
-    width: 100%;
-    padding: 0.85rem;
-  }
 
   .toastContainer {
     top: 16px;
     right: 16px;
     left: 16px;
-    max-width: calc(100% - 32px);
+    width: calc(100% - 32px);
   }
 }
