@@ -2,17 +2,16 @@
 
 import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
-
+import Link from 'next/link';
 export default function PrivacyPolicyPage() {
-  const router = useRouter();
 
   return (
     <div className={styles.container}>
       <div className={styles.card}>
         {/* Tombol Kembali */}
-        <button onClick={() => router.back()} className={styles.backBtn}>
+        <Link href="./checkout" className={styles.backBtn}>
           ← Kembali ke Checkout
-        </button>
+        </Link>
 
         <header className={styles.header}>
           <h1 className={styles.title}>Kebijakan Privasi Autofolio</h1>
