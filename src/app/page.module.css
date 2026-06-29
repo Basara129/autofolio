@@ -70,6 +70,7 @@
 .heroSection {
   background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%); 
   padding: 80px 40px;
+
 }
 
 .heroContainer {
@@ -744,14 +745,37 @@
   .navbar { padding: 15px 20px; }
   .featuresGrid { grid-template-columns: repeat(2, 1fr); }
   .brandsGridPlaceholder { flex-wrap: wrap; }
-  .heroSection{
-    display: flex;
-    flex-direction: row;
+  
+  .heroSection {
+    /* Hapus flex-direction: row agar tidak memaksa berjejer ke samping */
+    padding: 60px 20px; 
+    overflow: hidden;
   }
 
-  .heroContainer { flex-direction: column; text-align: center; flex-direction: column-reverse;}
+  .heroContainer { 
+    display: flex;
+    /* Pilih salah satu: 'column' (teks di atas, gambar di bawah) 
+       atau 'column-reverse' (gambar di atas, teks di bawah) */
+    flex-direction: column-reverse; 
+    text-align: center; 
+    gap: 30px; /* Jarak antara teks dan gambar saat menumpuk */
+  }
 }
 
 @media (max-width: 480px) {
   .featuresGrid { grid-template-columns: 1fr; }
+  
+  .heroSection {
+    /* Dikurangi padding-nya agar space di layar HP kecil lebih luas */
+    padding: 40px 15px; 
+  }
+  
+  /* Tambahan pengaman agar gambar mockup mengecil pas di layar HP < 480px */
+  .portfolioPreview, .mainMockupCard {
+    max-width: 100% !important;
+  }
+  .mockupImage{
+    width: 330px;
+    height: 330px;
+  }
 }

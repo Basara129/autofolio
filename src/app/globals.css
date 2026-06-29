@@ -1,12 +1,13 @@
 /* Pastikan padding dan border tidak menambah lebar elemen */
 *, *::before, *::after {
-  box-sizing: border-box;
+  box-sizing: border-box !important;
 }
 
 /* Mencegah seluruh halaman bocor ke kanan */
-html, body, .pageWrapper {
-  overflow-x: hidden;
-  width: 100%;
+html, body, #__next, .pageWrapper {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
 }
 * {
   box-sizing: border-box;
