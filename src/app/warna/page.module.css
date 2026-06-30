@@ -28,7 +28,7 @@
   margin: 0;
 }
 
-/* --- 2. NAVIGATION BAR --- */
+/* --- 2. NAVIGATION BAR (RESPONSIVE) --- */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -48,9 +48,9 @@
   gap: 5px;
 }
 
-/* --- 3. MAIN CARD BOX (CONTAINER PUSAT) --- */
+/* --- 3. MAIN CARD BOX (CONTAINER PUSAT RESPONSIVE) --- */
 .containerBox {
-  width: 100%;
+  width: 90%; /* Menggunakan persentase agar fleksibel di layar kecil */
   max-width: 500px;
   background-color: #1e293b; /* Diubah dari putih ke navy slate box */
   padding: 30px;
@@ -58,9 +58,10 @@
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.05);
   margin: 40px auto; /* Ditengahkan secara otomatis */
+  box-sizing: border-box; /* Memastikan padding tidak merusak lebar max-width */
 }
 
-/* --- FORM & INPUT GROUP --- */
+/* --- FORM & INPUT GROUP (RESPONSIVE) --- */
 .formContainer {
   display: flex;
   flex-direction: column;
@@ -78,10 +79,12 @@
   display: flex;
   gap: 12px;
   align-items: center;
+  flex-wrap: wrap; /* Tombol akan turun ke bawah jika layar terlalu sempit */
 }
 
 .uniqueCodeInput {
   flex: 1;
+  min-width: 200px; /* Mencegah input mengecil secara ekstrem */
   padding: 12px 16px;
   border-radius: 8px;
   border: 1px solid #334155;
@@ -90,6 +93,7 @@
   background-color: #0f172a; /* Latar input gelap */
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
 }
 
 .uniqueCodeInput:focus {
@@ -104,7 +108,7 @@
   cursor: not-allowed;
 }
 
-/* --- TOMBOL AKSI (ACTION BUTTONS) --- */
+/* --- TOMBOL AKSI (ACTION BUTTONS RESPONSIVE) --- */
 .btnCheck {
   padding: 12px 24px;
   background: linear-gradient(90deg, #10b981, #059669); /* Menggunakan basis hijau sukses */
@@ -138,9 +142,11 @@
 .linkButtonWrapper {
   display: inline-block;
   text-decoration: none;
+  width: 100%; /* Membungkus tombol penuh jika di mobile */
 }
 
 .btnSuccessGo {
+  width: 100%; /* Tombol success otomatis menyesuaikan lebar */
   padding: 12px 24px;
   background: linear-gradient(90deg, #10b981, #059669);
   color: #ffffff;
@@ -152,6 +158,7 @@
   white-space: nowrap;
   transition: all 0.2s ease;
   animation: pulseGreen 2s infinite;
+  box-sizing: border-box;
 }
 
 .btnSuccessGo:hover {
@@ -240,13 +247,36 @@
 
 /* --- ANIMASI PULSASI --- */
 @keyframes pulseGreen {
-  0% {
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* ==========================================================================
+   --- MEDIA QUERIES (BREAKPOINTS UNTUK MOBILE & SMARTPHONE) ---
+   ========================================================================== */
+@media (max-width: 600px) {
+  .navbar {
+    padding: 15px 20px; /* Memperkecil padding samping navbar di HP */
   }
-  70% {
-    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+
+  .containerBox {
+    padding: 20px; /* Mengurangi padding dalam card agar space text lebih luas */
+    margin: 20px auto; /* Mengurangi margin atas-bawah card */
   }
-  100% {
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+
+  .inputGroup {
+    flex-direction: column; /* Input dan Tombol Check berbaris vertikal di mobile */
+    align-items: stretch;
+  }
+
+  .uniqueCodeInput {
+    width: 100%; /* Input mengambil lebar penuh */
+    min-width: unset;
+  }
+
+  .btnCheck {
+    width: 100%; /* Tombol Check mengambil lebar penuh di mobile */
+    text-align: center;
   }
 }

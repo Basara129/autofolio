@@ -7,12 +7,12 @@ import LoadingSkeleton from '../../loading/page';
 import styles from './page.module.css'; 
 
 // Impor komponen visual template asli untuk pratinjau
-import TemplateModel1 from '@/app/[username]/Template/branding/model_1/page';
-import TemplateModel2 from '@/app/[username]/Template/branding/model_2/page';
-import TemplateModel3 from '@/app/[username]/Template/branding/model_3/page';
-import TemplateModel4 from '@/app/[username]/Template/branding/model_4/page';
-import TemplateModel5 from '@/app/[username]/Template/branding/model_5/page';
-import TemplateModel6 from '@/app/[username]/Template/branding/model_6/page';
+import TemplateModel1 from '@/app/[username]/Template/model_1/page';
+import TemplateModel2 from '@/app/[username]/Template/model_2/page';
+import TemplateModel3 from '@/app/[username]/Template/model_3/page';
+import TemplateModel4 from '@/app/[username]/Template/model_4/page';
+import TemplateModel5 from '@/app/[username]/Template/model_5/page';
+import TemplateModel6 from '@/app/[username]/Template/model_6/page';
 
 // Regular Ekspresi untuk memvalidasi apakah format string berupa UUIDv4 yang valid
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[4][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;

@@ -42,7 +42,7 @@ export default function CheckoutPage() {
             
             <div className={styles.totalRow}>
               <span>Total Pembayaran</span>
-              <span className={styles.price}>Rp 5.000</span>
+              <span className={styles.price}>Rp 10.000</span>
             </div>
           </div>
 

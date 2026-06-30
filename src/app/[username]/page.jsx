@@ -6,10 +6,10 @@ import { supabase } from '@/app/lib/supabase';
 import LoadingSkeleton from '../loading/page';
 
 // Impor komponen visual template 
-import TemplateModel1 from './Template/branding/model_1/page';
-import TemplateModel2 from './Template/branding/model_2/page';
-import TemplateModel3 from './Template/branding/model_3/page';
-import TemplateModel4 from './Template/branding/model_4/page';
+import TemplateModel1 from './Template/model_1/page';
+import TemplateModel2 from './Template/model_2/page';
+import TemplateModel3 from './Template/model_3/page';
+import TemplateModel4 from './Template/model_4/page';
 
 // Baris inisialisasi SUPABASE_URL dan createClient sebelumnya SUDAH DIHAPUS
 

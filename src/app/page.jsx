@@ -18,6 +18,14 @@ export default function Home() {
       {/* 2. NAVIGATION BAR */}
       <header className={styles.navbar}>
         <div className={styles.logo}>
+          <Image 
+            src="/logo.jpeg"
+            alt="Creative Portfolio Project" 
+            height={30}
+            width={30}
+            className={styles.mockupIcon}
+            priority
+            />
           <span className={styles.logoIcon}>AUTOFOLIO</span> 
         </div>
         <div>
@@ -32,9 +40,9 @@ export default function Home() {
       <section className={styles.heroSection}>
         <div className={styles.heroContainer}>
           <div className={styles.heroContent}>
-            <h1 className={styles.heroTitle}>Website Portofolio Profesional</h1>
+            <h1 className={styles.heroTitle}>Website Portofolio</h1>
             <p className={styles.heroSubtitle}>
-              Hanya Di Sini Kamu Bisa Membuat Website Portofolio <strong>Keren</strong>
+              Hanya Di Sini Kamu Bisa Membuat Website Portofolio Dengan Bonus - Bonus Buku Upgrade Diri <strong>Keren</strong>
             </p>
             <Link href="/checkout">
               <button className={styles.heroCtaButton}><strong>BUAT DISINI</strong></button>
@@ -97,16 +105,16 @@ export default function Home() {
             <div className={styles.featureIcon}>🚀</div>
             <h3 className={styles.featureTitle}>Siap Pakai, Tanpa Ribet Coding</h3>
             <p className={styles.featureDescription}>
-              Tinggal pakai! Terima beres tanpa perlu paham hal teknis yang rumit.
+              Website Kamu Bisa Langsung Tampil (Live), Tanpa Perlu Paham Hal Teknis Yang Rumit.
             </p>
           </div>
 
           {/* Fitur 3 */}
           <div className={styles.featureCard}>
             <div className={styles.featureIcon}>🔥</div>
-            <h3 className={styles.featureTitle}>Promo Grand Opening: Diskon 67%</h3>
+            <h3 className={styles.featureTitle}>Promo Grand Opening: Diskon 90%</h3>
             <p className={styles.featureDescription}>
-              Hanya Rp5.000 saja! Amankan harga termurah ini sekarang untuk memiliki website animasi premium sebelum harga naik normal.
+              Hanya Rp10.000 Saja! Amankan Harga Termurah Ini Sekarang Untuk Memiliki Website Animasi Premium Sebelum Harga Naik Normal.
             </p>
           </div>
 
@@ -115,7 +123,7 @@ export default function Home() {
             <div className={styles.featureIcon}>🔄</div>
             <h3 className={styles.featureTitle}>Update Otomatis, Anti Repot</h3>
             <p className={styles.featureDescription}>
-              Portofolio Anda akan memperbarui dirinya sendiri setiap kali ada warna baru. Hemat waktu, biarkan website yang bekerja untuk Anda.
+              Gratis Pembaruan Kombinasi Warna Yang Bisa Kamu Gunakan
             </p>
           </div>
 
@@ -131,7 +139,7 @@ export default function Home() {
             {/* Kartu Kedua: Dengan Animasi + Coretan Harga */}
             <div className={styles.brandCard}>
               {/* Badge Diskon Pop-up */}
-              <div className={styles.discountBadge}>Save 67%</div>
+              <div className={styles.discountBadge}>Save 90%</div>
               
               <div className={styles.cardHeader}>
                 <h4 className={styles.packageTitle}>Website Animasi</h4>
@@ -139,10 +147,10 @@ export default function Home() {
               </div>
 
               <div className={styles.priceContainer}>
-                <span className={styles.originalPrice}>Rp 15.000</span>
+                <span className={styles.originalPrice}>Rp 100.000</span>
                 <div className={styles.currentPriceWrapper}>
                   <span className={styles.currency}>Rp</span>
-                  <span className={styles.priceNumber}>5.000</span>
+                  <span className={styles.priceNumber}>10.000</span>
                   <span className={styles.pricePeriod}>/projek</span>
                 </div>
               </div>
@@ -150,8 +158,8 @@ export default function Home() {
               {/* Tambahan Fitur agar kartu tidak terlihat kosong */}
               <ul className={styles.featureList}>
                 <li><span className={styles.checkIcon}>✓</span> Animasi Smooth (Framer Motion)</li>
-                <li><span className={styles.checkIcon}>✓</span> Responsive Design (Mobile Friendly)</li>
-                <li><span className={styles.checkIcon}>✓</span> Berlaku Selama 3 Bulan</li>
+                <li><span className={styles.checkIcon}>✓</span> Gratis E-Book Biar Kamu Bisa Dapat Uang</li>
+                <li><span className={styles.checkIcon}>✓</span> Berlaku Selama 1 Tahun</li>
               </ul>
               <Link href="/checkout">
                 <button className={styles.ctaButton}>Pesan Sekarang</button>

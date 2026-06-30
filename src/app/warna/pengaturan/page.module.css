@@ -1,4 +1,6 @@
-
+/* ==========================================================================
+   --- RESET & GLOBAL THEME (DEEP SLATE NAVY THEME) ---
+   ========================================================================== */
 .pageWrapper {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: #cbd5e1; /* Slate 300: Teks terang untuk background gelap */
@@ -23,7 +25,7 @@
   margin: 0;
 }
 
-/* --- 2. NAVIGATION BAR --- */
+/* --- 2. NAVIGATION BAR (RESPONSIVE) --- */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -31,6 +33,7 @@
   padding: 15px 40px;
   background-color: #0f172a;
   border-bottom: 1px solid #1e293b; 
+  box-sizing: border-box;
 }
 
 .logo {
@@ -50,6 +53,8 @@
   justify-content: center;
   background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%); 
   font-family: system-ui, -apple-system, sans-serif;
+  padding: 20px; /* Mencegah konten menyentuh tepi layar */
+  box-sizing: border-box;
 }
 
 .dashboardWrapper {
@@ -130,11 +135,12 @@
 }
 
 /* ==========================================================================
-   5. TOMBOL PEMILIHAN TEMA (THEME SWITCHER)
+   5. TOMBOL PEMILIHAN TEMA (THEME SWITCHER - RESPONSIVE)
    ========================================================================== */
 .btnGroupTema {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  /* minmax diturunkan ke 120px agar pas bersanding 2 kolom di layar HP kecil tanpa overflow */
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 0.75rem;
   margin-top: 0.75rem;
 }
@@ -149,6 +155,10 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap; /* Mencegah teks tombol hancur berantakan jika terlalu panjang */
 }
 
 .btnTema:hover {
@@ -164,11 +174,11 @@
   color: white !important;
 }
 
-/* Penyesuaian skema warna aktif agar tetap terbaca kontras di dashboard gelap */
-.btnTemaAktif:nth-child(1) { background-color:rgb(0, 170, 150); border-color:rgb(0, 170, 150); } 
-.btnTemaAktif:nth-child(2) { background-color: rgb(255, 180, 0); border-color:rgb(255, 180, 0); } 
+/* Penyesuaian skema warna aktif */
+.btnTemaAktif:nth-child(1) { background-color: rgb(0, 170, 150); border-color: rgb(0, 170, 150); } 
+.btnTemaAktif:nth-child(2) { background-color: rgb(255, 180, 0); border-color: rgb(255, 180, 0); } 
 .btnTemaAktif:nth-child(3) { background-color: rgb(0, 210, 255); border-color: rgb(0, 210, 255); } 
-.btnTemaAktif:nth-child(4) { background-color: rgb(115, 85, 155); border-color:rgb(115, 85, 155); } 
+.btnTemaAktif:nth-child(4) { background-color: rgb(115, 85, 155); border-color: rgb(115, 85, 155); } 
 .btnTemaAktif:nth-child(5) { background-color: rgb(166, 16, 16); border-color: rgb(166, 16, 16); } 
 .btnTemaAktif:nth-child(6) { background-color: rgb(14, 165, 233); border-color: rgb(14, 165, 233); } 
 
@@ -202,13 +212,15 @@
   border: 1px solid #334155;
   font-size: 0.95rem;
   color: #ffffff;
-  background-color: #0f172a; /* Latar input dalam pekat */
+  background-color: #0f172a;
   outline: none;
   transition: all 0.2s ease;
+  box-sizing: border-box;
+  width: 100%; /* Menjamin input mengisi lebar box secara sempurna */
 }
 
 .textInput:focus {
-  border-color: #10b981; /* Fokus beralih ke warna aksen Hijau Sukses */
+  border-color: #10b981; 
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
   background-color: #0f172a;
 }
@@ -219,7 +231,7 @@
 .btnSimpan {
   width: 100%;
   padding: 0.875rem;
-  background: linear-gradient(90deg, #10b981, #059669); /* Gradasi hijau premium */
+  background: linear-gradient(90deg, #10b981, #059669); 
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -228,6 +240,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+  box-sizing: border-box;
 }
 
 .btnSimpan:hover:not(:disabled) {
@@ -247,7 +260,7 @@
 }
 
 /* ==========================================================================
-   8. CONTAINER LIVE PREVIEW (MOCKUP MONITOR)
+   8. CONTAINER LIVE PREVIEW (MOCKUP MONITOR - RESPONSIVE)
    ========================================================================== */
 .previewPanel {
   display: flex;
@@ -256,40 +269,31 @@
 
 .previewScreen {
   flex: 1;
-  min-height: 500px;
+  min-height: 350px; /* Diturunkan dari 500px agar tidak terlalu memakan layar vertikal HP */
   max-height: 700px;
   border-radius: 12px;
   border: 1px solid #334155;
-  background-color: #0f172a; /* Preview default dimulai dengan warna dasar gelap */
+  background-color: #0f172a; 
   overflow-y: auto;
   position: relative;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
 }
 
-/* Penyesuaian tema mockup pratinjau interior (Gelap adaptif) */
-.previewScreen.model_1 { background-color:rgb(0, 170, 150); border-color:rgb(0, 170, 150);  }
-.previewScreen.model_2 { background-color: rgb(255, 180, 0); border-color:rgb(255, 180, 0) }
+/* Penyesuaian tema mockup pratinjau interior */
+.previewScreen.model_1 { background-color: rgb(0, 170, 150); border-color: rgb(0, 170, 150); }
+.previewScreen.model_2 { background-color: rgb(255, 180, 0); border-color: rgb(255, 180, 0); }
 .previewScreen.model_3 { background-color: rgb(0, 210, 255); border-color: rgb(0, 210, 255); }
-.previewScreen.model_4 { background-color: rgb(115, 85, 155); border-color:rgb(115, 85, 155); }
-.previewScreen.model_5 { background-color: rgb(166, 16, 16); border-color: rgb(166, 16, 16);}
+.previewScreen.model_4 { background-color: rgb(115, 85, 155); border-color: rgb(115, 85, 155); }
+.previewScreen.model_5 { background-color: rgb(166, 16, 16); border-color: rgb(166, 16, 16); }
 .previewScreen.model_6 { background-color: rgb(14, 165, 233); border-color: rgb(14, 165, 233); }
 
-
 /* Kustomisasi scrollbar internal jendela pratinjau */
-.previewScreen::-webkit-scrollbar {
-  width: 6px;
-}
-.previewScreen::-webkit-scrollbar-track {
-  background: #0f172a;
-}
-.previewScreen::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 3px;
-}
-.previewScreen::-webkit-scrollbar-thumb:hover {
-  background: #475569;
-}
+.previewScreen::-webkit-scrollbar { width: 6px; }
+.previewScreen::-webkit-scrollbar-track { background: #0f172a; }
+.previewScreen::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+.previewScreen::-webkit-scrollbar-thumb:hover { background: #475569; }
 
 /* ==========================================================================
    9. BOX ERROR / ERROR HANDLING
@@ -299,6 +303,7 @@
   flex-direction: column;
   padding: 2rem;
   text-align: center;
+  box-sizing: border-box;
 }
 
 .errorTitle {
@@ -316,12 +321,48 @@
    10. KEYFRAME ANIMASI INTERAKTIF
    ========================================================================== */
 @keyframes fadeInPage {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   --- MEDIA QUERIES (OPTIMASI BREAKPOINTS MOBILE & TABLET) ---
+   ========================================================================== */
+
+/* Tablet & Smartphone (Layar Menengah ke Kecil) */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 15px 20px; /* Mengurangi padding samping navbar */
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .dashboardWrapper {
+    padding: 1rem; /* Menghemat ruang tepi layar di HP */
+  }
+
+  .mainTitle {
+    font-size: 1.5rem; /* Mengecilkan ukuran font judul utama sedikit */
+  }
+
+  .cardPanel {
+    padding: 1.25rem; /* Mengecilkan ruang padding internal kartu */
+  }
+}
+
+/* Smartphone Layar Sangat Kecil (Di bawah 480px) */
+@media (max-width: 480px) {
+  .navbar {
+    flex-direction: column; /* Jika logo dan menu kepanjangan, akan otomatis menumpuk rapi */
+    gap: 10px;
+    text-align: center;
+    padding: 15px;
+  }
+
+  .btnGroupTema {
+    grid-template-columns: repeat(2, 1fr); /* Memaksa susunan tombol tema menjadi 2 kolom simetris */
+    gap: 0.5rem;
+  }
+  
+  .previewScreen {
+    min-height: 300px; /* Menyesuaikan layar agar seimbang dengan formulir di atasnya */
   }
 }

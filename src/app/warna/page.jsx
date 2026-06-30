@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link'; // PERBAIKAN: Diimpor dari 'next/link' agar tidak crash
+import Link from 'next/link';
 import { useRouter } from 'next/navigation'; 
 import { supabase } from '../lib/supabase'; 
 import styles from './page.module.css'; 
@@ -20,7 +20,6 @@ function generateSignature(text) {
   return hash.toString(36);
 }
 
-// Fungsi pembantu untuk membaca status ban langsung saat inisialisasi state
 function getInitialBanStatus() {
   if (typeof window === 'undefined') return { isLocked: false, sisaWaktu: 0, msg: '' };
   
@@ -45,14 +44,12 @@ export default function Warna() {
   const [kodeInput, setKodeInput] = useState('');
   const [loading, setLoading] = useState(false);
   
-  // Menggunakan fungsi pembantu agar state diinisialisasi dengan nilai yang benar sejak awal render
   const initialBan = getInitialBanStatus();
   const [statusMessage, setStatusMessage] = useState(initialBan.msg);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isLocked, setIsLocked] = useState(initialBan.isLocked);
   const [countdown, setCountdown] = useState(initialBan.sisaWaktu);
 
-  // Efek 1: Hanya bertugas membersihkan cookie jika waktu ban habis di tengah jalan
   useEffect(() => {
     if (countdown === 0 && isLocked) {
       setIsLocked(false);
@@ -61,7 +58,6 @@ export default function Warna() {
     }
   }, [countdown, isLocked]);
 
-  // Efek 2: Timer hitung mundur untuk UI tombol
   useEffect(() => {
     if (countdown > 0) {
       const timer = setTimeout(() => setCountdown(prev => prev - 1), 1000);
@@ -96,11 +92,7 @@ export default function Warna() {
     
     if (percobaanTerakhir.length >= 4) {
       const durasiBanDetik = 1800; 
-      const targetWaktuBuka = bandwidth_penalty(); // Target timestamp ban masa depan
-
-      function bandwidth_penalty() {
-        return sekarang + (durasiBanDetik * 1000);
-      }
+      const targetWaktuBuka = sekarang + (durasiBanDetik * 1000);
 
       setIsLocked(true);
       setCountdown(durasiBanDetik);
@@ -118,13 +110,18 @@ export default function Warna() {
     setStatusMessage('');
 
     try {
+      /* PERBAIKAN 1: Menggunakan .maybeSingle() alih-alih .single()
+        Menghindari crash internal PostgREST (Error PGRST116) yang sering membuat data valid terbaca salah.
+      */
       const { data, error } = await supabase
         .from('portfolios')
         .select('id, kode_unik')
         .eq('kode_unik', cleanInput)
-        .single();
+        .maybeSingle(); 
 
-      if (error || !data) {
+      if (error) throw error;
+
+      if (!data) {
         setStatusMessage('Kode unik UUID tidak ditemukan dalam database.');
         setIsSuccess(false);
       } else {
@@ -136,12 +133,17 @@ export default function Warna() {
         const signature = generateSignature(cleanInput);
         Cookies.set('akses_sign', signature, { expires: 0.0035, secure: true });
         
+        /* PERBAIKAN 2: Sinkronisasi rute URL agar tidak 404 Not Found.
+          Karena folder 'pengaturan' bersarang di dalam 'warna' (/warna/pengaturan), 
+          maka jalurnya wajib ditulis lengkap: `/warna/pengaturan`
+        */
         setTimeout(() => {
-          router.push(`/pengaturan?kode=${cleanInput}`);
+          router.push(`/warna/pengaturan?kode=${cleanInput}`);
         }, 1500);
       }
     } catch (err) {
-      setStatusMessage('Terjadi kesalahan koneksi sistem.');
+      console.error(err);
+      setStatusMessage('Terjadi kesalahan koneksi sistem: ' + err.message);
       setIsSuccess(false);
     } finally {
       setLoading(false);
@@ -185,7 +187,8 @@ export default function Warna() {
               />
               
               {isSuccess ? (
-                <Link href={`/pengaturan?kode=${kodeInput.trim()}`} className={styles.linkButtonWrapper}>
+                /* PERBAIKAN 3: Menyesuaikan tautan tombol Link ke /warna/pengaturan */
+                <Link href={`/warna/pengaturan?kode=${kodeInput.trim()}`} className={styles.linkButtonWrapper}>
                   <button type="button" className={styles.btnSuccessGo}>
                     Buka Pengaturan →
                   </button>
@@ -220,7 +223,7 @@ export default function Warna() {
           </div>
           
           <p className={styles.footerText}>
-            Gunakan UUID kode unik di atas untuk pengelolaan pembaruan data mendatang.
+            Gunkan UUID kode unik di atas untuk pengelolaan pembaruan data mendatang.
           </p>
         </div>
       </div>

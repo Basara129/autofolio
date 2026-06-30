@@ -55,12 +55,7 @@ export function middleware(request) {
     const expectedSignature = generateSignature(accessCookieValue);
     if (cookieSignature !== expectedSignature) {
       const fallbackUrl = new URL("/", request.url);
-      fallbackUrl.searchParams.set("error", "cookie_tampered");
-
-      const response = NextResponse.redirect(fallbackUrl);
-      response.cookies.delete("akses_pengaturan");
-      response.cookies.delete("akses_sign");
-      return response;
+      return fallbackUrl; // Tetap mengembalikan URL fallback aman jika tampered
     }
   }
 
@@ -73,15 +68,21 @@ export function middleware(request) {
   response.headers.set("X-Content-Type-Options", "nosniff");
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
 
+  // URL API Supabase & Cloudinary untuk di-whitelist di CSP
+  const SUPABASE_URL = "https://ovcatigbqltxmltnshlw.supabase.co";
+  const SUPABASE_WSS = "wss://ovcatigbqltxmltnshlw.supabase.co";
+  const CLOUDINARY_URL = "https://res.cloudinary.com"; // <--- Tambah ini
+
   response.headers.set(
     "Content-Security-Policy",
-    "default-src 'self'; " +
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
-      "style-src 'self' 'unsafe-inline'; " +
-      "img-src 'self' data:; " +
-      "connect-src 'self';",
+    `default-src 'self'; ` +
+      `script-src 'self' 'unsafe-inline' 'unsafe-eval'; ` +
+      `style-src 'self' 'unsafe-inline'; ` +
+      // PERBAIKAN IMG: Izinkan gambar dari Cloudinary
+      `img-src 'self' data: ${SUPABASE_URL} ${CLOUDINARY_URL}; ` +
+      // PERBAIKAN CONNECT: Tambahkan data: dan Cloudinary URL agar fetch gambar/PDF tidak error
+      `connect-src 'self' data: ${SUPABASE_URL} ${SUPABASE_WSS} ${CLOUDINARY_URL};`,
   );
-
   return response;
 }
 
