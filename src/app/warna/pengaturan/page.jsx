@@ -181,7 +181,7 @@ function PengaturanKonten() {
       </header>
 
       <div className={styles.cardPanel} style={{ marginBottom: '1.5rem' }}>
-        <h4 style={{ margin: '0 0 0.5rem 0', color: '#334155' }}>Pilih Model Tampilan Portofolio:</h4>
+        <h4 style={{ margin: '0 0 0.5rem 0', }}>Pilih Model Tampilan Portofolio:</h4>
         <div className={styles.btnGroupTema}>
           {['model_1', 'model_2', 'model_3', 'model_4', 'model_5', 'model_6'].map((model, idx) => {
             const namaTema = ['Emerald Mint', 'Autumn Roast', 'Deep Ocean', 'Shadow Amethyst', 'Gothic', 'Winter Crowns'][idx];

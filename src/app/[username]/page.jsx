@@ -1,20 +1,31 @@
 'use client';
 
 import { useEffect, useState, use } from 'react';
-// BERUBAH DI SINI: Impor instance supabase dari folder lib
 import { supabase } from '@/app/lib/supabase'; 
 import LoadingSkeleton from '../loading/page';
+
+//error
+import Error from '@/app/error/page';
 
 // Impor komponen visual template 
 import TemplateModel1 from './Template/model_1/page';
 import TemplateModel2 from './Template/model_2/page';
 import TemplateModel3 from './Template/model_3/page';
 import TemplateModel4 from './Template/model_4/page';
+import TemplateModel5 from './Template/model_5/page';
+import TemplateModel6 from './Template/model_6/page';
 
-// Baris inisialisasi SUPABASE_URL dan createClient sebelumnya SUDAH DIHAPUS
+// Mapping template ke dalam object dictionary
+const TEMPLATE_MAP = {
+  model_1: TemplateModel1,
+  model_2: TemplateModel2,
+  model_3: TemplateModel3,
+  model_4: TemplateModel4,
+  model_5: TemplateModel5,
+  model_6: TemplateModel6,
+};
 
 export default function PortfolioDinamisPage({ params }) {
-  // Mengurai params secara aman
   const resolvedParams = use(params);
   const username = resolvedParams?.username;
 
@@ -28,7 +39,6 @@ export default function PortfolioDinamisPage({ params }) {
       try {
         setLoading(true);
         
-        // Melakukan JOIN dengan tabel-tabel anak relasional
         const { data, error } = await supabase
           .from('portfolios')
           .select(`
@@ -50,13 +60,11 @@ export default function PortfolioDinamisPage({ params }) {
 
         if (error) throw error;
         
-        // Memformat data agar komponen Template tidak error saat membaca struktur data baru
         if (data) {
           const formattedData = {
             ...data,
-            // Mengambil field design dari tabel social_medias (atau berikan default jika kosong)
-            design: data.social_medias?.[0]?.design || 'model_1',
-            // Menyediakan fallback array kosong jika data relasi kosong
+            // Deteksi template, jika tidak terdaftar di dictionary akan fallback ke 'model_1'
+            design: TEMPLATE_MAP[data.social_medias?.[0]?.design] ? data.social_medias?.[0]?.design : 'model_1',
             social_medias: data.social_medias?.[0] || {},
             educations: data.educations || [],
             experiences: data.experiences || [],
@@ -87,23 +95,12 @@ export default function PortfolioDinamisPage({ params }) {
 
   if (!portfolio) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50 p-6 text-center">
-        404 - Tidak Ditemukan
-      </div>
+      <Error/>
     );
   }
 
-  // =========================================================
-  // LOGIKA KONDISIONAL PEMILIHAN DESIGN
-  // =========================================================
-  if (portfolio.design === 'model_2') {
-    return <TemplateModel2 portfolio={portfolio} />;
-  } else if (portfolio.design === 'model_3') {
-    return <TemplateModel3 portfolio={portfolio} />;
-  } else if (portfolio.design === 'model_4') {
-    return <TemplateModel4 portfolio={portfolio} />;
-  }
+  // Menentukan komponen berdasarkan field portfolio.design
+  const ActiveTemplate = TEMPLATE_MAP[portfolio.design] || TemplateModel1;
 
-  // Default menggunakan Model 1
-  return <TemplateModel1 portfolio={portfolio} />;
+  return <ActiveTemplate portfolio={portfolio} />;
 }

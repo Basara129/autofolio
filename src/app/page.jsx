@@ -19,7 +19,7 @@ export default function Home() {
       <header className={styles.navbar}>
         <div className={styles.logo}>
           <Image 
-            src="/logo.jpeg"
+            src="/logo.png"
             alt="Creative Portfolio Project" 
             height={30}
             width={30}
@@ -42,7 +42,7 @@ export default function Home() {
           <div className={styles.heroContent}>
             <h1 className={styles.heroTitle}>Website Portofolio</h1>
             <p className={styles.heroSubtitle}>
-              Hanya Di Sini Kamu Bisa Membuat Website Portofolio Dengan Bonus - Bonus Buku Upgrade Diri <strong>Keren</strong>
+              Hanya Di Sini Kamu Bisa Membuat Website Portofolio Dengan <strong>Bonus - Bonus Buku Upgrade Diri</strong>
             </p>
             <Link href="/checkout">
               <button className={styles.heroCtaButton}><strong>BUAT DISINI</strong></button>

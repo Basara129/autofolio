@@ -1,5 +1,14 @@
 import "./globals.css";
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1.0,
+}
+
+export const metadata = {
+  title: 'Autofolio',
+  description: 'Autofolio',
+}
 
 export default function RootLayout({ children }) {
   return (
