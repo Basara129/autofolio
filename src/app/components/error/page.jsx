@@ -4,12 +4,10 @@ import styles from './page.module.css';
 export default function NotFound() {
   return (
     <div className={styles.pageWrapper}>
-      {/* 1. TOP BANNER PROMO */}
       <div className={styles.promoBanner}>
         <p>Sistem Deteksi Rute Otomatis Terintegrasi</p>
       </div>
 
-      {/* 2. NAVIGATION BAR */}
       <nav className={styles.navbar}>
         <div className={styles.logo}>
           <span>⚡</span> Apps
@@ -19,7 +17,6 @@ export default function NotFound() {
         </Link>
       </nav>
 
-      {/* 3. HERO / ERROR SECTION */}
       <main className={styles.heroSection}>
         <div className={styles.heroContainer}>
           

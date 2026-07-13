@@ -423,6 +423,7 @@ select.input {
   font-size: clamp(1.5rem, 5vw, 2.25rem);
   margin-bottom: 1rem;
   font-weight: 800;
+  color: '#00ff66'
 }
 
 .successDescription {

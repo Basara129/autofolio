@@ -1,0 +1,223 @@
+/* ==========================================================================
+   1. GLOBAL CONTAINERS & RESET
+   ========================================================================== */
+.centerContainer {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 0%, #1e293b 0%, #090d16 100%); 
+  padding: 20px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.dashboardWrapper {
+  min-height: 100vh;
+  background-color: #0f172a;
+  color: #cbd5e1;
+  padding: 2rem;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  animation: fadeInPage 0.5s ease-out;
+}
+
+.dashboardWrapper *,
+.centerContainer * {
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   2. STACK SYSTEM (TATA LETAK ATAS-BAWAH)
+   ========================================================================== */
+.dashboardGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+/* ==========================================================================
+   3. HEADERS & CARD BLOCKS
+   ========================================================================== */
+.dashboardHeader {
+  width: 100%;
+  margin: 0 0 1.5rem 0;
+  text-align: left;
+}
+
+.mainTitle {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.025em;
+}
+
+.subTitle {
+  font-size: 0.95rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.cardPanel {
+  background-color: #1e293b;
+  padding: 1.75rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  width: 100%;
+}
+
+.panelTitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 1.25rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #0f172a;
+}
+
+/* ==========================================================================
+   4. INTERACTIVE CONTROLS (BUTTONS)
+   ========================================================================== */
+.btnGroupTema {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  width: 100%;
+}
+
+@media (min-width: 580px) {
+  .btnGroupTema {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+}
+
+.btnTema {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: #0f172a;
+  color: #94a3b8;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btnTema:hover {
+  background-color: #243146;
+  color: #ffffff;
+  border-color: #475569;
+}
+
+.btnTemaAktif {
+  color: #ffffff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.btnTemaAktif:nth-child(1) { background-color: rgb(0, 170, 150); border-color: rgb(0, 170, 150); } 
+.btnTemaAktif:nth-child(2) { background-color: rgb(255, 180, 0); border-color: rgb(255, 180, 0); } 
+.btnTemaAktif:nth-child(3) { background-color: rgb(0, 210, 255); border-color: rgb(0, 210, 255); } 
+.btnTemaAktif:nth-child(4) { background-color: rgb(115, 85, 155); border-color: rgb(115, 85, 155); } 
+.btnTemaAktif:nth-child(5) { background-color: rgb(166, 16, 16); border-color: rgb(166, 16, 16); } 
+.btnTemaAktif:nth-child(6) { background-color: rgb(14, 165, 233); border-color: rgb(14, 165, 233); }
+
+.btnSimpan {
+  width: 100%;
+  padding: 0.875rem;
+  background: linear-gradient(90deg, #10b981, #059669); 
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+  transition: all 0.2s ease;
+}
+
+.btnSimpan:hover:not(:disabled) {
+  filter: brightness(1.1);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.btnSimpan:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btnSimpan:disabled {
+  background: #334155;
+  color: #64748b;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ==========================================================================
+   5. LIVE PREVIEW CONTAINER & PROTECTION
+   ========================================================================== */
+.previewScreen {
+  position: relative;
+  width: 100%;
+  min-height: 420px;
+  border-radius: 12px;
+  border: 1px solid #334155;
+  background-color: #0f172a; 
+  overflow: auto; 
+  box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.previewScreen * {
+  max-width: 100% !important;
+  word-break: break-word;
+}
+
+.previewScreen::-webkit-scrollbar { width: 6px; height: 6px; }
+.previewScreen::-webkit-scrollbar-track { background: #0f172a; }
+.previewScreen::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+/* ==========================================================================
+   6. ERROR BOX & ANIMATIONS
+   ========================================================================== */
+.errorBox {
+  background-color: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 2.5rem;
+  border-radius: 16px;
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+}
+
+.errorTitle {
+  color: #fca5a5;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+@keyframes fadeInPage {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   7. RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+@media (max-width: 768px) {
+  .dashboardWrapper { padding: 1rem; }
+  .mainTitle { font-size: 1.5rem; }
+  .cardPanel { padding: 1.25rem; }
+}
+
+@media (max-width: 480px) {
+  .previewScreen { min-height: 300px; }
+}

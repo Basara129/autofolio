@@ -1,17 +1,24 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import styles from './page.module.css';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { createClient } from '@/app/api/utils/supabase/client';
 
 function ProfilFormContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('order_id');
+  const router = useRouter();
+  const supabase = createClient();
 
   // State Alur Utama Form
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
-  const [kodeUnik, setKodeUnik] = useState('');
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [loadingText, setLoadingText] = useState('Memverifikasi Akun Google Anda...');
+
+  // Sesi User Penyimpanan Sementara untuk Validasi Final Frontend
+  const [currentUserSession, setCurrentUserSession] = useState(null);
 
   // State untuk Custom Premium Toast Notification
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
@@ -21,15 +28,15 @@ function ProfilFormContent() {
     setToast({ show: true, message, type });
     setTimeout(() => {
       setToast({ show: false, message: '', type: 'success' });
-    }, 4000); // Otomatis menutup setelah 4 detik
+    }, 4000);
   };
 
-  // State Utama Form (Properti email ditambahkan agar input berstatus Controlled sejak awal)
+  // State Utama Form
   const [formData, setFormData] = useState({
     username: '', 
     nama_lengkap: '', 
     profesi: '',      
-    email: '', // <--- FIX: Menyelesaikan masalah uncontrolled to controlled input warning
+    email: '', 
     moto: '',          
     foto: null,
     biografi: '',
@@ -45,6 +52,51 @@ function ProfilFormContent() {
   const [pengalaman, setPengalaman] = useState([{ perusahaan: '', posisi: '', deskripsi_pekerjaan: '', tanggal_mulai: '', tanggal_selesai: '' }]);
   const [keahlian, setKeahlian] = useState([{ nama_keahlian: '', tingkat_kemahiran: 'Intermediate' }]);
   const [usernameError, setUsernameError] = useState('');
+
+// ==========================================
+// 🌟 LOGIKA GABUNGAN: Proteksi Auth & Radar Status Pembayaran Real-time (FIXED)
+// ==========================================
+useEffect(() => {
+  const verifyFinalPayment = async () => {
+    if (!orderId) {
+      alert('Akses ditolak: Order ID tidak ditemukan.');
+      router.replace('/checkout');
+      return;
+    }
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      router.replace(`/login?next=/checkout/formulir?order_id=${orderId}`);
+      return;
+    }
+
+    // Cek langsung ke DB, jika belum sukses, lempar ke halaman pending tadi!
+    const { data: order, error } = await supabase
+      .from('orders')
+      .select('status')
+      .eq('id', orderId)
+      .maybeSingle();
+
+    const statusSukses = ['settlement', 'capture', 'success'];
+
+    if (error || !order || !statusSukses.includes(order.status?.toLowerCase())) {
+      // Pembayaran belum lunas/invalid? Jangan boleh isi formulir, lempar ke halaman pending!
+      router.replace(`/checkout/pending?order_id=${orderId}`);
+      return;
+    }
+
+    // Jika lolos (sudah sukses), buka form langsung
+    setCurrentUserSession(user);
+    setFormData((prev) => ({
+      ...prev,
+      email: user.email || '',
+      nama_lengkap: user.user_metadata?.full_name || ''
+    }));
+    setIsCheckingAuth(false);
+  };
+
+  verifyFinalPayment();
+}, [router, supabase, orderId]);
 
   // Handler Perubahan Input Utama
   const handleChange = (e) => {
@@ -108,12 +160,17 @@ function ProfilFormContent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!currentUserSession) {
+      showNotification('Sesi login kedaluwarsa. Silakan refresh halaman.', 'error');
+      return;
+    }
+
     const dataToSend = new FormData();
     dataToSend.append('order_id', orderId || ''); 
-    dataToSend.append('username', formData.username);
+    dataToSend.append('username', formData.username.trim().toLowerCase());
     dataToSend.append('nama_lengkap', formData.nama_lengkap);
     dataToSend.append('profesi', formData.profesi);
-    dataToSend.append('email', formData.email);
+    dataToSend.append('email', formData.email || currentUserSession.email);
     dataToSend.append('moto', formData.moto);
     dataToSend.append('biografi', formData.biografi);
     dataToSend.append('design', formData.design); 
@@ -132,7 +189,7 @@ function ProfilFormContent() {
     dataToSend.append('keahlian', JSON.stringify(keahlianFilter));
 
     try {
-      const response = await fetch('/api/portfolio', {
+      const response = await fetch('/api/formulir', {
         method: 'POST',
         body: dataToSend,
       });
@@ -141,11 +198,6 @@ function ProfilFormContent() {
 
       if (hasil.success) {
         showNotification('Profil Anda berhasil disimpan! 🌟', 'success');
-        if (hasil.kode_unik) {
-          setKodeUnik(hasil.kode_unik);
-        } else if (hasil.data && hasil.data.kode_unik) {
-          setKodeUnik(hasil.data.kode_unik);
-        }
         setSubmitted(true);
       } else {
         showNotification('Gagal dari Server: ' + hasil.error, 'error'); 
@@ -155,6 +207,14 @@ function ProfilFormContent() {
       showNotification('Koneksi internet putus atau server tidak merespon.', 'error'); 
     }
   };
+
+  if (isCheckingAuth) {
+    return (
+      <div className={styles.loadingState}>
+        <p>{loadingText}</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -212,7 +272,7 @@ function ProfilFormContent() {
 
                 <div className={styles.formGroup}>
                   <label className={styles.label}>Email *</label>
-                  <input type="text" name="email" value={formData.email} onChange={handleChange} placeholder="Contoh: budi@gmail.com" className={styles.input} required />
+                  <input type="text" name="email" value={formData.email} onChange={handleChange} placeholder="Contoh: budi@gmail.com" className={styles.input} required disabled />
                 </div>
 
                 <div className={styles.formGroup}>
@@ -342,29 +402,19 @@ function ProfilFormContent() {
             Selamat <strong>{formData.nama_lengkap}</strong>, susunan portofolio Anda telah aktif menggunakan konfigurasi <strong>{formData.design}</strong>.
           </p>
           
-          {kodeUnik && (
-            <div className={styles.uniqueCodeBox}>
-              <p className={styles.uniqueCodeLabel}>Kode Unik Anda:</p>
-              
-              <div className={styles.codeFlexContainer}>
-                <code className={styles.uniqueCodeDisplay}>{kodeUnik}</code>
-                <button 
-                  type="button" 
-                  className={styles.copyButton}
-                  onClick={() => {
-                    navigator.clipboard.writeText(kodeUnik);
-                    showNotification('Kode unik berhasil disalin ke clipboard! 📋', 'success');
-                  }}
-                >
-                  Salin Kode
-                </button>
-              </div>
-
-              <p className={styles.warningText}>
-                *Jangan sampai hilang! Simpan kode ini untuk memperbarui portofolio Anda di kemudian hari.
-              </p>
-            </div>
-          )}
+          <div className={styles.uniqueCodeBox}>
+            <p className={styles.uniqueCodeLabel}>Kelola Website:</p>
+            <p className={styles.warningText} style={{ color: '#00ff66', fontSize: '14px', marginBottom: '15px' }}>
+              🔒Website Portofolio Anda Berhasil Dibuat. Anda dapat mengedit portofolio kapan saja melalui Dashboard utama.
+            </p>
+            <button 
+              type="button" 
+              className={styles.submitButtonFinal}
+              onClick={() => router.push('/dashboard')}
+            >
+              Masuk Ke Dashboard Pengguna
+            </button>
+          </div>
 
           <p className={styles.accessLinkLabel}>Akses tautan personal Anda di bawah ini:</p>
           
@@ -378,7 +428,6 @@ function ProfilFormContent() {
               autofolio.my.id/{formData.username}
             </a>
           </div>
-          <p className={styles.successFooterText}>Gunakan kode unik di atas untuk pengelolaan pembaruan data mendatang.</p>
         </div>
       )}
 

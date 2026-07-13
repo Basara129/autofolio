@@ -1,8 +1,119 @@
-import React from 'react';
+'use client'; 
+
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import styles from './page.module.css';
 import Image from 'next/image';
+import { createClient } from '@/app/api/utils/supabase/client';
 import "./globals.css";
+
+function LoginButton() {
+  const supabase = createClient();
+  const searchParams = useSearchParams();
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null); // State untuk menyimpan data akun user
+
+  const nextTarget = searchParams.get('next') || '/';
+
+  // 1. Pantau status autentikasi user secara real-time
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      setUser(currentUser);
+    };
+
+    fetchUser();
+
+    // Berlangganan ke perubahan status auth (login/logout)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [supabase]);
+
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/api/auth/callback?next=${encodeURIComponent(nextTarget)}`,
+      },
+    });
+
+    if (error) {
+      console.error('Error login:', error.message);
+      setLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.reload(); // Segarkan halaman untuk membersihkan sisa data state
+  };
+
+
+ // 2. KONDISI TAMPILAN 1: Jika user sudah masuk, ubah tombol menjadi komponen profil (Bisa diklik ke Dashboard)
+  if (user) {
+    const profilePicture = user.user_metadata?.avatar_url;
+    const fullName = user.user_metadata?.full_name || 'Pengguna';
+
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ textAlign: 'right' }}>
+          {/* Bungkus nama dengan Link agar bisa diklik menuju /dashboard */}
+          <Link href="/dashboard" style={{ textDecoration: 'none' }}>
+            <p style={{ margin: 0, fontSize: '14px', fontWeight: 'bold', color: '#fff', cursor: 'pointer' }}>
+              {fullName}
+            </p>
+          </Link>
+          {/* <button 
+            onClick={handleLogout}
+            style={{ 
+              background: 'none', 
+              border: 'none', 
+              color: '#ff4d4d', 
+              cursor: 'pointer', 
+              fontSize: '12px', 
+              padding: 0,
+              textDecoration: 'underline'
+            }}
+          >
+            Keluar
+          </button> */}
+        </div>
+
+        {/* Bungkus juga foto profil dengan Link agar bisa diklik menuju /dashboard */}
+        {profilePicture && (
+          <Link href="/dashboard" style={{ display: 'flex' }}>
+            <Image 
+              src={profilePicture} 
+              alt={fullName} 
+              width={36} 
+              height={36} 
+              style={{ borderRadius: '50%', border: '2px solid #00ff66', objectFit: 'cover', cursor: 'pointer' }}
+              unoptimized 
+            />
+          </Link>
+        )}
+      </div>
+    );
+  }
+    
+
+  // 3. KONDISI TAMPILAN 2: Jika belum masuk, tampilkan tombol login default
+  return (
+    <button 
+      className={styles.colorSettingsBtn} 
+      onClick={handleGoogleLogin}
+      disabled={loading}
+    >
+      {loading ? 'Memproses...' : 'Login'}
+    </button>
+  );
+}
 
 export default function Home() {
   return (
@@ -25,14 +136,14 @@ export default function Home() {
             width={30}
             className={styles.mockupIcon}
             priority
-            />
+          />
           <span className={styles.logoIcon}>AUTOFOLIO</span> 
         </div>
         <div>
-          {/* Tombol diubah agar langsung navigasi ke halaman /warna saat diklik */}
-          <Link href="/warna">
-            <button className={styles.colorSettingsBtn}>Pengaturan Warna</button>
-          </Link>
+          {/* Sub-komponen tombol di dalam Suspense agar SSR Next.js berjalan mulus */}
+          <Suspense fallback={<button className={styles.colorSettingsBtn} disabled>...</button>}>
+            <LoginButton />
+          </Suspense>
         </div>
       </header>
 
@@ -49,11 +160,8 @@ export default function Home() {
             </Link>
           </div>
           
-          {/* Sisi Kanan: Ilustrasi/Gambar Produk */}
           <div className={styles.heroImageContainer}>
             <div className={styles.portfolioPreview}>
-              
-              {/* Kartu Utama: Preview Project Terbaik (UI/UX / Web Design) */}
               <div className={styles.mainMockupCard}>
                 <div className={styles.browserHeader}>
                   <span className={styles.browserDot}></span>
@@ -61,7 +169,7 @@ export default function Home() {
                   <span className={styles.browserDot}></span>
                 </div>
                 <Image 
-                  src="/splash.jpg"
+                  src="/splash.avif"
                   alt="Creative Portfolio Project" 
                   height={400}
                   width={400}
@@ -74,7 +182,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Kartu Melayang 2: Badge Klien / Ketersediaan Kerja (Kanan Atas) */}
               <div className={`${styles.floatingCard} ${styles.cardRight}`}>
                 <span className={styles.pulseDot}></span>
                 <div>
@@ -82,16 +189,14 @@ export default function Home() {
                   <div className={styles.cardLabel}>Tersedia Untuk Semua Kalangan</div>
                 </div>
               </div>
-              
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. FEATURES SECTION (4 Kolom) */}
+      {/* 4. FEATURES SECTION */}
       <section className={styles.featuresSection}>
         <div className={styles.featuresGrid}>
-          
           <div className={styles.featureCard}>
             <div className={styles.featureIcon}>⚡</div>
             <h3 className={styles.featureTitle}>Proses Instan, Cuma 1 Menit</h3>
@@ -100,7 +205,6 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Fitur 2 */}
           <div className={styles.featureCard}>
             <div className={styles.featureIcon}>🚀</div>
             <h3 className={styles.featureTitle}>Siap Pakai, Tanpa Ribet Coding</h3>
@@ -109,7 +213,6 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Fitur 3 */}
           <div className={styles.featureCard}>
             <div className={styles.featureIcon}>🔥</div>
             <h3 className={styles.featureTitle}>Promo Grand Opening: Diskon 90%</h3>
@@ -118,7 +221,6 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Fitur 4 */}
           <div className={styles.featureCard}>
             <div className={styles.featureIcon}>🔄</div>
             <h3 className={styles.featureTitle}>Update Otomatis, Anti Repot</h3>
@@ -126,7 +228,6 @@ export default function Home() {
               Gratis Pembaruan Kombinasi Warna Yang Bisa Kamu Gunakan
             </p>
           </div>
-
         </div>
       </section>
 
@@ -134,13 +235,9 @@ export default function Home() {
       <section className={styles.brandsSection}>
         <div className={styles.brandsContainer}>
           <h2 className={styles.brandsTitle}>Kami Menyediakan Paket Dengan Harga Istimewa</h2>
-          
           <div className={styles.brandsGridPlaceholder}>
-            {/* Kartu Kedua: Dengan Animasi + Coretan Harga */}
             <div className={styles.brandCard}>
-              {/* Badge Diskon Pop-up */}
               <div className={styles.discountBadge}>Save 90%</div>
-              
               <div className={styles.cardHeader}>
                 <h4 className={styles.packageTitle}>Website Animasi</h4>
                 <p className={styles.packageDescription}>Bikin Personal Branding Kamu Lebih Interaktif & Memukau.</p>
@@ -155,7 +252,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Tambahan Fitur agar kartu tidak terlihat kosong */}
               <ul className={styles.featureList}>
                 <li><span className={styles.checkIcon}>✓</span> Animasi Smooth (Framer Motion)</li>
                 <li><span className={styles.checkIcon}>✓</span> Gratis E-Book Biar Kamu Bisa Dapat Uang</li>
@@ -178,16 +274,7 @@ export default function Home() {
           </div>
 
           <div className={styles.grid}>
-            {/* Kartu Informasi Kontak */}
             <div className={styles.infoCard}>
-              {/* <div className={styles.infoItem}>
-                <span className={styles.icon}>📍</span>
-                <div>
-                  <h3>Alamat Kantor</h3>
-                  <p>Jl. Jend. Sudirman No. 123, Lantai 5, Jakarta Selatan, 12190</p>
-                </div>
-              </div> */}
-
               <div className={styles.infoItem}>
                 <span className={styles.icon}>✉️</span>
                 <div>
@@ -222,11 +309,6 @@ export default function Home() {
                 </div>
               </div>
             </div>
-
-            {/* Kolom Google Maps */}
-            {/* <div className={styles.mapContainer}>
-              <iframe title="Lokasi Kantor"></iframe>
-            </div> */}
           </div>
         </div>
       </section>

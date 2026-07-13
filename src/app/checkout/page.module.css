@@ -115,6 +115,12 @@
   margin-bottom: 0.5rem;
 }
 
+/* Penyelarasan teks nama paket dengan tema */
+.packageName {
+  color: #ffffff;
+  font-weight: 500;
+}
+
 .totalRow {
   display: flex;
   justify-content: space-between;
@@ -126,6 +132,54 @@
   border-top: 1px dashed rgba(255, 255, 255, 0.15);
 }
 
+/* ==========================================================================
+   3. INTEGRASI KEBIJAKAN PRIVASI & WARNING TEXT (THEME ALIGNED)
+   ========================================================================== */
+
+.privacyContainer {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding: 0 0.5rem;
+}
+
+.checkboxInput {
+  margin-top: 0.2rem;
+  cursor: pointer;
+  accent-color: #10b981; /* Ubah warna default browser checkbox jadi Hijau Emerald */
+}
+
+.checkboxLabel {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.privacyLink {
+  color: #10b981; /* Link diubah ke warna hijau agar senada */
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.privacyLink:hover {
+  color: #059669;
+}
+
+.warningText {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-align: center;
+  margin-top: 1.25rem;
+  margin-bottom: -0.5rem;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   4. HANDLING ACTION BUTTONS (ACTIVE vs DISABLED STATE)
+   ========================================================================== */
+
 /* Button Bayar Utama dengan Gradasi Emerald Green */
 .checkoutBtn {
   display: block;
@@ -136,8 +190,10 @@
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: #ffffff;
   font-weight: 600;
+  border: none;
   border-radius: 0.75rem;
   text-decoration: none;
+  cursor: pointer;
   transition: all 0.3s ease;
   animation: pulseGlow 3s infinite ease-in-out;
 }
@@ -151,8 +207,19 @@
   transform: translateY(1px);
 }
 
+/* State Absolut ketika Tombol Terkunci Mati (Sebelum dicentang / Saat loading) */
+.disabledBtn {
+  background: #334155 !important; /* Diubah ke Slate Grey pekat */
+  color: #64748b !important;     /* Teks dibuat redup */
+  cursor: not-allowed !important; /* Kursor dilarang */
+  transform: none !important;
+  filter: none !important;
+  box-shadow: none !important;    /* Hilangkan efek neon glow */
+  animation: none !important;     /* Matikan animasi berdenyut */
+}
+
 /* ==========================================================================
-   3. OVERLAY & MODAL DIALOG (PEMBAYARAN BERHASIL)
+   5. OVERLAY & MODAL DIALOG (PEMBAYARAN BERHASIL)
    ========================================================================== */
 
 .overlay {

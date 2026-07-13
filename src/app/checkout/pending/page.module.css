@@ -1,0 +1,249 @@
+/* ==========================================================================
+   1. GLOBAL CONTAINER & LAYOUT
+   ========================================================================== */
+.container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  /* Menggunakan gradasi gelap halus premium sesuai tema */
+  background: radial-gradient(circle at 50% 0%, #1e293b 0%, #090d16 100%); 
+  padding: 40px 24px;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden;
+}
+
+.centerBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  background: radial-gradient(circle at 50% 0%, #1e293b 0%, #090d16 100%);
+  color: #94a3b8;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  /* Animasi pulse bawaan tema untuk loading state */
+  animation: pulse 1.8s infinite ease-in-out;
+  gap: 16px;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   2. INTERACTIVE GLASSMORPHISM CARD
+   ========================================================================== */
+.paymentCard {
+  background: linear-gradient(145deg, #1e293b 0%, #111827 100%);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 24px; /* Sudut melingkar lembut */
+  padding: 3rem;
+  width: 100%;
+  max-width: 520px; /* Dioptimalkan untuk ukuran kartu pembayaran tunggal */
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+    0 20px 40px -15px rgba(0, 0, 0, 0.5); /* Shadow ganda untuk ilusi depth */
+  animation: fadeInPage 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efek pancaran cahaya gradasi mint samar di dalam kartu */
+.paymentCard::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(52, 211, 153, 0.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   3. TYPOGRAPHY & HEADER ELEMENT
+   ========================================================================== */
+.statusTitle {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 0.75rem 0;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.statusSubtitle {
+  font-size: 0.95rem;
+  color: #64748b; /* Abu-abu Slate mid-tone */
+  margin: 0;
+  line-height: 1.6;
+}
+
+.divider {
+  border: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  margin: 2rem 0;
+}
+
+/* ==========================================================================
+   4. INFO GROUPS & DISPLAY METRICS
+   ========================================================================== */
+.infoGroup {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 16px;
+}
+
+.infoLabel {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #94a3b8;
+}
+
+.amount {
+  font-size: 1.5rem;
+  font-weight: 800;
+  /* Gradasi warna mint premium khas tema */
+  background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.01em;
+}
+
+.badge {
+  padding: 0.35rem 0.85rem;
+  background-color: rgba(52, 211, 153, 0.06);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.15);
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+/* ==========================================================================
+   5. DETAIL BOXES (Virtual Account / Retail Code / Expiry)
+   ========================================================================== */
+.vaBox {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 14px;
+  padding: 1.25rem;
+  margin-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.codeText {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.05em;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.expiryBox {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: rgba(248, 113, 113, 0.03);
+  color: #f87171; /* Warna coral/red lembut untuk penanda waktu */
+  border: 1px solid rgba(248, 113, 113, 0.1);
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   6. ACTIONS BUTTONS (Retry/Error State)
+   ========================================================================== */
+.btnRetry {
+  padding: 0.75rem 1.5rem;
+  background-color: rgba(255, 255, 255, 0.03);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: 8px;
+}
+
+.btnRetry:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.btnRetry:active {
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   7. ANIMATIONS
+   ========================================================================== */
+@keyframes fadeInPage {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.98); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+/* ==========================================================================
+   8. RESPONSIVE OPTIMIZATION
+   ========================================================================== */
+@media (max-width: 576px) {
+  .container {
+    padding: 20px 16px;
+    align-items: flex-start; /* Mengantisipasi layar HP yang pendek */
+  }
+
+  .paymentCard {
+    padding: 2rem 1.5rem;
+    border-radius: 20px;
+  }
+
+  .statusTitle {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+
+  .statusSubtitle {
+    font-size: 0.875rem;
+    text-align: center;
+  }
+
+  .divider {
+    margin: 1.5rem 0;
+  }
+
+  .amount {
+    font-size: 1.3rem;
+  }
+
+  .codeText {
+    font-size: 1.2rem;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .expiryBox {
+    font-size: 0.8rem;
+    padding: 0.85rem;
+  }
+}

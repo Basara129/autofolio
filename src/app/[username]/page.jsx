@@ -2,10 +2,10 @@
 
 import { useEffect, useState, use } from 'react';
 import { supabase } from '@/app/lib/supabase'; 
-import LoadingSkeleton from '../loading/page';
+import LoadingSkeleton from '../components/loading/page';
 
 //error
-import Error from '@/app/error/page';
+import Error from '@/app/components/error/page';
 
 // Impor komponen visual template 
 import TemplateModel1 from './Template/model_1/page';
