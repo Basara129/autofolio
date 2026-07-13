@@ -1,95 +1,160 @@
-import { NextResponse } from "next/server";
-import { createClient } from "@/app/api/utils/supabase/server";
+'use client';
 
-export async function GET(request) {
-  const { searchParams } = new URL(request.url);
-  const orderId = searchParams.get("order_id"); // Menggunakan order_id sesuai panggilah frontend
+import React, { useState, useEffect, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { createClient } from '@/app/api/utils/supabase/client';
+import styles from './page.module.css';
 
-  if (!orderId) {
-    return NextResponse.json(
-      { success: false, error: "Order ID dibutuhkan" },
-      { status: 400 },
-    );
-  }
+// 1. Ini KOMPONEN INTERNAL (Jangan pakai "export default" di sini)
+function PendingPaymentContent() {
+  const searchParams = useSearchParams();
+  const orderId = searchParams.get('order_id');
+  const router = useRouter();
+  const supabase = createClient();
 
-  const supabase = await createClient();
+  const [loading, setLoading] = useState(true);
+  const [detailPembayaran, setDetailPembayaran] = useState(null);
+  const [errorText, setErrorText] = useState('');
 
-  try {
-    // 1. Ambil Sesi Pengguna untuk Keamanan
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
-      return NextResponse.json(
-        { success: false, error: "Unauthorized. Silakan login kembali." },
-        { status: 401 },
-      );
+  useEffect(() => {
+    if (!orderId) {
+      router.replace('/checkout');
+      return;
     }
 
-    const serverKey = process.env.MIDTRANS_SERVER_KEY; 
-    const base64Key = Buffer.from(serverKey + ":").toString("base64");
+    const statusSukses = ['settlement', 'capture', 'success'];
+    let channel = null;
 
-    // 2. Tembak URL Produksi Live Midtrans
-    const response = await fetch(
-      `https://api.midtrans.com/v2/${orderId}/status`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Basic ${base64Key}`,
+    // Pasang Radar Realtime
+    channel = supabase
+      .channel(`live-payment-pending-${orderId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'orders',
+          filter: `id=eq.${orderId}`
         },
-      },
-    );
+        (payload) => {
+          const statusBaru = payload.new.status?.toLowerCase();
+          if (statusSukses.includes(statusBaru)) {
+            if (channel) supabase.removeChannel(channel);
+            router.replace(`/checkout/formulir?order_id=${orderId}`);
+          }
+        }
+      )
+      .subscribe();
 
-    const data = await response.json();
+    // Ambil data instruksi pembayaran dari API Status
+    const fetchPaymentDetails = async () => {
+      try {
+        const res = await fetch(`/api/status?order_id=${orderId}`);
+        const result = await res.json();
 
-    if (!response.ok) {
-      throw new Error(
-        data.status_message || "Gagal mengambil data dari Midtrans",
-      );
-    }
+        if (result.success) {
+          if (result.isPaid || statusSukses.includes(result.data?.transactionStatus?.toLowerCase())) {
+            if (channel) supabase.removeChannel(channel);
+            router.replace(`/checkout/formulir?order_id=${orderId}`);
+            return;
+          }
+          setDetailPembayaran(result.data);
+        } else {
+          setErrorText(result.error || 'Gagal mengambil detail pembayaran.');
+        }
+      } catch (err) {
+        console.error(err);
+        setErrorText('Gagal terhubung ke server pembayaran.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    const transactionStatus = data.transaction_status;
-    const fraudStatus = data.fraud_status;
+    fetchPaymentDetails();
 
-    // 3. Jaring Pengaman Webhook: Cek jika di Midtrans sudah lunas
-    const isPaid = 
-      transactionStatus === "settlement" || 
-      (transactionStatus === "capture" && fraudStatus === "accept");
+    return () => {
+      if (channel) supabase.removeChannel(channel);
+    };
+  }, [orderId, router, supabase]);
 
-    if (isPaid) {
-      await supabase
-        .from("orders")
-        .update({ status: "settlement" })
-        .eq("id", orderId);
-    } else if (
-      transactionStatus === "cancel" ||
-      transactionStatus === "deny" ||
-      transactionStatus === "expire"
-    ) {
-      await supabase
-        .from("orders")
-        .update({ status: "FAILED" })
-        .eq("id", orderId);
-    }
-
-    return NextResponse.json({
-      success: true,
-      isPaid: isPaid, 
-      data: {
-        paymentType: data.payment_type,
-        grossAmount: data.gross_amount,
-        transactionStatus: transactionStatus,
-        expiryTime: data.expiry_time,
-        vaNumbers: data.va_numbers || null,
-        paymentCode: data.payment_code || null,
-        actions: data.actions || null,
-      },
-    });
-  } catch (error) {
-    console.error("❌ Midtrans Status Error:", error.message);
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 },
+  if (loading) {
+    return (
+      <div className={styles.centerBox}>
+        <p>Memuat instruksi pembayaran...</p>
+      </div>
     );
   }
+
+  if (errorText) {
+    return (
+      <div className={styles.centerBox}>
+        <p style={{ color: '#ef4444' }}>⚠️ {errorText}</p>
+        <button onClick={() => router.push('/checkout')} className={styles.btnRetry}>
+          Kembali ke Checkout
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.paymentCard}>
+        <h3 className={styles.statusTitle}>🔒 Selesaikan Pembayaran Anda</h3>
+        <p className={styles.statusSubtitle}>
+          Halaman ini akan otomatis dialihkan ke pengisian formulir setelah pembayaran Anda divalidasi oleh sistem.
+        </p>
+
+        <hr className={styles.divider} />
+
+        {detailPembayaran && (
+          <>
+            <div className={styles.infoGroup}>
+              <span className={styles.infoLabel}>Total Tagihan:</span>
+              <div className={styles.amount}>
+                Rp {Number(detailPembayaran.grossAmount).toLocaleString('id-ID')}
+              </div>
+            </div>
+
+            <div className={styles.infoGroup}>
+              <span className={styles.infoLabel}>Metode Pembayaran:</span>
+              <div className={styles.badge}>{detailPembayaran.paymentType?.toUpperCase().replace('_', ' ')}</div>
+            </div>
+
+            {detailPembayaran.vaNumbers && detailPembayaran.vaNumbers.map((va, i) => (
+              <div key={i} className={styles.vaBox}>
+                <span className={styles.infoLabel}>Nomor Virtual Account ({va.bank?.toUpperCase()}):</span>
+                <div className={styles.codeText}>{va.va_number}</div>
+              </div>
+            ))}
+
+            {detailPembayaran.paymentCode && (
+              <div className={styles.vaBox}>
+                <span className={styles.infoLabel}>Kode Pembayaran Toko Retail:</span>
+                <div className={styles.codeText}>{detailPembayaran.paymentCode}</div>
+              </div>
+            )}
+
+            {(detailPembayaran.paymentType === 'gopay' || detailPembayaran.paymentType === 'qris') && (
+              <p className={styles.hintText}>*Silakan gunakan e-wallet atau aplikasi m-banking Anda untuk memindai kode QR yang tampil sebelumnya.</p>
+            )}
+
+            {detailPembayaran.expiryTime && (
+              <div className={styles.expiryBox}>
+                ⏰ Batas Waktu Pembayaran: {new Date(detailPembayaran.expiryTime).toLocaleString('id-ID')}
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// 2. INI EXPORT UTAMA YANG DIWAJIBKAN NEXT.JS (Wajib "export default")
+export default function PendingPaymentPage() {
+  return (
+    <Suspense fallback={<div className={styles.centerBox}><p>Memuat Halaman...</p></div>}>
+      <PendingPaymentContent />
+    </Suspense>
+  );
 }
