@@ -91,8 +91,8 @@ export async function middleware(request) {
   const SUPABASE_WSS = "wss://ovcatigbqltxmltnshlw.supabase.co";
   const CLOUDINARY_URL = "https://res.cloudinary.com";
 
-  // ⚡ DIUBAH MENJADI DOMAIN PRODUCTION RESMI MIDTRANS
-  const MIDTRANS_SNAP = "https://app.snap.midtrans.com";
+  // 🌍 SEKARANG SUDAH FIX REKOMENDASI PRODUKSI RESMI MIDTRANS
+  const MIDTRANS_SNAP = "https://app.midtrans.com";
   const MIDTRANS_ASSETS = "https://snap-assets.midtrans.com";
   const MIDTRANS_API = "https://api.midtrans.com";
 
