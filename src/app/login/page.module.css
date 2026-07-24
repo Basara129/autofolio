@@ -1,0 +1,182 @@
+/* ==========================================================================
+   1. GLOBAL CONTAINER & ALIGNMENT
+   ========================================================================== */
+.container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  /* Latar belakang gradasi gelap ultra-smooth sesuai tema */
+  background: radial-gradient(circle at 50% 0%, #1e293b 0%, #090d16 100%); 
+  padding: 40px 24px;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   2. GLASSMORPHISM LOGIN CARD
+   ========================================================================== */
+.loginCard {
+  background: linear-gradient(145deg, #1e293b 0%, #111827 100%);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 24px; /* Sudut membulat premium */
+  padding: 3.5rem 2.5rem;
+  width: 100%;
+  max-width: 440px; /* Lebar ideal untuk form/kartu login */
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+    0 20px 40px -15px rgba(0, 0, 0, 0.5); /* Efek kedalaman bayangan */
+  animation: fadeInPage 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efek pancaran cahaya gradasi mint tipis di bagian atas kartu */
+.loginCard::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(52, 211, 153, 0.06) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   3. BRANDING & TEXTS
+   ========================================================================== */
+.brandIcon {
+  font-size: 2.5rem;
+  width: 64px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem auto;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+}
+
+.title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.03em; /* Khas UI Modern */
+  line-height: 1.2;
+}
+
+.highlightText {
+  background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: #64748b; /* Abu-abu Slate modern */
+  margin: 0 0 2.5rem 0;
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   4. PREMIUM OAUTH BUTTON (Google Style)
+   ========================================================================== */
+.btnGoogle {
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  background-color: rgba(255, 255, 255, 0.03);
+  color: #f1f5f9;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btnGoogle:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 20px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.btnGoogle:active {
+  transform: translateY(0);
+}
+
+/* SVG Google Icon */
+.googleIcon {
+  width: 20px;
+  height: 20px;
+}
+
+/* ==========================================================================
+   5. FOOTER / TERMS TEXT
+   ========================================================================== */
+.footerText {
+  margin-top: 2rem;
+  font-size: 0.75rem;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.footerLink {
+  color: #34d399;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.footerLink:hover {
+  color: #10b981;
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   6. ANIMATIONS
+   ========================================================================== */
+@keyframes fadeInPage {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   7. RESPONSIVE OPTIMIZATION (MOBILE & PORTRAIT)
+   ========================================================================== */
+@media (max-width: 576px) {
+  .container {
+    padding: 20px 16px;
+    align-items: center;
+  }
+
+  .loginCard {
+    padding: 2.5rem 1.5rem;
+    border-radius: 20px;
+  }
+
+  .title {
+    font-size: 1.6rem;
+  }
+
+  .subtitle {
+    font-size: 0.875rem;
+    margin-bottom: 2rem;
+  }
+
+  .btnGoogle {
+    padding: 0.8rem 1.25rem;
+    font-size: 0.9rem;
+  }
+}

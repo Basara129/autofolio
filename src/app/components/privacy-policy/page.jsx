@@ -9,7 +9,7 @@ export default function PrivacyPolicyPage() {
     <div className={styles.container}>
       <div className={styles.card}>
         {/* Tombol Kembali */}
-        <Link href="./checkout" className={styles.backBtn}>
+        <Link href="/checkout" className={styles.backBtn}>
           ← Kembali ke Checkout
         </Link>
 

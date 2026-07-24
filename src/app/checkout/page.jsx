@@ -4,16 +4,33 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/app/api/utils/supabase/client';
 import styles from './page.module.css';
+import Link from 'next/link';
 
 export default function CheckoutPage() {
   const [agreed, setAgreed] = useState(false); 
   const [loading, setLoading] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [activeOrderId, setActiveOrderId] = useState(null); 
+  
+  const [customAlert, setCustomAlert] = useState({
+    show: false,
+    title: '',
+    message: '',
+    type: 'error',
+  });
+
   const router = useRouter();
   const supabase = createClient();
 
-  // 1. Pengecekan Auth Sahaja (Script Midtrans sudah dihandle oleh RootLayout)
+  const showAlert = (title, message, type = 'error') => {
+    setCustomAlert({ show: true, title, message, type });
+  };
+
+  const closeAlert = () => {
+    setCustomAlert((prev) => ({ ...prev, show: false }));
+  };
+
+  // 1. Pengecekan Auth
   useEffect(() => {
     const checkUserUID = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -28,7 +45,7 @@ export default function CheckoutPage() {
     checkUserUID();
   }, [router, supabase]);
 
-  // 2. RADAR SUPABASE REALTIME (Mendeteksi settlement otomatis dari Webhook)
+  // 2. RADAR SUPABASE REALTIME (Memantau jika Webhook memperbarui status ke Settlement)
   useEffect(() => {
     if (!activeOrderId) return;
 
@@ -36,20 +53,14 @@ export default function CheckoutPage() {
       .channel('pantau-pembayaran-otomatis')
       .on(
         'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'orders'
-        },
+        { event: 'UPDATE', schema: 'public', table: 'orders' },
         (payload) => {
           if (payload.new.id === activeOrderId) {
             const currentStatus = payload.new.status?.toLowerCase();
-            // Mendukung status 'settlement' atau 'success' dari webhook
-            if (currentStatus === 'settlement' || currentStatus === 'success' || currentStatus === 'capture') {              
-              if (typeof window !== 'undefined' && window.snap && window.snap.hide) {
+            if (['settlement', 'success', 'capture'].includes(currentStatus)) {      
+              if (typeof window !== 'undefined' && window.snap?.hide) {
                 window.snap.hide();
               }
-
               supabase.removeChannel(channel);
               router.push(`/checkout/formulir?order_id=${activeOrderId}`);
             }
@@ -63,14 +74,12 @@ export default function CheckoutPage() {
     };
   }, [activeOrderId, supabase, router]);
 
-  const baseAmount = 10000; // Memenuhi batas minimal produksi Midtrans Rp 10.000
+  const baseAmount = 5000; 
 
   const handlePayment = async () => {
     if (!agreed || loading) return;
     
     setLoading(true);
-
-    // Membuat format order ID unik produksi
     const uniqueOrderId = `AUTO-${Date.now()}`;
 
     const productData = {
@@ -87,6 +96,7 @@ export default function CheckoutPage() {
     };
 
     try {
+      // 1. Memanggil API Checkout (Di API ini status 'pending' sudah tersimpan ke Supabase)
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -96,12 +106,9 @@ export default function CheckoutPage() {
       const data = await response.json();
 
       if (data.success && data.token) {
-        const finalOrderId = data.orderId || data.order_id || uniqueOrderId;
-        
-        // Aktifkan Radar Realtime
+        const finalOrderId = uniqueOrderId;
         setActiveOrderId(finalOrderId);
 
-        // Memanggil objek window.snap yang di-load dari layout.jsx secara aman
         if (typeof window !== 'undefined' && window.snap) {
           window.snap.pay(data.token, {
             onSuccess: function (result) {
@@ -109,37 +116,51 @@ export default function CheckoutPage() {
               router.push(`/checkout/formulir?order_id=${midtransOrderId}`);
             },
             onPending: function (result) {
-              alert('Menunggu pembayaran Anda. Silakan selesaikan di aplikasi bank / dompet digital Anda.');
-              setLoading(false);
+              const midtransOrderId = result.order_id || finalOrderId;
+              // Arahkan ke halaman instruksi pembayaran pending
+              router.push(`/checkout/pending?order_id=${midtransOrderId}`);
             },
             onError: function (result) {
-              alert('Pembayaran gagal atau kedaluwarsa, silakan coba lagi.');
+              showAlert('Pembayaran Gagal', 'Pembayaran gagal atau kedaluwarsa, silakan coba lagi.', 'error');
               setLoading(false);
             },
             onClose: function () {
-              setLoading(false);
+              setLoading(false); 
+              // 💡 REVISI: Cukup beri peringatan, JANGAN ubah status DB ke CANCELLED secara paksa
+              showAlert(
+                'Pembayaran Belum Selesai', 
+                'Kamu menutup jendela pembayaran. Jika sudah melakukan instruksi pembayaran/transfer, pesananmu akan otomatis terverifikasi.', 
+                'info'
+              );
             }
           });
         } else {
-          alert('Sistem pembayaran sedang memuat komponen enkripsi, mohon tunggu sebentar lalu klik kembali.');
+          showAlert('Sistem Memuat', 'Sistem pembayaran sedang memuat komponen, mohon tunggu sebentar lalu klik kembali.', 'info');
           setLoading(false);
         }
+
+      } else if (data.code === 'HAS_PENDING_TRANSACTION') {
+        showAlert('Transaksi Tertunda', data.error, 'info');
+        setTimeout(() => {
+          router.push(`/checkout/pending?order_id=${data.pendingOrderId}`);
+        }, 3000); 
+
       } else {
-        alert(data.error || 'Gagal mendapatkan token pembayaran.');
+        showAlert('Gagal Memproses', data.error || 'Gagal mendapatkan token pembayaran.', 'error');
         setLoading(false);
       }
     } catch (error) {
       console.error('Checkout error:', error);
-      alert('Terjadi kesalahan koneksi sistem.');
+      showAlert('Kesalahan Sistem', 'Terjadi kesalahan koneksi sistem. Silakan coba beberapa saat lagi.', 'error');
       setLoading(false);
     }
   };
 
   if (isCheckingAuth) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#111', color: '#fff' }}>
-        <p>Memverifikasi Sesi Anda...</p>
-      </div>
+    <div className={styles.loading}>
+      <p className={styles.font}>Memverifikasi Sesi Anda...</p>
+    </div>
     );
   }
 
@@ -148,9 +169,7 @@ export default function CheckoutPage() {
       <div className={styles.card}>
         <div className={styles.header}>
           <h2 className={styles.title}>Halaman Pembelian</h2>
-          <p className={styles.subtitle}>
-            Selesaikan pembayaran untuk mengaktifkan website portofoliomu.
-          </p>
+          <p className={styles.subtitle}>Selesaikan pembayaran untuk mengaktifkan website portofoliomu.</p>
         </div>
 
         <div className={styles.summary}>
@@ -158,12 +177,9 @@ export default function CheckoutPage() {
             <span>Paket Terpilih</span>
             <span className={styles.packageName}>Starter</span>
           </div>
-          
           <div className={styles.totalRow}>
             <span>Total Pembayaran</span>
-            <span className={styles.price}>
-              Rp {baseAmount.toLocaleString('id-ID')}
-            </span>
+            <span className={styles.price}>Rp {baseAmount.toLocaleString('id-ID')}</span>
           </div>
         </div>
 
@@ -176,17 +192,11 @@ export default function CheckoutPage() {
             className={styles.checkboxInput}
           />
           <label htmlFor="privacyPolicy" className={styles.checkboxLabel}>
-            Saya setuju dengan{' '}
-            <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className={styles.privacyLink}>
-              Kebijakan Privasi
-            </a>{' '}
-            yang berlaku.
+            Saya setuju dengan <Link href="/components/privacy-policy" target="_blank" rel="noopener noreferrer" className={styles.privacyLink}>Kebijakan Privasi</Link> yang berlaku.
           </label>
         </div>
 
-        <p className={styles.warningText}>
-          🔒 Layanan aktif otomatis sesaat setelah pembayaran berhasil divalidasi sistem bank.
-        </p>
+        <p className={styles.warningText}>🔒 Layanan aktif otomatis sesaat setelah pembayaran divalidasi sistem bank.</p>
 
         <button 
           onClick={handlePayment} 
@@ -196,6 +206,25 @@ export default function CheckoutPage() {
           {loading ? 'Memproses Transaksi...' : 'Bayar Sekarang'}
         </button>
       </div>
+
+      {/* MODAL ALERT CUSTOM */}
+      {customAlert.show && (
+        <div className={styles.alertOverlay}>
+          <div className={styles.alertModal}>
+            <div className={`${styles.alertIcon} ${customAlert.type === 'error' ? styles.alertIconError : styles.alertIconInfo}`}>
+              {customAlert.type === 'error' ? '✕' : 'ℹ'}
+            </div>
+            <h3 className={styles.alertTitle}>{customAlert.title}</h3>
+            <p className={styles.alertText}>{customAlert.message}</p>
+            <button 
+              onClick={closeAlert} 
+              className={`${styles.alertBtn} ${customAlert.type === 'error' ? styles.alertBtnError : styles.alertBtnInfo}`}
+            >
+              Mengerti
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

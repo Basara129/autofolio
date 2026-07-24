@@ -28,11 +28,6 @@
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  /* Animasi pulse bawaan tema untuk loading state */
-  animation: pulse 1.8s infinite ease-in-out;
-  gap: 16px;
-  padding: 24px;
-  box-sizing: border-box;
 }
 
 /* ==========================================================================
@@ -192,6 +187,30 @@
   transform: translateY(0);
 }
 
+/* ==========================================================================
+   6b. ERROR & ALERT STATES
+   ========================================================================== */
+.errorText {
+  color: #f87171; /* Coral/Red lembut premium */
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  line-height: 1.5;
+  background: rgba(248, 113, 113, 0.05);
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(248, 113, 113, 0.15);
+  max-width: 400px; /* Menjaga teks tidak terlalu melebar di centerBox */
+  animation: shakeError 0.4s ease-in-out;
+}
+
+/* Animasi getar halus saat error muncul agar menarik perhatian pengguna */
+@keyframes shakeError {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
 /* ==========================================================================
    7. ANIMATIONS
    ========================================================================== */

@@ -69,8 +69,7 @@ function LoginButton() {
               {fullName}
             </p>
           </Link>
-          {/* <button 
-            onClick={handleLogout}
+          <p 
             style={{ 
               background: 'none', 
               border: 'none', 
@@ -78,11 +77,10 @@ function LoginButton() {
               cursor: 'pointer', 
               fontSize: '12px', 
               padding: 0,
-              textDecoration: 'underline'
             }}
           >
-            Keluar
-          </button> */}
+            Profile
+          </p>
         </div>
 
         {/* Bungkus juga foto profil dengan Link agar bisa diklik menuju /dashboard */}
@@ -151,12 +149,12 @@ export default function Home() {
       <section className={styles.heroSection}>
         <div className={styles.heroContainer}>
           <div className={styles.heroContent}>
-            <h1 className={styles.heroTitle}>Website Portofolio</h1>
+            <h4 className={styles.heroTitle}>Bikin Portofolio, Bonus Upgrade Diri</h4>
             <p className={styles.heroSubtitle}>
-              Hanya Di Sini Kamu Bisa Membuat Website Portofolio Dengan <strong>Bonus - Bonus Buku Upgrade Diri</strong>
+              Satu-satunya tempat buat website portofolio profesional yang dibekali <strong>bonus buku-buku self-development eksklusif</strong>.
             </p>
             <Link href="/checkout">
-              <button className={styles.heroCtaButton}><strong>BUAT DISINI</strong></button>
+              <button className={styles.heroCtaButton}><strong>BUAT PORTOFOLIO SEKARANG</strong></button>
             </Link>
           </div>
           
@@ -185,7 +183,7 @@ export default function Home() {
               <div className={`${styles.floatingCard} ${styles.cardRight}`}>
                 <span className={styles.pulseDot}></span>
                 <div>
-                  <div className={styles.cardStatText}>Jadi Lebih Keren Di Media Sosial</div>
+                  <div className={styles.cardStatText}>Jadi Lebih Profesional Dengan Website Portofolio</div>
                   <div className={styles.cardLabel}>Tersedia Untuk Semua Kalangan</div>
                 </div>
               </div>
@@ -215,7 +213,7 @@ export default function Home() {
 
           <div className={styles.featureCard}>
             <div className={styles.featureIcon}>🔥</div>
-            <h3 className={styles.featureTitle}>Promo Grand Opening: Diskon 90%</h3>
+            <h3 className={styles.featureTitle}>Promo Grand Opening: Diskon 95%</h3>
             <p className={styles.featureDescription}>
               Hanya Rp10.000 Saja! Amankan Harga Termurah Ini Sekarang Untuk Memiliki Website Animasi Premium Sebelum Harga Naik Normal.
             </p>
@@ -223,9 +221,9 @@ export default function Home() {
 
           <div className={styles.featureCard}>
             <div className={styles.featureIcon}>🔄</div>
-            <h3 className={styles.featureTitle}>Update Otomatis, Anti Repot</h3>
+            <h3 className={styles.featureTitle}>Masa Berlaku 5 Tahun</h3>
             <p className={styles.featureDescription}>
-              Gratis Pembaruan Kombinasi Warna Yang Bisa Kamu Gunakan
+              Website Kamu Ga Bakalan Non Aktif Selama 5 Tahun, Biar Kamu Tetap Bisa Eksis Ketika Melamar Pekerjaan
             </p>
           </div>
         </div>
@@ -237,7 +235,7 @@ export default function Home() {
           <h2 className={styles.brandsTitle}>Kami Menyediakan Paket Dengan Harga Istimewa</h2>
           <div className={styles.brandsGridPlaceholder}>
             <div className={styles.brandCard}>
-              <div className={styles.discountBadge}>Save 90%</div>
+              <div className={styles.discountBadge}>Save 95%</div>
               <div className={styles.cardHeader}>
                 <h4 className={styles.packageTitle}>Website Animasi</h4>
                 <p className={styles.packageDescription}>Bikin Personal Branding Kamu Lebih Interaktif & Memukau.</p>
@@ -247,15 +245,15 @@ export default function Home() {
                 <span className={styles.originalPrice}>Rp 100.000</span>
                 <div className={styles.currentPriceWrapper}>
                   <span className={styles.currency}>Rp</span>
-                  <span className={styles.priceNumber}>10.000</span>
+                  <span className={styles.priceNumber}>5.000</span>
                   <span className={styles.pricePeriod}>/projek</span>
                 </div>
               </div>
 
               <ul className={styles.featureList}>
                 <li><span className={styles.checkIcon}>✓</span> Animasi Smooth (Framer Motion)</li>
-                <li><span className={styles.checkIcon}>✓</span> Gratis E-Book Biar Kamu Bisa Dapat Uang</li>
-                <li><span className={styles.checkIcon}>✓</span> Berlaku Selama 1 Tahun</li>
+                <li><span className={styles.checkIcon}>✓</span> Tampilan Yang Keren</li>
+                <li><span className={styles.checkIcon}>✓</span> Berlaku Selama 5 Tahun</li>
               </ul>
               <Link href="/checkout">
                 <button className={styles.ctaButton}>Pesan Sekarang</button>

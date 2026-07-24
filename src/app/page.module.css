@@ -766,6 +766,10 @@
 
 @media (max-width: 480px) {
   .featuresGrid { grid-template-columns: 1fr; }
+
+  .heroTitle{
+    font-size: 30px;
+  }
   
   .heroSection {
     /* Dikurangi padding-nya agar space di layar HP kecil lebih luas */

@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { createClient } from '@/app/api/utils/supabase/client';
 import styles from './page.module.css';
 
-// 1. Ini KOMPONEN INTERNAL (Jangan pakai "export default" di sini)
+// 1. KOMPONEN INTERNAL (Menerima parameter URL & memantau status pembayaran)
 function PendingPaymentContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('order_id');
@@ -25,7 +25,7 @@ function PendingPaymentContent() {
     const statusSukses = ['settlement', 'capture', 'success'];
     let channel = null;
 
-    // Pasang Radar Realtime
+    // Pasang Radar Realtime Supabase
     channel = supabase
       .channel(`live-payment-pending-${orderId}`)
       .on(
@@ -49,10 +49,38 @@ function PendingPaymentContent() {
     // Ambil data instruksi pembayaran dari API Status
     const fetchPaymentDetails = async () => {
       try {
-        const res = await fetch(`/api/status?order_id=${orderId}`);
+        // Ambil token sesi aktif langsung dari client Supabase
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        const headers = {
+          'Content-Type': 'application/json',
+        };
+
+        // Kirim token ini ke API Status untuk backup verifikasi jika cookie gagal sinkron
+        if (session) {
+          headers['Authorization'] = `Bearer ${session.access_token}`;
+        }
+
+        // 🌟 DI SINI PERUBAHANNYA: Diarahkan ke rute checkout/status yang benar
+        const res = await fetch(`/api/checkout/status?order_id=${orderId}`, {
+          method: 'GET',
+          headers: headers,
+        });
+
+        // Proteksi ekstra: Mencegah crash JSON parse jika ada middleware/server yang melempar HTML
+        const contentType = res.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          const rawText = await res.text();
+          console.error("Respons server bukan JSON:", rawText);
+          setErrorText(`Server mengembalikan respons tidak valid (HTTP ${res.status}).`);
+          setLoading(false);
+          return;
+        }
+
         const result = await res.json();
 
         if (result.success) {
+          // Jika ternyata status di database/Midtrans sudah sukses/terbayar saat load halaman
           if (result.isPaid || statusSukses.includes(result.data?.transactionStatus?.toLowerCase())) {
             if (channel) supabase.removeChannel(channel);
             router.replace(`/checkout/formulir?order_id=${orderId}`);
@@ -63,7 +91,7 @@ function PendingPaymentContent() {
           setErrorText(result.error || 'Gagal mengambil detail pembayaran.');
         }
       } catch (err) {
-        console.error(err);
+        console.error("Fetch Error di Frontend:", err);
         setErrorText('Gagal terhubung ke server pembayaran.');
       } finally {
         setLoading(false);
@@ -88,7 +116,9 @@ function PendingPaymentContent() {
   if (errorText) {
     return (
       <div className={styles.centerBox}>
-        <p style={{ color: '#ef4444' }}>⚠️ {errorText}</p>
+        {/* Menggunakan className baru, bukan inline style */}
+        <p className={styles.errorText}>⚠️ {errorText}</p>
+        
         <button onClick={() => router.push('/checkout')} className={styles.btnRetry}>
           Kembali ke Checkout
         </button>
@@ -117,9 +147,12 @@ function PendingPaymentContent() {
 
             <div className={styles.infoGroup}>
               <span className={styles.infoLabel}>Metode Pembayaran:</span>
-              <div className={styles.badge}>{detailPembayaran.paymentType?.toUpperCase().replace('_', ' ')}</div>
+              <div className={styles.badge}>
+                {detailPembayaran.paymentType?.toUpperCase().replace('_', ' ')}
+              </div>
             </div>
 
+            {/* Render Virtual Account (Bank Transfer) */}
             {detailPembayaran.vaNumbers && detailPembayaran.vaNumbers.map((va, i) => (
               <div key={i} className={styles.vaBox}>
                 <span className={styles.infoLabel}>Nomor Virtual Account ({va.bank?.toUpperCase()}):</span>
@@ -127,6 +160,7 @@ function PendingPaymentContent() {
               </div>
             ))}
 
+            {/* Render Kode Pembayaran Toko Retail (Alfamart / Indomaret) */}
             {detailPembayaran.paymentCode && (
               <div className={styles.vaBox}>
                 <span className={styles.infoLabel}>Kode Pembayaran Toko Retail:</span>
@@ -134,10 +168,14 @@ function PendingPaymentContent() {
               </div>
             )}
 
+            {/* Petunjuk QRIS / E-Wallet */}
             {(detailPembayaran.paymentType === 'gopay' || detailPembayaran.paymentType === 'qris') && (
-              <p className={styles.hintText}>*Silakan gunakan e-wallet atau aplikasi m-banking Anda untuk memindai kode QR yang tampil sebelumnya.</p>
+              <p className={styles.hintText}>
+                *Silakan gunakan e-wallet atau aplikasi m-banking Anda untuk memindai kode QR yang tampil sebelumnya.
+              </p>
             )}
 
+            {/* Batas Waktu Kadaluwarsa */}
             {detailPembayaran.expiryTime && (
               <div className={styles.expiryBox}>
                 ⏰ Batas Waktu Pembayaran: {new Date(detailPembayaran.expiryTime).toLocaleString('id-ID')}
@@ -150,7 +188,7 @@ function PendingPaymentContent() {
   );
 }
 
-// 2. INI EXPORT UTAMA YANG DIWAJIBKAN NEXT.JS (Wajib "export default")
+// 2. EXPORT UTAMA YANG DIWAJIBKAN NEXT.JS (Dibungkus Suspense)
 export default function PendingPaymentPage() {
   return (
     <Suspense fallback={<div className={styles.centerBox}><p>Memuat Halaman...</p></div>}>

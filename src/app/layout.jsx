@@ -35,9 +35,10 @@ export default function RootLayout({ children }) {
       <head>
         {/* Muat script Production Midtrans secara global */}
         <Script
-          src="https://app.midtrans.com/snap/snap.js"
+          // src="https://app.midtrans.com/snap/snap.js" production
+          src="https://app.midtrans.com/snap/snap.js" // sandbox
           data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
-          strategy="beforeInteractive" // 👈 Memastikan script siap SEBELUM halaman interaktif
+          strategy="beforeInteractive"
         />
       </head>
       <body style={{ overflowX: 'hidden', maxWidth: '100vw', margin: 0, padding: 0 }}>

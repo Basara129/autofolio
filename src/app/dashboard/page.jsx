@@ -54,8 +54,6 @@ export default function MainDashboard() {
     const adaOrderPending = orders.some(o => o.status?.toLowerCase() === 'pending');
     if (!adaOrderPending) return;
 
-    console.log("📡 Radar dashboard siaga memantau transaksi pending...");
-
     // Daftarkan listener secara sinkron terlebih dahulu
     const channel = supabase
       .channel('realtime-dashboard-orders')
@@ -130,7 +128,7 @@ export default function MainDashboard() {
           </div>
         )}
 
-        {/* 🌟 BANNER REALTIME PEMBAYARAN PENDING (DIARAHKAN KE PENDING PAGE) */}
+        {/* 🌟 BANNER REALTIME PEMBAYARAN PENDING */}
         {orderPendingTerbaru && (
           <div className={styles.pending}>
             <div style={{ flex: 1 }}>
@@ -150,6 +148,7 @@ export default function MainDashboard() {
 
         {/* GRID NAVIGASI */}
         <div className={styles.menuGrid}>
+          {/* CARD 1: KELOLA PROFIL */}
           <div className={styles.menuCard} onClick={() => router.push('/dashboard/profile')}>
             <div className={styles.cardIcon}>👤</div>
             <div className={styles.cardContent}>
@@ -163,6 +162,7 @@ export default function MainDashboard() {
             </div>
           </div>
 
+          {/* CARD 2: DESAIN & WARNA */}
           <div className={styles.menuCard} onClick={() => router.push('/dashboard/pengaturan')}>
             <div className={styles.cardIcon}>🎨</div>
             <div className={styles.cardContent}>
@@ -175,6 +175,24 @@ export default function MainDashboard() {
               <span>Buka Pengaturan Tema</span> →
             </div>
           </div>
+
+          {/* 🌟 CARD 3: UNDUH BUKU GOOGLE DRIVE (BARU) */}
+          <div 
+            className={styles.menuCard} 
+            onClick={() => window.open('https://drive.google.com/drive/folders/1j4FlHtnYiQPjYzMemwSAjPCB3mXHG4Kw?usp=drive_link', '_blank', 'noopener,noreferrer')}
+          >
+            <div className={styles.cardIcon}>📚</div>
+            <div className={styles.cardContent}>
+              <h3 className={styles.cardTitle}>Bonus Buku Upgrade Diri</h3>
+              <p className={styles.cardDescription}>
+                Akses dan unduh seluruh koleksi e-book eksklusif pengembangan diri Anda langsung melalui Google Drive.
+              </p>
+            </div>
+            <div className={styles.cardFooter}>
+              <span>Buka Google Drive</span> →
+            </div>
+          </div>
+
         </div>
 
       </div>

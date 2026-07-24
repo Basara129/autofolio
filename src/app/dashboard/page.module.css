@@ -7,7 +7,7 @@
   width: 100%;
   align-items: center;
   justify-content: center;
-  /* Menggunakan warna gradasi gelap yang sangat halus agar teks kontras sempurna */
+  /* Menggunakan warna gradasi gelap radial halus */
   background: radial-gradient(circle at 50% 0%, #1e293b 0%, #090d16 100%); 
   padding: 40px 24px;
   box-sizing: border-box;
@@ -17,7 +17,7 @@
 
 .dashboardWrapper {
   width: 100%;
-  max-width: 1100px; /* Lebar ditambah sedikit agar layout grid terasa bernapas */
+  max-width: 1100px;
   margin: 0 auto;
   animation: fadeInPage 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
@@ -34,10 +34,10 @@
 .dashboardHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Diposisikan rata tengah agar simetris dengan tombol */
+  align-items: flex-start;
   width: 100%;
-  margin-bottom: 4rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Garis pembatas tipis elegan */
+  margin-bottom: 2.5rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.08); /* Garis pembatas dipertebal */
   padding-bottom: 2rem;
   gap: 32px;
 }
@@ -47,106 +47,126 @@
   font-weight: 800;
   color: #ffffff;
   margin: 0 0 0.6rem 0;
-  letter-spacing: -0.03em; /* Karakter tulisan dibuat lebih rapat khas UI Modern */
+  letter-spacing: -0.03em;
   line-height: 1.2;
 }
 
 .highlightText {
   background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent; /* Gradasi warna mint premium pada teks nama */
+  -webkit-text-fill-color: transparent;
 }
 
 .subTitle {
   font-size: 1rem;
-  color: #64748b; /* Warna abu Slate mid-tone yang nyaman di mata */
+  color: #64748b;
   margin: 0;
   max-width: 640px;
   line-height: 1.6;
 }
 
 .btnLogout {
-  padding: 0.65rem 1.4rem;
-  background-color: rgba(248, 113, 113, 0.03);
+  padding: 0.75rem 1.5rem;
+  background-color: rgba(248, 113, 113, 0.05);
   color: #f87171;
-  border: 1px solid rgba(248, 113, 113, 0.15);
-  border-radius: 10px;
+  border: 2px solid rgba(248, 113, 113, 0.25); /* Border ditebalkan */
+  border-radius: 12px;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
 }
 
 .btnLogout:hover {
-  background-color: rgba(248, 113, 113, 0.12);
-  border-color: rgba(248, 113, 113, 0.4);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(248, 113, 113, 0.15);
+  background-color: rgba(248, 113, 113, 0.15);
+  border-color: #f87171;
+  color: #ffffff;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(248, 113, 113, 0.25);
 }
 
 .btnLogout:active {
   transform: translateY(0);
 }
 
-.pending{
-  background: 'rgba(234, 179, 8, 0.1)';
-  border: '1px solid #eab308';
-  border-Radius: '8px';
-  padding: '1rem';
-  margin-Bottom: '2rem';
-  display: 'flex';
-  justify-Content: 'space-between';
-  align-Items: 'center';
-  flex-Wrap: 'wrap';
-  gap: '1rem';
-}
-.telat {
-  background: '#eab308';
-  color: '#000';
-  border: 'none';
-  padding: '8px 16px';
-  border-Radius: '6px';
-  font-Weight: 'bold';
-  cursor: 'pointer';
-  font-Size: '0.85rem';
-}
 /* ==========================================================================
-   3. MENU NAVIGATION GRID
+   3. BANNER REALTIME PEMBAYARAN PENDING
    ========================================================================== */
-.menuGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem; /* Jarak antar-kartu diperlebar agar tidak sesak */
-  width: 100%;
+.pending {
+  background: linear-gradient(90deg, rgba(234, 179, 8, 0.12), rgba(17, 24, 39, 0.8));
+  border: 2px solid #eab308; /* Border dipertebal & warna ditegaskan */
+  border-radius: 16px;
+  padding: 1.25rem 1.75rem;
+  margin-bottom: 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  box-shadow: 0 8px 25px rgba(234, 179, 8, 0.15);
+  animation: pulseWarning 3s infinite ease-in-out;
 }
 
-@media (min-width: 768px) {
-  .menuGrid {
-    grid-template-columns: repeat(2, 1fr);
+@keyframes pulseWarning {
+  0%, 100% {
+    box-shadow: 0 6px 20px rgba(234, 179, 8, 0.12);
+  }
+  50% {
+    box-shadow: 0 10px 30px rgba(234, 179, 8, 0.28);
   }
 }
 
+.telat {
+  background: #eab308;
+  color: #090d16;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.telat:hover {
+  background: #fde047;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(234, 179, 8, 0.4);
+}
+
 /* ==========================================================================
-   4. NAVIGATION MENU CARD INTERACTIVE (Glassmorphism & Depth)
+   4. MENU NAVIGATION GRID (LAYOUT 3 KOLOM)
+   ========================================================================== */
+.menuGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Layar lebar membagi 3 kolom seimbang */
+  gap: 1.75rem;
+  width: 100%;
+}
+
+/* ==========================================================================
+   5. NAVIGATION MENU CARD INTERACTIVE (Glassmorphism & Depth)
    ========================================================================== */
 .menuCard {
   background: linear-gradient(145deg, #1e293b 0%, #111827 100%);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 20px; /* Sudut lengkung lebih melingkar lembut */
-  padding: 2.5rem;
+  border: 2px solid rgba(255, 255, 255, 0.08); /* Border ditebalkan */
+  border-radius: 20px;
+  padding: 2.25rem 1.75rem;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 280px;
+  min-height: 290px;
   box-shadow: 
     0 4px 6px -1px rgba(0, 0, 0, 0.1), 
-    0 20px 40px -15px rgba(0, 0, 0, 0.5); /* Shadow ganda untuk ilusi kedalaman mengambang */
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    0 20px 40px -15px rgba(0, 0, 0, 0.5);
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
   overflow: hidden;
 }
@@ -156,61 +176,67 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.08) 0%, transparent 50%);
+  background: radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.15) 0%, transparent 60%);
   opacity: 0;
   transition: opacity 0.4s ease;
   z-index: 1;
 }
 
 .menuCard:hover {
-  transform: translateY(-8px) scale(1.01);
-  border-color: rgba(16, 185, 129, 0.25);
+  transform: translateY(-10px) scale(1.02);
+  border-color: #10b981; /* Border hijau neon tegas saat hover */
   box-shadow: 
-    0 10px 20px -5px rgba(16, 185, 129, 0.1),
-    0 30px 60px -15px rgba(0, 0, 0, 0.7);
+    0 12px 30px -5px rgba(16, 185, 129, 0.25),
+    0 30px 60px -15px rgba(0, 0, 0, 0.8);
 }
 
 .menuCard:hover::after {
   opacity: 1;
 }
 
-/* Kontainer ikon dibuat berbentuk bulat persegi (Squirclish) */
 .cardIcon {
-  font-size: 2rem;
-  width: 56px;
-  height: 56px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 14px;
+  font-size: 2.2rem;
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1.75rem;
-  transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
 }
 
 .menuCard:hover .cardIcon {
-  background: rgba(16, 185, 129, 0.1);
-  border-color: rgba(16, 185, 129, 0.3);
-  transform: scale(1.05);
+  background: rgba(16, 185, 129, 0.15);
+  border-color: #34d399;
+  transform: scale(1.15) rotate(6deg);
+  box-shadow: 0 0 15px rgba(52, 211, 153, 0.3);
 }
 
 .cardContent {
   position: relative;
   z-index: 2;
+  flex: 1;
 }
 
 .cardTitle {
-  font-size: 1.4rem;
-  font-weight: 700;
+  font-size: 1.3rem;
+  font-weight: 800;
   color: #ffffff;
   margin: 0 0 0.75rem 0;
   letter-spacing: -0.01em;
+  transition: color 0.25s ease;
+}
+
+.menuCard:hover .cardTitle {
+  color: #34d399;
 }
 
 .cardDescription {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: #94a3b8;
   margin: 0;
   line-height: 1.6;
@@ -219,22 +245,25 @@
 .cardFooter {
   position: relative;
   z-index: 2;
-  margin-top: 2rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #34d399; /* Warna mint cerah saat normal */
+  margin-top: 1.75rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #34d399;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  border-top: 2px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1rem;
   transition: all 0.3s ease;
 }
 
 .menuCard:hover .cardFooter {
   color: #10b981;
-  gap: 14px; /* Panah mendorong menjauh dengan anggun */
+  border-top-color: rgba(16, 185, 129, 0.4);
 }
+
 /* ==========================================================================
-   5. UTILITIES, LOADER & ANIMATIONS
+   6. UTILITIES, LOADER & ANIMATIONS
    ========================================================================== */
 .loadingText {
   color: #94a3b8;
@@ -256,13 +285,19 @@
 }
 
 /* ==========================================================================
-   6. OPTIMALISASI RESPONSIVE LAYOUT (MOBILE & TABLET SMARTPHONE)
+   7. OPTIMALISASI RESPONSIVE LAYOUT (TABLET & SMARTPHONE)
    ========================================================================== */
 
-/* Tablet & HP Landscape (Lebar di bawah 768px) */
+/* Tablet & HP Landscape (Lebar di bawah 1024px) */
+@media (max-width: 1024px) {
+  .menuGrid {
+    grid-template-columns: repeat(2, 1fr); /* Berubah ke 2 kolom pada layar sedang */
+  }
+}
+
 @media (max-width: 768px) {
   .dashboardHeader {
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
     padding-bottom: 1.5rem;
     gap: 20px;
   }
@@ -272,28 +307,28 @@
   }
 
   .menuCard {
-    padding: 2rem;
-    min-height: 240px;
+    padding: 1.75rem;
+    min-height: auto;
   }
 }
 
-/* Handphone Tegak / Potret (Lebar di bawah 576px) */
-@media (max-width: 576px) {
+/* Handphone Tegak / Potret (Lebar di bawah 640px) */
+@media (max-width: 640px) {
   .centerContainer {
-    padding: 20px 16px; /* Jarak tepi layar HP dibuat pas agar area konten maksimal */
-    align-items: flex-start; /* Membantu scroll vertikal jika layar HP sangat pendek */
+    padding: 20px 16px;
+    align-items: flex-start;
   }
 
   .dashboardHeader {
-    flex-direction: column; /* Menyusun Judul dan Tombol Keluar secara vertikal */
-    align-items: stretch; /* Membuat tombol keluar melebar penuh secara rapi */
+    flex-direction: column;
+    align-items: stretch;
     gap: 16px;
-    margin-bottom: 2rem;
+    margin-bottom: 1.75rem;
     padding-bottom: 1.25rem;
   }
 
   .mainTitle {
-    font-size: 1.6rem; /* Ukuran font judul disesuaikan agar tidak patah berantakan */
+    font-size: 1.6rem;
     text-align: center;
   }
 
@@ -305,26 +340,37 @@
 
   .btnLogout {
     width: 100%;
-    justify-content: center; /* Tombol logout memenuhi lebar layar bawah judul dengan rapi */
-    padding: 0.75rem; /* Lebih tebal sedikit agar mudah ditekan jari */
+    justify-content: center;
+    padding: 0.75rem;
     font-size: 0.9rem;
   }
 
+  .pending {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.25rem;
+  }
+
+  .telat {
+    width: 100%;
+    text-align: center;
+  }
+
   .menuGrid {
-    gap: 1.25rem; /* Jarak antar kartu dirapatkan sedikit agar hemat ruang */
+    grid-template-columns: 1fr; /* 1 Kolom vertikal untuk HP */
+    gap: 1.25rem;
   }
 
   .menuCard {
-    padding: 1.5rem; /* Padding dalam kartu dikurangi agar teks tidak terlalu masuk ke dalam */
-    min-height: auto; /* Membiarkan tinggi kartu fleksibel mengikuti panjang teks deskripsi */
-    border-radius: 16px; /* Lengkungan sudut sedikit dikurangi agar proporsional */
+    padding: 1.5rem;
+    border-radius: 16px;
   }
 
   .cardIcon {
-    width: 48px;
-    height: 48px;
-    font-size: 1.75rem;
-    margin-bottom: 1rem; /* Ikon diperkecil seimbang */
+    width: 52px;
+    height: 52px;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
   }
 
   .cardTitle {
@@ -333,12 +379,12 @@
   }
 
   .cardDescription {
-    font-size: 0.875rem; /* Ukuran teks deskripsi dioptimalkan untuk keterbacaan layar HP */
+    font-size: 0.875rem;
     line-height: 1.5;
   }
 
   .cardFooter {
-    margin-top: 1.5rem;
+    margin-top: 1.25rem;
     font-size: 0.85rem;
   }
 }
